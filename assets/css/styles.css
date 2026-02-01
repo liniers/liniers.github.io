@@ -1,3 +1,5 @@
+@import '/assets/css/motion.css';
+
 /* RESET BÁSICO */
 
 * {
@@ -13,6 +15,16 @@
 :root {
     --color-text: #FAF4E4;
     --color-bg: #191922;
+    --color-surface: #252532;
+    --scrim: #191922d4;
+    --opacity-low: #faf4e427;
+    --opacity-md: #faf4e448;
+    --opacity-high: rgba(250, 244, 228, 0.621);
+    --border-low: #faf4e41a;
+    --border-md: #faf4e433;
+    --on-accent-content: #191922;
+
+    --font-family-brand: 'Futura-CondensedExtraBold', sans-serif;
     
     /* CONFIGURACIÓN GRID - DESKTOP */
     --grid-template-cols: 72;         /* Número de columnas del grid */
@@ -29,14 +41,29 @@
     --global-view-cols: 3;            /* Columnas para grupos en vista global */
     --global-view-rows: 2;            /* Filas para grupos en vista global */
     --global-thumbs-per-row: 8;       /* Thumbs por fila dentro de cada grupo */
-    --global-category-spacing: 48;    /* Espaciado vertical entre categorías (px) */
+    --global-category-spacing: 72;    /* Espaciado vertical entre categorías (px) */
     --global-title-spacing: 24;       /* Espaciado entre título y thumbs (px) */
     --global-title-size: 20;          /* Tamaño del texto del título (px) */
+
+    --radius-full: 99px;
+    --radius-md: 32px;
+    --radius-s: 16px;
+
 }
+
+
 
 [data-theme="light"] {
     --color-text: #191922;
     --color-bg: #FAF4E4;
+    --color-surface: #fefbf4;
+    --scrim: #FAF4E4d4;
+    --border-low: #19192214;
+    --border-md: #19192233;
+    --opacity-low: #19192221;
+    --opacity-md: #1919224a;
+    --opacity-high: #1919228e;
+    --on-accent-content: #faf4e4;
 }
 
 /* CONFIGURACIÓN GRID - Tablet */
@@ -87,13 +114,33 @@
 }
 
 
+.text-display {
+  font-family: var(--font-family-brand);
+  text-transform: uppercase;
+}
+
 
 body {
     overflow-x: hidden; 
     width: 100%;
     background-color: var(--color-bg);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color var(--duration-sm) ease, color var(--duration-sm) ease;
 }
+
+body.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
+
+#page-content {
+    background-color: var(--color-bg); 
+    width: 100%;
+    min-height: 100vh;
+    transform-origin: center 20vh;
+    border-radius: 0px; 
+}
+
 
 /* ESTRUCTURA PRINCIPAL */
 .layout {
@@ -118,15 +165,39 @@ body {
 
 .layout .toggle-grid{
     position: fixed;
-    bottom: 48px;
-    left: 50%; 
-    transform: translateX(-50%);
+    bottom: 36px;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+    height: fit-content;
+    max-width: 90%;
 }
 
 .layout .logo{
     position: fixed;
-    left: 50%; 
-    transform: translateX(-50%);
+    right: 36px;
+    bottom: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    backdrop-filter: blur(15px);
+    width: 92px;
+    border: 1px solid var(--border-low);
+    height: 92px;
+    border-radius: 99px;
+    cursor: pointer;
+    z-index: 1010;
+}
+
+.logo svg {
+    right: 8px;
+    position: relative;
+}
+
+.logo svg path {
+    stroke: #191922;
 }
 
 
@@ -140,9 +211,8 @@ body {
     padding: .5rem;
     align-items: center;
     gap: .5rem;
-    border-radius: 12px;
+    border-radius: 99px;
     background: rgba(250, 244, 228, 0.04);
-    transition: background 0.3s ease;
     backdrop-filter: blur(16px);
 }
 
@@ -155,38 +225,34 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 8px;
-    padding: 0.5rem;
+    border-radius: 99px;
+    padding: 0.75rem 1rem;
     cursor: pointer;
-    background: transparent;
+    gap: .5rem;
     color: var(--color-text);
     border: none;
-    transition: all 0.3s ease;
+    /* transition: all var(--duration-sm) ease; */
 }
 
 .layout .main-header .toggle-grid button svg path {
     fill: var(--color-text);
     stroke: var(--color-text);
-    transition: all 0.3s ease;
+    transition: all var(--duration-sm) ease;
 }
 
 .layout .main-header .toggle-grid .button-active {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
     background: var(--color-text);
-    padding: 0.5rem;
-    cursor: pointer;
     font-size: 0.8rem;
-    color: var(--color-bg);
-    border: none;
-    transition: all 0.3s ease;
+    color: var(--on-accent-content);
+}
+
+.button-active .label-xs {
+    color: var(--on-accent-content);
 }
 
 .layout .main-header .toggle-grid .button-active svg path {
-    fill: var(--color-bg);
-    stroke: var(--color-bg);
+    fill: var(--on-accent-content);
+    stroke: var(--on-accent-content);
 }
 
 .layout .main-header .header-right button {
@@ -198,13 +264,13 @@ body {
     background: transparent;
     color: var(--color-text);
     border: none;
-    transition: all 0.3s ease;
+    transition: all var(--duration-sm) ease;
 }
 
 .layout .main-header .header-right button svg path {
     fill: var(--color-text);
     stroke: var(--color-text);
-    transition: all 0.3s ease;
+    transition: all var(--duration-sm) ease;
 }
 
 /* SIDEBAR */
@@ -240,6 +306,7 @@ body {
 }
 
 /* CONTENIDO PRINCIPAL */
+
 .layout .main-content {
     display: flex;
     flex-direction: column;
@@ -250,8 +317,9 @@ body {
 
 .thumbs-grid {
     display: grid;
-    margin-bottom: 50%;
-    width: 95vw;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: 90vw;
     height: auto;
     min-height: 200vh;
     padding: 0px;
@@ -263,71 +331,70 @@ body {
     
 }
 
-
-/* Span miniaturas (GENERADAS EN EL JS)
-
-.thumbs-grid .thumb-1 {
-    grid-row: 3 / span 1;
-    grid-column: 1 / span 1;
-    background-color: #C02822;
-    aspect-ratio: 1 / 1;
+.thumbs-grid-preview {
+    display: grid;
+    margin-bottom: 50%;
+    width: 95vw;
+    height: auto;
+    min-height: 95vh;
+    padding: 0px;
+    row-gap: 0px;
+    column-gap: 0px;
+    grid-template-columns: repeat(var(--grid-template-cols), minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    z-index: 89;
+    
 }
 
-.thumbs-grid .thumb-2 {
-    grid-row: 1 / span 1;
-    grid-column: 3 / span 1;
-    background: #728D3B;
-    aspect-ratio: 1 / 1;
-}
 
-.thumbs-grid .thumb-3 {
+/* Span miniaturas (GENERADAS EN EL JS) */
+
+.thumbs-grid-preview .thumb-1 {
     grid-row: 2 / span 1;
-    grid-column: 18 / span 1;
-    background: #1A4575;
-    aspect-ratio: 1 / 1;
-}
-
-.thumbs-grid .thumb-4 {
-    grid-row: 3 / span 1;
-    grid-column: 10 / span 1;
-    background: #D2605F;
-    aspect-ratio: 1 / 1;
-}
-.thumbs-grid .thumb-5 {
-    grid-row: 10 / span 1;
-    grid-column: 4 / span 1;
+    grid-column: 36 / span 2;
     background-color: #C02822;
     aspect-ratio: 1 / 1;
 }
 
-.thumbs-grid .thumb-6 {
-    grid-row: 5 / span 1;
-    grid-column: 12 / span 1;
-    background: var(--color-text);
-    aspect-ratio: 1 / 1;
+.thumbs-grid-preview .work-info, .thumbs-grid .work-info {
+    display: none;
+    flex-direction: column;
+    gap: .5rem;
+    opacity: 0;
+    position: relative;
+    height: 100%; /* Asegura que no sobrepase el alto del thumb */
+    scale: var(--scale-sm);
+    background-color: var(--color-bg);
+    z-index: 1;
+    transform-origin: var(--origin-left);
+    translate: 30%;
+    background-color: var(--color-bg);
 }
 
-.thumbs-grid .thumb-7 {
-    grid-row: 7 / span 1;
-    grid-column: 16 / span 1;
-    background: #F4B33F;
-    aspect-ratio: 1 / 1;
+/* .thumbs-grid-preview .work-info:hover, .thumbs-grid .work-info:hover {
+    opacity: 1;
+    scale: 1;
+    transform-origin: var(--origin-left);
+    transition: all var(--duration-sm) var(--easing-decelerate);
+} */
+
+.thumbs-grid-preview .work-info .work-category, .thumbs-grid .work-info .work-category {
+    /* background-color: var(--color-bg); */
+    font-size: 1.5rem;
+}
+
+.thumbs-grid-preview .work-info .work-details, .thumbs-grid .work-info .work-details {
+    /* background-color: var(--color-bg); */
+    font-size: .825rem;
 }
 
 
-.thumbs-grid .thumb-8 {
-    grid-row: 11 / span 1;
-    grid-column: 19 / span 1;
-    background: #728D3B;
-    aspect-ratio: 1 / 1;
-}
-*/
 
 
 /* Toggle para ocultar imágenes */
 [class*="thumb-"].hide-image {
     background-image: none !important;
-    transition: background-image 0.3s ease;
+    transition: background-image var(--duration-sm) ease;
 }
 
 /* Ocultar videos cuando hide-image está activo */
@@ -395,12 +462,71 @@ body {
     z-index: 2; /* Al mismo nivel que el pinned para tapar lo de atrás */
 }
 
-.work-section .thumb {
+/* .work-section .thumb {  
     width: 100%;
     max-width: 400px;
     height: auto;
-    aspect-ratio: 16 / 9; /* Formato panorámico */
+    aspect-ratio: 16 / 9;
     background-color: #f0f0f0;
+} */
+
+/* Cursor pointer para thumbs */
+[class*="thumb-"] {
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    transition: border-radius var(--duration-md, 0.6s) var(--easing-standard, ease);
+}
+
+.view-listado [class*="thumb-"] {
+    border-radius: var(--radius-full);
+}
+
+.view-global [class*="thumb-"] {
+    border-radius: var(--radius-full);
+}
+
+/* Hover effect en vista listado - tooltip flotante a la derecha del cursor */
+.hover-work-info {
+    display: flex;
+    opacity: 0;
+    position: fixed;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: opacity var(--duration-sm) var(--easing-decelerate);
+    z-index: 1000;
+    pointer-events: none;
+    width: fit-content;
+    max-width: 500px;
+    background: var(--color-bg);
+}
+
+.hover-work-info .work-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+    font-size: 1.5rem;
+}
+
+.hover-work-info.is-visible {
+    opacity: 1;
+}
+
+.hover-work-info .work-category {
+    font-size: .875rem;
+}
+
+/* Asegurar que las imágenes sean visibles en vista listado al hacer hover */
+.view-listado [class*="thumb-"].hide-image:hover {
+    opacity: 0.95;
+}
+
+.view-global [class*="thumb-"] .work-info:not(.expanded-info) {
+    display: none !important;
+    opacity: 0 !important;
 }
 
 .work-section .thumb img {
@@ -428,12 +554,120 @@ body {
     max-width: 90vw;
     height: auto;
     overflow-y: auto;
-    backdrop-filter: blur(50px);
+    /* backdrop-filter: blur(50px); */
     opacity: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.2'/%3E%3C/svg%3E");    background-size: cover;
+    /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.2'/%3E%3C/svg%3E");    background-size: cover; */
     /* background: #00000015; */
     background-position: center;
-}   
+    /* box-shadow: 0 0 134px 200px var(--color-bg); */
+}
+
+/* Estilos para el thumb expandido */
+.thumb-expanded {
+}
+
+.thumb-expanded video,
+.thumb-expanded img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--radius-md);
+}
+
+.work-info.expanded-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: fixed !important;
+    right: 36px !important; /* Alineado con el logo */
+    bottom: 144px !important; /* 36px (logo bottom) + 92px (logo height) + 16px (margen) */
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    background: var(--color-surface);
+    padding: 1rem 1.25rem 2rem 1.25rem; /* Más padding arriba para el botón */
+    border: solid 1px var(--border-low);
+    border-radius: 1rem;
+    corner-shape: bevel;
+    max-width: 300px;
+    color: white;
+    pointer-events: auto;
+    opacity: 0; /* Inicialmente oculto para animación */
+    z-index: 1002; /* Por encima del thumb-expanded */
+}
+
+/* Triángulo del bocadillo apuntando hacia abajo */
+.work-info.expanded-info::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; /* Ajusta esta posición */
+    right: 1rem; /* Ajusta esta posición */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--color-surface);
+}
+
+/* Botón de expand en la esquina superior derecha */
+.work-info.expanded-info .expand-btn {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    z-index: 10;
+}
+
+.work-info.expanded-info .expand-btn:hover {
+    background: var(--opacity-md);
+}
+
+.work-info.expanded-info .expand-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.work-info.expanded-info .work-category {
+    font-size: 0.875rem;
+    /* margin-bottom: 0.5rem; */
+    opacity: 0.8;
+}
+
+.work-info.expanded-info .work-title {
+    font-size: 2rem;
+    line-height: .75rem;
+    margin-right: 1rem;
+    margin-bottom: .5rem;
+}
+
+.work-info.expanded-info .work-details {
+    font-size: 0.875rem;
+    line-height: .25;
+}
+
+.quick-view-scrim {
+    transition: opacity 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--scrim);
+    z-index: 999;
+    opacity: 0;
+    display: none;
+    /* backdrop-filter: blur(5px); */
+}
 
 .quick-view .media {
     width: 50%;
@@ -441,14 +675,20 @@ body {
     border-radius: .5rem;
     background-size: cover;
     background-position: center;
+    box-shadow: 0 0 134px 200px var(--color-bg);
 }
 .quick-view .media video, .quick-view .media img {
     width: 50%;
     height: inherit;
-    border-radius: .5rem;
+    border-radius: 5rem;
     background-size: cover;
     background-position: center;
+    corner-shape: squircle;
+
+
 }
+
+
 
 .drag-button {
     position: absolute;
@@ -493,32 +733,23 @@ body {
     filter: brightness(1.2);
 }
 
-.work-info {
-    display: flex;
-    width: clamp(200px, 100%, 400px);
-    flex-direction: column;
-    gap: .5rem;
+.category-title {
+    font-size: var(--global-title-size);
+    margin-bottom: var(--global-title-spacing);
+    text-transform: uppercase;
+    font-family: var(--font-family-brand);
+    color: var(--color-text);
     opacity: 0;
+    pointer-events: none;
 }
 
-.work-info .work-title {
-    /* background-color: var(--color-bg); */
-    font-size: 1.5rem;
-}
-
-.work-info .work-category {
-    /* background-color: var(--color-bg); */
-    font-size: 1rem;
-}
-
-.work-info .work-details {
-    /* background-color: var(--color-bg); */
-    font-size: .825rem;
-}
-
-/* Cursor pointer para thumbs */
-[class*="thumb-"] {
-    cursor: pointer;
+.button-background-slider {
+    position: absolute;
+    background-color: var(--color-text);
+    border-radius: 99px;
+    pointer-events: none;
+    z-index: 0;
+    transition: none;
 }
 
 
@@ -527,30 +758,45 @@ body {
 .video-controls {
     position: absolute;
     bottom: 16px;
-    right: 16px;
+    left: 16px;
     display: flex;
     gap: 8px;
     z-index: 10;
 }
 
+
 .video-control-btn {
     width: 48px;
     height: 48px;
     border: none;
-    backdrop-filter: blur(20px);
-    background: #00000055;
     border-radius: 99px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
-    color: white;
+    color: var(--color-text);
     font-size: 20px;
+    background: var(--opacity-low)
 }
 
-.video-control-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
+.close-expanded-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1002;
+    opacity: 0;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    font-size: 20px;
+    background: var(--opacity-low);
+    backdrop-filter: blur(20px);
 }
 
 .nav-controls {
@@ -565,7 +811,7 @@ body {
 
 .project-counter {
     backdrop-filter: blur(20px);
-    background: #00000055;
+    background: var(--scrim);
     border-radius: 99px;
     color: white;
     font-size: 14px;
@@ -618,4 +864,202 @@ button.nav-control-btn.next-btn {
     .quick-view .media {
         width: 100%;
     }
+}
+
+
+/* Project wrapper */
+
+.project-wrapper {
+    position: fixed;
+    top: 0;           /* Lo fijamos arriba */
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    display: block;
+    overflow-y: auto;
+    background-color: #1A4575;
+    border-radius: 24px 24px 0 0;
+    
+    /* ESTADO INICIAL: Oculto abajo usando transform, NO top */
+    transform: translateY(100%); 
+    will-change: transform;
+}
+
+.project-wrapper.open {
+    top: 48px;
+    height: calc(100vh - 48px);
+}
+
+.project-content {
+    /* Propiedades de diseño */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 5rem;
+    min-height: 100%; /* Asegura que cubra el alto */
+}
+
+/* Para centrar el contenido sin usar Flexbox en el padre,
+   envuelve tu contenido o aplica margen automático a los hijos directos
+   que requieran ancho máximo */
+.project-wrapper .intro,
+.project-wrapper .row-grid {
+    max-width: 600px;
+    width: 100%;
+    /* margin-left: auto;
+    margin-right: auto; */
+    margin-bottom: 2rem;
+}
+
+.project-wrapper .close-wrapper {
+    position: sticky;
+    float: right;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 32px;
+    height: 32px;
+    z-index: 10;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    font-size: 20px;
+}
+
+.project-wrapper .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.project-wrapper .intro .cover-image {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-s);
+    background-color: #4f4f4f;
+    overflow: hidden;
+}
+
+.project-wrapper .intro .project-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-wrapper .intro .project-info .title {  
+    font-size: 3rem;
+    line-height: 1em;
+    color: var(--color-text); 
+}
+
+.project-wrapper .intro .project-info .subtitle {
+    font-size: 1rem;
+    line-height: 1.5em;
+}
+
+.project-wrapper .row-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.project-wrapper .row-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-s);
+    overflow: hidden;
+}
+
+/* =========================================
+   EFECTO VENTANA (FIXED WINDOW)
+   ========================================= */
+
+/* 1. CONFIGURACIÓN BASE */
+
+body {
+    background-color: var(--color-bg);
+    transition: background-color 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+#page-content {
+    background-color: var(--color-bg);
+    width: 100%;
+    min-height: 100vh;
+    /* Punto de origen para el escalado: SIEMPRE el centro de la pantalla */
+    transform-origin: center center; 
+    transition: transform 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+                border-radius 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+                filter 0.8s ease;
+    /* Necesario para que el recorte funcione */
+    /* overflow: hidden;  */
+}
+
+/* El contenido interno (donde están tus secciones) */
+.main-content {
+    width: 100%;
+    /* Esta transición debe ser 0s para que el cambio de posición sea instantáneo al abrir */
+    transition: transform 0s; 
+}
+
+/* Elementos UI que desaparecen */
+.main-header, .sidebar {
+    transition: opacity 0.4s ease;    
+}
+
+/* EL MODAL */
+.project-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: 9999;
+    background-color: var(--color-bg);
+    border-radius: 36px 36px 0 0;
+    
+    display: block !important;
+    overflow-y: auto !important;
+    
+    transform: translateY(100%);
+    transition: transform 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 0px -20px 60px rgba(0,0,0,0.2);
+}
+
+
+/* 2. ESTADO ACTIVO (.project-open) */
+
+body.project-open {
+    background-color: #000; /* Fondo negro */
+}
+
+/* Ocultar UI */
+body.project-open .main-header,
+body.project-open .sidebar {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Transformar la "VENTANA" (#page-content) */
+body.project-open #page-content {
+    /* El truco: Hacemos clip y escalamos */
+    transform: scale(0.96) translateY(0px);
+    border-radius: 36px;
+    opacity: .8;
+    filter: brightness(2);
+    
+    /* Importante: aseguramos que actúe como máscara */
+    overflow: hidden; 
+    height: 100vh; /* Se fuerza a altura de pantalla */
+    position: fixed; /* Se fija a la pantalla */
+    top: 0; 
+    left: 0;
+}
+
+/* Subir el modal */
+body.project-open .project-wrapper {
+    transform: translateY(32px);
 }

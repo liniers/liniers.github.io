@@ -1,0 +1,1 @@
+Portadas diseñadas para diferentes podcasts de la plataforma SER PODCAST, en colaboración junto con el equipo de diseño de FLAT26 studio.

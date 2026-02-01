@@ -67,8 +67,8 @@ function navigateToProject(direction) {
 
 // Función para actualizar el quick-view con un nuevo proyecto
 function updateQuickViewWithProject(trabajo) {
-    const quickView = document.querySelector('.quick-view');
-    if (!quickView) return;
+    const expandedThumb = document.querySelector('.thumb-expanded');
+    if (!expandedThumb) return;
     
     // Marcar el thumb del nuevo proyecto como visitado
     const newThumb = document.querySelector(`[data-work-id="${trabajo.id}"]`);
@@ -82,138 +82,186 @@ function updateQuickViewWithProject(trabajo) {
         });
     }
     
-    const mediaContainer = quickView.querySelector('.media');
-    const workTitle = quickView.querySelector('.work-title');
-    const workDetails = quickView.querySelector('.work-details');
-    const workInfoEl = quickView.querySelector('.work-info');
+    // En el nuevo sistema, el video/imagen está directamente en expandedThumb
+    const existingMedia = expandedThumb.querySelector('video, img');
+    const workTitle = expandedThumb.querySelector('.work-title');
+    const workDetails = expandedThumb.querySelector('.work-details');
+    const workInfoEl = expandedThumb.querySelector('.work-info.expanded-info');
     
-    // Limpiar contenido anterior
-    mediaContainer.innerHTML = '';
-    mediaContainer.style.backgroundImage = '';
+    // Fade out del contenido actual
+    const videoControls = expandedThumb.querySelector('.video-controls');
+    const navControls = expandedThumb.querySelector('.nav-controls');
     
-    // Detectar si es vídeo o imagen
-    const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
-    
-    if (isVideo) {
-        const video = document.createElement('video');
-        video.src = `assets/img/${trabajo.thumbnail}`;
-        video.autoplay = true;
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.style.width = '100%';
-        video.style.height = 'auto';
-        video.style.display = 'block';
-        
-        // Crear contenedor de controles de video
-        const videoControls = document.createElement('div');
-        videoControls.className = 'video-controls';
-        
-        // Botón Play/Pause
-        const playPauseBtn = document.createElement('button');
-        playPauseBtn.className = 'video-control-btn play-pause-btn';
-        playPauseBtn.setAttribute('data-state', 'playing');
-        playPauseBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-        </svg>`;
-        
-        playPauseBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (video.paused) {
-                video.play();
+    gsap.to([existingMedia, workInfoEl, videoControls, navControls].filter(el => el), {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+        onComplete: () => {
+            // Limpiar controles de video existentes
+            if (videoControls) videoControls.remove();
+            if (navControls) navControls.remove();
+            
+            // Detectar si es vídeo o imagen
+            const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
+            
+            if (isVideo) {
+                // Actualizar video existente o crear uno nuevo
+                if (existingMedia && existingMedia.tagName === 'VIDEO') {
+                    existingMedia.src = `assets/img/${trabajo.thumbnail}`;
+                    existingMedia.load();
+                } else {
+                    if (existingMedia) existingMedia.remove();
+                    const video = document.createElement('video');
+                    video.src = `assets/img/${trabajo.thumbnail}`;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.objectFit = 'cover';
+                    video.style.position = 'absolute';
+                    video.style.top = '0';
+                    video.style.left = '0';
+                    expandedThumb.insertBefore(video, expandedThumb.firstChild);
+                }
+                
+                // Crear nuevos controles de video
+                const newVideoControls = document.createElement('div');
+                newVideoControls.className = 'video-controls';
+                newVideoControls.style.opacity = '0';
+                newVideoControls.style.position = 'absolute';
+                newVideoControls.style.bottom = '1rem';
+                newVideoControls.style.left = '50%';
+                newVideoControls.style.transform = 'translateX(-50%)';
+                newVideoControls.style.display = 'flex';
+                newVideoControls.style.gap = '0.5rem';
+                newVideoControls.style.zIndex = '10';
+                
+                const currentVideo = expandedThumb.querySelector('video');
+                
+                // Botón Play/Pause
+                const playPauseBtn = document.createElement('button');
+                playPauseBtn.className = 'video-control-btn play-pause-btn';
                 playPauseBtn.setAttribute('data-state', 'playing');
-                playPauseBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                </svg>`;
-            } else {
-                video.pause();
-                playPauseBtn.setAttribute('data-state', 'paused');
-                playPauseBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>`;
-            }
-        });
-        
-        // Botón Mute/Unmute
-        const muteBtn = document.createElement('button');
-        muteBtn.className = 'video-control-btn mute-btn';
-        muteBtn.setAttribute('data-state', 'muted');
-        muteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-            <line x1="23" y1="9" x2="17" y2="15" stroke="white" stroke-width="2"/>
-            <line x1="17" y1="9" x2="23" y2="15" stroke="white" stroke-width="2"/>
-        </svg>`;
-        
-        muteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            video.muted = !video.muted;
-            if (video.muted) {
+                playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+                playPauseBtn.style.cssText = `
+                    background: rgba(0, 0, 0, 0.6);
+                    backdrop-filter: blur(10px);
+                    border: none;
+                    border-radius: 50%;
+                    width: 48px;
+                    height: 48px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                `;
+                
+                playPauseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentVideo.paused) {
+                        currentVideo.play();
+                        playPauseBtn.setAttribute('data-state', 'playing');
+                        playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+                    } else {
+                        currentVideo.pause();
+                        playPauseBtn.setAttribute('data-state', 'paused');
+                        playPauseBtn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span>';
+                    }
+                });
+                
+                // Botón Mute/Unmute
+                const muteBtn = document.createElement('button');
+                muteBtn.className = 'video-control-btn mute-btn';
                 muteBtn.setAttribute('data-state', 'muted');
-                muteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-                    <line x1="23" y1="9" x2="17" y2="15" stroke="white" stroke-width="2"/>
-                    <line x1="17" y1="9" x2="23" y2="15" stroke="white" stroke-width="2"/>
-                </svg>`;
+                muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+                muteBtn.style.cssText = playPauseBtn.style.cssText;
+                
+                muteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    currentVideo.muted = !currentVideo.muted;
+                    if (currentVideo.muted) {
+                        muteBtn.setAttribute('data-state', 'muted');
+                        muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+                    } else {
+                        muteBtn.setAttribute('data-state', 'unmuted');
+                        muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+                    }
+                });
+                
+                newVideoControls.appendChild(playPauseBtn);
+                newVideoControls.appendChild(muteBtn);
+                expandedThumb.appendChild(newVideoControls);
+                
+                gsap.to(newVideoControls, { opacity: 1, duration: 0.3, delay: 0.3 });
             } else {
-                muteBtn.setAttribute('data-state', 'unmuted');
-                muteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM16.5 12c0-2.89-1.62-5.39-4-6.65v13.29c2.38-1.25 4-3.75 4-6.64z"/>
-                </svg>`;
+                // Es una imagen
+                if (existingMedia && existingMedia.tagName === 'IMG') {
+                    existingMedia.src = `assets/img/${trabajo.thumbnail}`;
+                } else {
+                    if (existingMedia) existingMedia.remove();
+                    const img = document.createElement('img');
+                    img.src = `assets/img/${trabajo.thumbnail}`;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    img.style.position = 'absolute';
+                    img.style.top = '0';
+                    img.style.left = '0';
+                    expandedThumb.insertBefore(img, expandedThumb.firstChild);
+                }
             }
-        });
-        
-        videoControls.appendChild(playPauseBtn);
-        videoControls.appendChild(muteBtn);
-        
-        mediaContainer.style.position = 'relative';
-        mediaContainer.appendChild(video);
-        mediaContainer.appendChild(videoControls);
-    } else {
-        // Es una imagen
-        const img = document.createElement('img');
-        img.src = `assets/img/${trabajo.thumbnail}`;
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.display = 'block';
-        mediaContainer.appendChild(img);
-    }
-    
-    // Actualizar información del trabajo
-    workTitle.textContent = trabajo.titulo;
-    if (workDetails) {
-        workDetails.textContent = `${trabajo.cliente} - ${trabajo.fecha}`;
-    } else if (workInfoEl) {
-        const newDetails = document.createElement('p');
-        newDetails.className = 'work-details';
-        newDetails.textContent = `${trabajo.cliente} - ${trabajo.fecha}`;
-        workInfoEl.appendChild(newDetails);
-    }
-    
-    // Actualizar proyecto actual
-    currentProject = trabajo;
-    
-    // Recrear los controles de navegación
-    createNavigationControls();
+            
+            // Actualizar información del trabajo
+            if (workTitle) workTitle.textContent = trabajo.titulo;
+            if (workDetails) {
+                workDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+            } else if (workInfoEl) {
+                const existingDetails = workInfoEl.querySelector('.work-details');
+                if (existingDetails) {
+                    existingDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+                } else {
+                    const newDetails = document.createElement('p');
+                    newDetails.className = 'work-details';
+                    newDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+                    workInfoEl.appendChild(newDetails);
+                }
+            }
+            
+            // Actualizar categoría
+            const workCategory = expandedThumb.querySelector('.work-category');
+            if (workCategory) workCategory.textContent = trabajo.categoria;
+            
+            // Actualizar proyecto actual
+            currentProject = trabajo;
+            
+            // Recrear los controles de navegación
+            createNavigationControls();
+            
+            // Fade in del nuevo contenido
+            const newMedia = expandedThumb.querySelector('video, img');
+            gsap.to([newMedia, workInfoEl].filter(el => el), {
+                opacity: 1,
+                duration: 0.3
+            });
+        }
+    });
 }
 
 // Función para crear los controles de navegación
 function createNavigationControls() {
-    const quickView = document.querySelector('.quick-view');
-    if (!quickView) {
-        console.warn('❌ No se encontró .quick-view');
-        return;
-    }
-    
-    const mediaContainer = quickView.querySelector('.media');
-    if (!mediaContainer) {
-        console.warn('❌ No se encontró .media dentro de .quick-view');
+    const expandedThumb = document.querySelector('.thumb-expanded');
+    if (!expandedThumb) {
+        console.warn('❌ No se encontró .thumb-expanded');
         return;
     }
     
     console.log('✅ Creando controles de navegación...');
     
     // Eliminar controles existentes si los hay
-    const existingNav = mediaContainer.querySelector('.nav-controls');
+    const existingNav = expandedThumb.querySelector('.nav-controls');
     if (existingNav) {
         existingNav.remove();
         console.log('🔄 Controles existentes eliminados');
@@ -222,11 +270,34 @@ function createNavigationControls() {
     // Crear nuevo contenedor de navegación
     const navControls = document.createElement('div');
     navControls.className = 'nav-controls';
+    navControls.style.opacity = '0';
+    navControls.style.position = 'absolute';
+    navControls.style.bottom = '1rem';
+    navControls.style.left = '1rem';
+    navControls.style.display = 'flex';
+    navControls.style.alignItems = 'center';
+    navControls.style.gap = '0.5rem';
+    navControls.style.zIndex = '10';
+    
+    const buttonStyle = `
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    `;
     
     // Botón anterior
     const prevBtn = document.createElement('button');
     prevBtn.className = 'nav-control-btn prev-btn';
     prevBtn.innerHTML = `<span class="material-symbols-outlined">chevron_left</span>`;
+    prevBtn.style.cssText = buttonStyle;
     prevBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         navigateToProject('prev');
@@ -236,11 +307,24 @@ function createNavigationControls() {
     const counter = document.createElement('div');
     counter.className = 'project-counter';
     counter.textContent = '1/1';
+    counter.style.cssText = `
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        color: white;
+        font-size: 14px;
+        padding: 0 1.5rem;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
     
     // Botón siguiente
     const nextBtn = document.createElement('button');
     nextBtn.className = 'nav-control-btn next-btn';
     nextBtn.innerHTML = `<span class="material-symbols-outlined">chevron_right</span>`;
+    nextBtn.style.cssText = buttonStyle;
     nextBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         navigateToProject('next');
@@ -250,11 +334,16 @@ function createNavigationControls() {
     navControls.appendChild(counter);
     navControls.appendChild(nextBtn);
     
-    // Asegurar posición relativa del contenedor
-    mediaContainer.style.position = 'relative';
-    mediaContainer.appendChild(navControls);
+    expandedThumb.appendChild(navControls);
     
     console.log('✅ Controles de navegación creados y añadidos al DOM');
+    
+    // Animar aparición
+    gsap.to(navControls, {
+        opacity: 1,
+        duration: 0.3,
+        delay: 0.2
+    });
     
     // Actualizar estado de los botones
     const currentProject = relatedProjects[currentProjectIndex];

@@ -4,7 +4,7 @@ https://github.com/liniers/portfolio-2026/tree/main
 
 https://liniers.github.io/portfolio-2026/
 
-Hola Jesús, Itziar!
+Hola Jesús, Icíar!
 
 Solo para dar un poco de info del trabajo, que así sin presentarlo quizás es más confuso todo:
 

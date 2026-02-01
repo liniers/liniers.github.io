@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMS Portfolio</title>
+    <link rel="stylesheet" href="assets/css/cms.css" />
+</head>
+<body>
+    <div class="cms">
+        <aside class="cms-sidebar">
+            <div class="sidebar-header">
+                <h1>CMS Portfolio</h1>
+                <div class="sidebar-actions">
+                    <button id="themeToggleBtn" class="btn btn-secondary" title="Cambiar tema">🌙</button>
+                    <button id="newItemBtn" class="btn">Nuevo</button>
+                    <button id="reloadBtn" class="btn btn-secondary">Recargar JSON</button>
+
+                </div>
+            </div>
+            <div class="sidebar-filters">
+                <input id="searchInput" type="search" placeholder="Buscar..." />
+                <select id="filterTipo">
+                    <option value="">Tipo (todos)</option>
+                    <option value="proyecto">proyecto</option>
+                    <option value="random">random</option>
+                </select>
+                <label class="checkbox">
+                    <input type="checkbox" id="filterOcultos" />
+                    Mostrar ocultos
+                </label>
+                <p class="hint">Arrastra para reordenar (desactiva filtros si no puedes).</p>
+            </div>
+            <ul id="itemsList" class="items-list"></ul>
+        </aside>
+
+        <main class="cms-main">
+            <section class="form-section">
+
+                <div class="form-actions">
+                    <button id="deleteBtn" type="button" class="btn btn-danger">Eliminar</button>
+                    <label class="checkbox">
+                        <input id="oculto" name="oculto" type="checkbox" />
+                        Ocultar
+                    </label>
+                    <label class="checkbox">
+                        <input id="tipo" name="tipo" type="checkbox" />
+                        Random
+                    </label>
+                    <button id="loadDraftBtn" type="button" class="btn btn-secondary">Cargar borrador</button>
+                    <button id="loadJsonBtn" type="button" class="btn btn-secondary">Cargar JSON</button>
+                    <button id="applyBtn" type="submit" form="cmsForm" class="btn btn-secondary">Guardar</button>
+                    <button id="downloadBtn" type="button" class="btn btn-primary">Descargar data.json</button>
+                    <input id="jsonFileInput" type="file" accept=".json" style="display: none;" />
+                </div>
+
+
+                <header class="form-header">
+                    <h2 id="formTitle">Nuevo trabajo</h2>
+                    <div class="form-meta">
+                        <span id="currentId">ID: —</span>
+                    </div>
+                </header>
+
+                <form id="cmsForm" class="cms-form">
+                    <div class="grid">
+                        <label>
+                            Título
+                            <input id="titulo" name="titulo" type="text" required />
+                        </label>
+                        <label>
+                            Proyecto
+                            <input id="proyecto" name="proyecto" type="text" required />
+                        </label>
+                        <label>
+                            Categoría
+                            <select id="categoria" name="categoria" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Motion Graphics">Motion Graphics</option>
+                                <option value="Design System">Design System</option>
+                                <option value="Interaction Design">Interaction Design</option>
+                                <option value="Art Direction">Art Direction</option>
+                                <option value="Graphic Design">Graphic Design</option>
+                                <option value="Personal">Personal</option>
+                                <option value="__other__">Other</option>
+                            </select>
+                        </label>
+                        <label id="categoriaOtherLabel" style="display: none;">
+                            Categoría personalizada
+                            <input id="categoriaOther" name="categoriaOther" type="text" placeholder="Escribe la categoría..." />
+                        </label>
+                        <label>
+                            Fecha
+                            <input id="fecha" name="fecha" type="text" placeholder="YYYY" />
+                        </label>
+
+                        <label>
+                            Tag
+                            <input id="tag" name="tag" type="text" placeholder="red, blue, ..." />
+                        </label>
+                    </div>
+
+                    <div class="images-section">
+                        <div class="images-header">
+                            <h3>Imágenes</h3>
+                            <div class="images-actions">
+                                <button id="addImageFieldBtn" type="button" class="btn btn-secondary">Añadir campo</button>
+                                <button id="browseImagesBtn" type="button" class="btn btn-secondary">Examinar</button>
+                                <button id="clearImagesBtn" type="button" class="btn btn-ghost">Eliminar todas</button>
+                            </div>
+                        </div>
+                        <p class="hint">Se añade el nombre del archivo. Edita el path si hace falta.</p>
+                        <div id="imagesList" class="images-list"></div>
+                        <input id="imageFileInput" type="file" accept="image/*,video/*" multiple hidden />
+                        
+                        <div id="thumbnailRow" class="thumbnail-row" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                            <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start;">
+                                <div>
+                                    <label>
+                                        Thumbnail (portada)
+                                        <input id="thumbnail" name="thumbnail" type="text" placeholder="work/..." />
+                                    </label>
+                                    <button id="browseThumbnailBtn" type="button" class="btn btn-secondary" style="margin-top: 0.5rem;">Examinar</button>
+                                </div>
+                                <div id="thumbnailPreview" class="thumbnail-preview"></div>
+                            </div>
+                        </div>
+                        <input id="thumbnailFileInput" type="file" accept="image/*,video/*" hidden />
+                    </div>
+
+                    <label class="textarea">
+                        Descripción
+                        <textarea id="descripcion" name="descripcion" rows="5"></textarea>
+                    </label>
+
+                    <label class="textarea">
+                        Comentario (máx 250)
+                        <textarea id="comentario" name="comentario" rows="3" maxlength="250"></textarea>
+                        <span id="commentCount" class="counter">0/250</span>
+                    </label>
+
+
+
+                </form>
+            </section>
+
+            <section class="json-section">
+                <div class="json-header">
+                    <h3>Salida JSON</h3>
+                    <button id="copyJsonBtn" class="btn btn-ghost" type="button">Copiar JSON</button>
+                </div>
+                <textarea id="jsonOutput" class="json-output" readonly></textarea>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/cms.js"></script>
+</body>
+</html>

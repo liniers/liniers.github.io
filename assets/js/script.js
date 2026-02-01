@@ -19,6 +19,7 @@
 
 let trabajosData = []; // Datos de trabajos cargados desde JSON
 let posicionesOriginales = []; // Guardar posiciones originales de los thumbs
+let vistaRandomActiva = false; // Estado para saber si estamos mostrando imágenes random
 
 // Paleta de colores para los thumbs
 const colorPalette = [
@@ -37,105 +38,109 @@ const colorPalette = [
 
 // 1.- Maquetar thumbs
 
+// Función helper para obtener configuración del grid
+function getGridConfig() {
+    const rootStyles = getComputedStyle(document.documentElement);
+    return {
+        itemsPerRow1: parseInt(rootStyles.getPropertyValue('--grid-items-per-row-1')) || 6,
+        itemsPerRow2: parseInt(rootStyles.getPropertyValue('--grid-items-per-row-2')) || 5,
+        spacingH: parseInt(rootStyles.getPropertyValue('--grid-spacing-horizontal')) || 12,
+        spacingV: parseInt(rootStyles.getPropertyValue('--grid-spacing-vertical')) || 8,
+        thumbSpan: parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2,
+        startRow: parseInt(rootStyles.getPropertyValue('--grid-start-row')) || 0,
+        startCol: parseInt(rootStyles.getPropertyValue('--grid-start-col')) || 6
+    };
+}
+
+// Función helper para calcular posición en el grid
+function calculateGridPosition(index, config) {
+    let currentRow = 0;
+    let elementsInCurrentRow = 0;
+    let tempIndex = 0;
+    
+    while (tempIndex < index) {
+        const itemsInThisRow = currentRow % 2 === 0 ? config.itemsPerRow1 : config.itemsPerRow2;
+        elementsInCurrentRow++;
+        tempIndex++;
+        
+        if (elementsInCurrentRow >= itemsInThisRow) {
+            currentRow++;
+            elementsInCurrentRow = 0;
+        }
+    }
+    
+    const colIndex = elementsInCurrentRow;
+    const gridRow = config.startRow + (currentRow * config.spacingV);
+    const itemsInCurrentRow = currentRow % 2 === 0 ? config.itemsPerRow1 : config.itemsPerRow2;
+    const colOffset = currentRow % 2 === 0 ? 0 : config.spacingH / 2;
+    const gridColumn = config.startCol + colOffset + (colIndex * config.spacingH);
+    
+    return { gridRow, gridColumn };
+}
 
 function maquetar_thumbs(data){
     trabajosData = data;
-    
-    let cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+    const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+    const gridConfig = getGridConfig();
+    posicionesOriginales = [];
 
-    data.forEach((trabajo, index) =>{
-        let miniaturaCuadrada = document.createElement("article");
-        miniaturaCuadrada.classList.add(`thumb-${index + 1}`);
-        miniaturaCuadrada.classList.add('hide-image');
+    data.forEach((trabajo, index) => {
+        const miniaturaCuadrada = document.createElement("article");
+        miniaturaCuadrada.classList.add(`thumb-${index + 1}`, 'hide-image', 'reactive-scale');
         miniaturaCuadrada.dataset.workId = trabajo.id;
+
+        const workInfo = document.createElement("div");
+        workInfo.classList.add('work-info');
+        miniaturaCuadrada.appendChild(workInfo);
         
-        // Asignar color de fondo automáticamente desde la paleta
-        const backgroundColor = colorPalette[index % colorPalette.length];
-        miniaturaCuadrada.style.backgroundColor = backgroundColor;
+        miniaturaCuadrada.style.backgroundColor = colorPalette[index % colorPalette.length];
         
-        // Detectar si el thumbnail es un vídeo
         const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
         
         if (isVideo) {
             const video = document.createElement('video');
-            video.src = `assets/img/${trabajo.thumbnail}`;
-            video.autoplay = true;
-            video.loop = true;
-            video.muted = true;
-            video.playsInline = true;
-            video.style.width = '100%';
-            video.style.height = '100%';
-            video.style.objectFit = 'cover';
-            video.style.position = 'absolute';
-            video.style.top = '0';
-            video.style.left = '0';
+            Object.assign(video, {
+                src: `assets/img/${trabajo.thumbnail}`,
+                autoplay: true,
+                loop: true,
+                muted: true,
+                playsInline: true
+            });
+            Object.assign(video.style, {
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                position: 'absolute',
+                top: '0',
+                left: '0'
+            });
             miniaturaCuadrada.appendChild(video);
             miniaturaCuadrada.style.position = 'relative';
-            miniaturaCuadrada.style.overflow = 'hidden';
         } else {
-            miniaturaCuadrada.style.backgroundImage = `url('assets/img/${trabajo.thumbnail}')`;
-            miniaturaCuadrada.style.backgroundSize = 'cover';
-            miniaturaCuadrada.style.backgroundPosition = 'center';
+            Object.assign(miniaturaCuadrada.style, {
+                backgroundImage: `url('assets/img/${trabajo.thumbnail}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            });
         }
+
+        const workCategory = document.createElement('p');
+        workCategory.classList.add('work-category');
+        workCategory.textContent = trabajo.categoria;
+        workInfo.appendChild(workCategory);
         
-        // PATRÓN ALTERNADO: Configurable mediante CSS custom properties
+        const workTitle = document.createElement('h3');
+        workTitle.classList.add('work-title', 'text-display');
+        workTitle.textContent = trabajo.titulo;
+        workInfo.appendChild(workTitle);
         
-        // Leer configuración desde CSS custom properties
-        const rootStyles = getComputedStyle(document.documentElement);
-        const itemsPerRow1 = parseInt(rootStyles.getPropertyValue('--grid-items-per-row-1')) || 6;
-        const itemsPerRow2 = parseInt(rootStyles.getPropertyValue('--grid-items-per-row-2')) || 5;
-        const spacingH = parseInt(rootStyles.getPropertyValue('--grid-spacing-horizontal')) || 12;
-        const spacingV = parseInt(rootStyles.getPropertyValue('--grid-spacing-vertical')) || 8;
-        const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
-        const startRow = parseInt(rootStyles.getPropertyValue('--grid-start-row')) || 0;
-        const startCol = parseInt(rootStyles.getPropertyValue('--grid-start-col')) || 6;
+        const position = calculateGridPosition(index, gridConfig);
+        posicionesOriginales.push(position);
         
-        // Calcular en qué fila está este elemento
-        let currentRow = 0;
-        let elementsInCurrentRow = 0;
-        let tempIndex = 0;
+        miniaturaCuadrada.style.setProperty('grid-row', `${position.gridRow} / span ${gridConfig.thumbSpan}`);
+        miniaturaCuadrada.style.setProperty('grid-column', `${position.gridColumn} / span ${gridConfig.thumbSpan}`);
         
-        // Contar elementos hasta llegar al índice actual
-        while (tempIndex < index) {
-            const itemsInThisRow = currentRow % 2 === 0 ? itemsPerRow1 : itemsPerRow2; // Alterna según config
-            elementsInCurrentRow++;
-            tempIndex++;
-            
-            if (elementsInCurrentRow >= itemsInThisRow) {
-                currentRow++;
-                elementsInCurrentRow = 0;
-            }
-        }
-        
-        // Calcular la posición en la fila actual
-        const colIndex = elementsInCurrentRow;
-        
-        // Calcular posición en el grid
-        const gridRow = startRow + (currentRow * spacingV);
-        
-        // Calcular offset de columna para filas impares (más centrado)
-        const itemsInCurrentRow = currentRow % 2 === 0 ? itemsPerRow1 : itemsPerRow2;
-        const colOffset = currentRow % 2 === 0 ? 0 : spacingH / 2;
-        const gridColumn = startCol + colOffset + (colIndex * spacingH);
-        
-        
-        // Guardar posiciones originales
-        posicionesOriginales.push({
-            gridRow: gridRow,
-            gridColumn: gridColumn
-        });
-        
-        // Asignar posición en el grid - Usa el thumbSpan configurado
-        const gridRowValue = `${gridRow} / span ${thumbSpan}`;
-        const gridColValue = `${gridColumn} / span ${thumbSpan}`;
-        
-        miniaturaCuadrada.style.setProperty('grid-row', gridRowValue);
-        miniaturaCuadrada.style.setProperty('grid-column', gridColValue);
-        miniaturaCuadrada.style.setProperty('aspect-ratio', '1 / 1');
-        
-        
-        cuadriculaTrabajos.appendChild(miniaturaCuadrada); // Añadir el miniaturaCuadrada al cuadriculaTrabajos
-        
+        cuadriculaTrabajos.appendChild(miniaturaCuadrada);
     });
 
     
@@ -146,6 +151,69 @@ function maquetar_thumbs(data){
         setupThumbsHover(); // Inicializar hover de todas las thumbs con GSAP
         thumbsMotion(); // Activar efecto parallax con stagger
         setupQuickView(); // Inicializar quick view
+        
+        // Activar vista listado por defecto sin animación inicial
+        window.vistaListadoActiva = false;
+        const vistaListadoBtn = document.getElementById('vistaListado');
+        if (vistaListadoBtn && !window.vistaListadoActiva) {
+            // Simular el click sin mostrar la transición
+            const thumbs = document.querySelectorAll('[class*="thumb-"]');
+            
+            window.vistaListadoActiva = true;
+            document.body.classList.add('view-listado');
+            document.body.classList.remove('view-global');
+            
+            // Ocultar container-scroll
+            const containerScroll = document.querySelector('.container-scroll');
+            if (containerScroll) {
+                containerScroll.style.opacity = '0';
+                containerScroll.style.display = 'none';
+            }
+            
+            // Matar ScrollTriggers del parallax
+            ScrollTrigger.getAll().forEach(st => {
+                if (st.vars && st.vars.trigger === document.querySelector("#portfolio-items")) {
+                    st.kill();
+                }
+            });
+            
+            // Limpiar transforms de parallax
+            thumbs.forEach(thumb => {
+                gsap.set(thumb, { y: 0, clearProps: "transform" });
+            });
+            
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            const thumbHeight = 100;
+            const thumbWidth = Math.min(viewportWidth * 0.4, 100);
+            const spacing = 16;
+            
+            const centerX = (viewportWidth - thumbWidth) / 2;
+            const startY = 40;
+            const totalHeight = (thumbs.length * thumbHeight) + ((thumbs.length - 1) * spacing) + 80;
+            
+            document.body.style.minHeight = `${totalHeight}px`;
+            
+            thumbs.forEach((thumb, index) => {
+                thumb.style.position = 'absolute';
+                thumb.style.left = `${centerX}px`;
+                thumb.style.top = `${startY + (index * (thumbHeight + spacing))}px`;
+                thumb.style.width = `${thumbWidth}px`;
+                thumb.style.height = `${thumbHeight}px`;
+                thumb.style.gridRow = 'auto';
+                thumb.style.gridColumn = 'auto';
+                thumb.style.zIndex = '1';
+            });
+            
+            // Activar botón vistaListado en el header
+            if (window.headerLeftButtons && window.toggleActiveButton) {
+                const currentActive = Array.from(document.querySelectorAll('.toggle-grid button')).find(btn => btn.classList.contains('button-active'));
+                if (currentActive !== vistaListadoBtn) {
+                    toggleActiveButton(vistaListadoBtn, currentActive);
+                }
+            }
+        }
         
         // Hacer visible el body
         gsap.to('body', { opacity: 1, duration: 1, ease: 'power2.inOut'});
@@ -183,42 +251,38 @@ gsap.ticker.lagSmoothing(0);
 
 
 
-// 3.- TOGGLE BOTONES VISTA GRID / VISTA GLOBAL
+// 3.- TOGGLE BOTONES VISTA RANDOM / VISTA GLOBAL
 
 
 
 const headerLeftButtons = document.querySelectorAll('.toggle-grid button');
 
-if (headerLeftButtons.length === 2) {
-    const [vistaGridBtn, vistaGlobalBtnHeader] = headerLeftButtons;
+if (headerLeftButtons.length >= 2) {
+    const vistaListadoBtn = document.getElementById('vistaListado');
+    const vistaGlobalBtnHeader = document.getElementById('vistaGlobal');
+    const vistaGridBtn = headerLeftButtons[headerLeftButtons.length - 1]; // El último botón es random/grid
     const headerLeft = document.querySelector('.toggle-grid');
     
     // Crear elemento de fondo deslizante
     const slidingBackground = document.createElement('div');
     slidingBackground.className = 'button-background-slider';
-    slidingBackground.style.cssText = `
-        position: absolute;
-        background-color: var(--color-text);
-        border-radius: 8px;
-        pointer-events: none;
-        z-index: 0;
-        transition: none;
-    `;
     
     // Insertar el fondo en el miniaturaCuadrada
     headerLeft.insertBefore(slidingBackground, headerLeft.firstChild);
     
-    // Asegurar que los botones estén por encima del fondo y sin su propio fondo
+    // Asegurar que los botones estén por encima del fondo y sin su propio fondo // MEJOR SOLO CSS
     vistaGridBtn.style.position = 'relative';
     vistaGridBtn.style.zIndex = '1';
-    vistaGridBtn.style.backgroundColor = 'transparent';
     vistaGlobalBtnHeader.style.position = 'relative';
     vistaGlobalBtnHeader.style.zIndex = '1';
-    vistaGlobalBtnHeader.style.backgroundColor = 'transparent';
+    if (vistaListadoBtn) {
+        vistaListadoBtn.style.position = 'relative';
+        vistaListadoBtn.style.zIndex = '1';
+    }
     
     // Inicializar posición y tamaño del fondo según el botón activo
     function initSlidingBackground() {
-        const activeButton = vistaGridBtn.classList.contains('button-active') ? vistaGridBtn : vistaGlobalBtnHeader;
+        const activeButton = Array.from(headerLeftButtons).find(btn => btn.classList.contains('button-active'));
         
         slidingBackground.style.width = `${activeButton.offsetWidth}px`;
         slidingBackground.style.height = `${activeButton.offsetHeight}px`;
@@ -238,6 +302,8 @@ if (headerLeftButtons.length === 2) {
         const currentWidth = parseFloat(slidingBackground.style.width);
         const targetLeft = buttonToActivate.offsetLeft;
         const targetWidth = buttonToActivate.offsetWidth;
+        const targetHeight = buttonToActivate.offsetHeight;
+        const targetTop = buttonToActivate.offsetTop;
         
         // Calcular si vamos a la derecha o izquierda
         const goingRight = targetLeft > currentLeft;
@@ -253,36 +319,51 @@ if (headerLeftButtons.length === 2) {
         if (goingRight) {
             // Moverse a la derecha: expandir desde la izquierda, luego contraer desde la izquierda
             tl.to(slidingBackground, {
-                width: stretchWidth,
-                duration: 0.5,
-                ease: "back.in(1.7)"
+                width: '-200%',
+                duration: 0.3,
+                ease: "back.in(1.2)"
             })
             .to(slidingBackground, {
                 left: targetLeft,
+                top: targetTop,
                 width: targetWidth,
-                duration: 0.25,
-                ease: "back.out(1.7)"
-            }, '-=0.1');
+                height: targetHeight,
+                duration: 0.3,
+                ease: "back.out(1.2)"
+            }, '-=0.2');
         } else {
-            // Moverse a la izquierda: mover a la izquierda y expandir, luego contraer desde la derecha
+            // Moverse a la izquierda: expandir width, luego mover left y contraer
             tl.to(slidingBackground, {
-                left: targetLeft,
-                width: stretchWidth,
-                duration: 0.5,
-                ease: "back.in(1.7)"
+                width: '100%',
+                top: targetTop,
+                height: targetHeight,
+                duration: 0.3,
+                ease: "back.in(1.2)"
             })
             .to(slidingBackground, {
+                left: targetLeft,
                 width: targetWidth,
-                duration: 0.25,
-                ease: "back.out(1.7)"
-            }, '-=0.1');
+                duration: 0.3,
+                ease: "back.out(1.2)"
+            }, '-=0.2');
         }
     }
     
     // Event listener para el botón de vista grid (el primero)
     vistaGridBtn.addEventListener('click', () => {
-        if (!vistaGridBtn.classList.contains('button-active')) {
-            toggleActiveButton(vistaGridBtn, vistaGlobalBtnHeader);
+        console.log('Click en vistaGrid - Estado actual: vistaRandom=' + vistaRandomActiva + ', vistaGlobal=' + window.vistaGlobalActiva + ', vistaListado=' + window.vistaListadoActiva);
+        
+        // Si estamos en vista listado, salir usando su propio handler
+        if (window.vistaListadoActiva && window.headerLeftButtons?.vistaListadoBtn) {
+            window.headerLeftButtons.vistaListadoBtn.click();
+            document.body.classList.remove('view-listado');
+            return;
+        }
+
+        // Si estamos en vista global, volver a la última vista activa (proyectos o random)
+        const currentActive = Array.from(headerLeftButtons).find(btn => btn.classList.contains('button-active'));
+        if (currentActive !== vistaGridBtn) {
+            toggleActiveButton(vistaGridBtn, currentActive);
             
             // Eliminar títulos de categoría si existen
             if (window.categoryTitles && window.categoryTitles.length > 0) {
@@ -299,12 +380,13 @@ if (headerLeftButtons.length === 2) {
                 window.categoryTitles = [];
             }
             
-            // Si estaba en vista global, volver a vista aleatoria
+            // Si estaba en vista global, volver a vista grid (proyectos o random según estado)
             if (window.vistaGlobalActiva) {
                 const thumbs = document.querySelectorAll('[class*="thumb-"]');
                 const state = Flip.getState(thumbs);
                 
                 window.vistaGlobalActiva = false;
+                document.body.classList.remove('view-global');
                 
                 // Mostrar container-scroll
                 const containerScroll = document.querySelector('.container-scroll');
@@ -326,11 +408,13 @@ if (headerLeftButtons.length === 2) {
                     const thumbClass = classList.find(c => c.startsWith('thumb-'));
                     const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
                     
+                    // Reset estilos inline aplicados en vista global para restaurar grid
                     thumb.style.position = '';
                     thumb.style.left = '';
                     thumb.style.top = '';
                     thumb.style.width = '';
                     thumb.style.height = '';
+                    thumb.style.borderRadius = '';
                     
                     if (posicionesOriginales[index]) {
                         thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
@@ -353,11 +437,40 @@ if (headerLeftButtons.length === 2) {
                     }
                 });
             }
+        } else {
+            // Ya estamos en vista grid - alternar entre proyectos y random
+            const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+            if (!cuadriculaTrabajos || !trabajosData.length) return;
+            
+            // Animar fade out de thumbs actuales
+            const thumbs = document.querySelectorAll('[class*="thumb-"]');
+            
+            gsap.to(thumbs, {
+                opacity: 0,
+                scale: 0.9,
+                duration: 0.4,
+                stagger: 0.02,
+                ease: 'power2.in',
+                onComplete: () => {
+                    // Limpiar todos los thumbs
+                    thumbs.forEach(thumb => thumb.remove());
+                    
+                    // Matar ScrollTriggers existentes
+                    ScrollTrigger.getAll().forEach(st => st.kill());
+                    
+                    // Alternar estado y regenerar thumbs
+                    vistaRandomActiva = !vistaRandomActiva;
+                    console.log('Alternando a vista:', vistaRandomActiva ? 'RANDOM' : 'PROYECTOS');
+                    
+                    // Mostrar proyectos (funcionalidad random eliminada)
+                    maquetar_thumbs(trabajosData);
+                }
+            });
         }
     });
     
     // Guardar referencia global para uso en otras funciones
-    window.headerLeftButtons = { vistaGridBtn, vistaGlobalBtnHeader };
+    window.headerLeftButtons = { vistaGridBtn, vistaGlobalBtnHeader, vistaListadoBtn };
 }
 
 // 4.- ANIMACIÓN TEXTO TUBO 3D
@@ -477,7 +590,166 @@ if (toggleBtn) {
 }
 
 
-// 6.- TOGGLE VISTA GLOBAL - AGRUPADO POR CATEGORÍAS
+// 6.- TOGGLE VISTA LISTADO - LISTA VERTICAL
+
+const vistaListadoBtn = document.getElementById('vistaListado');
+window.vistaListadoActiva = false;
+
+if (vistaListadoBtn) {
+    vistaListadoBtn.addEventListener('click', () => {
+        const thumbs = document.querySelectorAll('[class*="thumb-"]');
+        const state = Flip.getState(thumbs);
+        
+        if (!window.vistaListadoActiva) {
+            // Activar vista listado
+            window.vistaListadoActiva = true;
+            document.body.classList.add('view-listado');
+            document.body.classList.remove('view-global');
+            
+            // Guardar posición de scroll actual
+            const currentScrollY = window.scrollY || window.pageYOffset;
+            
+            // Activar botón vistaListado en el header
+            if (window.headerLeftButtons && window.toggleActiveButton) {
+                toggleActiveButton(window.headerLeftButtons.vistaListadoBtn, 
+                    window.vistaGlobalActiva ? window.headerLeftButtons.vistaGlobalBtnHeader : window.headerLeftButtons.vistaGridBtn);
+            }
+            
+            // Si venimos de vista global, desactivarla
+            if (window.vistaGlobalActiva) {
+                window.vistaGlobalActiva = false;
+                // Eliminar títulos de categoría
+                window.categoryTitles.forEach(title => title.remove());
+                window.categoryTitles = [];
+            }
+            
+            // Ocultar container-scroll
+            const containerScroll = document.querySelector('.container-scroll');
+            if (containerScroll) {
+                gsap.to(containerScroll, {
+                    opacity: 0,
+                    duration: 0.6,
+                    display: 'none',
+                    ease: 'power2.inOut'
+                });
+            }
+            
+            // Matar ScrollTriggers del parallax
+            ScrollTrigger.getAll().forEach(st => {
+                if (st.vars && st.vars.trigger === document.querySelector("#portfolio-items")) {
+                    st.kill();
+                }
+            });
+            
+            // Limpiar transforms de parallax
+            thumbs.forEach(thumb => {
+                gsap.set(thumb, { y: 0, clearProps: "transform" });
+            });
+            
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            // Tamaño horizontal con máximo 200px de alto
+            const thumbHeight = 100;
+            const thumbWidth = Math.min(viewportWidth * 0.4, 100); // 60% del ancho o máximo 600px
+            const spacing = 16; // Espacio entre thumbs
+            
+            // Centrar horizontalmente
+            const centerX = (viewportWidth - thumbWidth) / 2;
+            
+            // Calcular posición inicial - siempre desde el top del documento + margen
+            const startY = 40; // Margen superior fijo
+            const totalHeight = (thumbs.length * thumbHeight) + ((thumbs.length - 1) * spacing) + 80; // +80 para margen inferior
+            
+            // Asegurar que el body tenga altura suficiente para scroll
+            document.body.style.minHeight = `${totalHeight}px`;
+            
+            thumbs.forEach((thumb, index) => {
+                thumb.style.position = 'absolute';
+                thumb.style.left = `${centerX}px`;
+                thumb.style.top = `${startY + (index * (thumbHeight + spacing))}px`;
+                thumb.style.width = `${thumbWidth}px`;
+                thumb.style.height = `${thumbHeight}px`;
+                thumb.style.gridRow = 'auto';
+                thumb.style.gridColumn = 'auto';
+                thumb.style.zIndex = '1';
+                //thumb.style.willChange = 'auto';
+                //thumb.style.borderRadius = '99px'; 
+            });
+            
+            // Animar con Flip
+            Flip.from(state, {
+                duration: 1.2,
+                ease: "power2.inOut",
+                stagger: 0.02,
+                absolute: true,
+                scale: true
+            });
+            
+        } else {
+            // Desactivar vista listado - volver a vista grid
+            window.vistaListadoActiva = false;
+            document.body.classList.remove('view-listado');
+            
+            // Restaurar altura del body
+            document.body.style.minHeight = '';
+            
+            // Activar botón vistaGrid en el header
+            if (window.headerLeftButtons && window.toggleActiveButton) {
+                toggleActiveButton(window.headerLeftButtons.vistaGridBtn, window.headerLeftButtons.vistaListadoBtn);
+            }
+            
+            // Mostrar container-scroll
+            const containerScroll = document.querySelector('.container-scroll');
+            if (containerScroll) {
+                gsap.to(containerScroll, {
+                    opacity: 1,
+                    duration: 0.6,
+                    display: 'block',
+                    ease: 'power2.inOut'
+                });
+            }
+            
+            thumbs.forEach((thumb) => {
+                const classList = Array.from(thumb.classList);
+                const thumbClass = classList.find(c => c.startsWith('thumb-'));
+                const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
+                
+                thumb.style.position = '';
+                thumb.style.left = '';
+                thumb.style.top = '';
+                thumb.style.width = '';
+                thumb.style.height = '';
+                thumb.style.borderRadius = '';
+                
+                const rootStyles = getComputedStyle(document.documentElement);
+                const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
+                
+                if (posicionesOriginales[index]) {
+                    thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
+                    thumb.style.gridColumn = `${posicionesOriginales[index].gridColumn} / span ${thumbSpan}`;
+                    thumb.style.aspectRatio = '1 / 1';
+                }
+            });
+            
+            Flip.from(state, {
+                duration: 1.2,
+                ease: "power2.inOut",
+                stagger: 0.02,
+                scale: true,
+                simple: true,
+                onComplete: () => {
+                    thumbs.forEach((thumb) => {
+                        gsap.set(thumb, { clearProps: "transform" });
+                    });
+                    thumbsMotion();
+                }
+            });
+        }
+    });
+}
+
+// 7.- TOGGLE VISTA GLOBAL - AGRUPADO POR CATEGORÍAS
 
 
 const vistaGlobalBtn = document.getElementById('vistaGlobal');
@@ -499,10 +771,22 @@ if (vistaGlobalBtn) {
         if (!window.vistaGlobalActiva) {
             // Activar vista global
             window.vistaGlobalActiva = true;
+            document.body.classList.add('view-global');
+            
+            // Guardar posición de scroll actual
+            const currentScrollY = window.scrollY || window.pageYOffset;
+            
+            // Si venimos de vista listado, desactivarla
+            const comingFromListado = window.vistaListadoActiva;
+            if (comingFromListado) {
+                window.vistaListadoActiva = false;
+                document.body.classList.remove('view-listado');
+            }
             
             // Activar botón vistaGlobal en el header
             if (window.headerLeftButtons && window.toggleActiveButton) {
-                toggleActiveButton(window.headerLeftButtons.vistaGlobalBtnHeader, window.headerLeftButtons.vistaGridBtn);
+                const buttonToDeactivate = comingFromListado ? window.headerLeftButtons.vistaListadoBtn : window.headerLeftButtons.vistaGridBtn;
+                toggleActiveButton(window.headerLeftButtons.vistaGlobalBtnHeader, buttonToDeactivate);
             }
             
             // Ocultar container-scroll
@@ -550,7 +834,7 @@ if (vistaGlobalBtn) {
             
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
-            const margin = viewportWidth <= 480 ? 40 : 80; // Menos margen en móvil
+            const margin = viewportWidth <= 480 ? 40 : 120; // Menos margen en móvil INCLUIR EN VARIABLES CSS
             
             // Espacio disponible para cada grupo
             const groupWidth = (viewportWidth - margin * 2) / cols;
@@ -569,6 +853,24 @@ if (vistaGlobalBtn) {
             // Variable para tracking de posición vertical acumulativa
             let currentY = margin;
             
+            // Pre-calcular altura máxima por fila en desktop para centrado correcto
+            const maxHeightPerRow = [];
+            if (viewportWidth > 480) {
+                for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+                    let maxInRow = 0;
+                    categorias.forEach((cat, catIndex) => {
+                        const catRow = Math.floor(catIndex / cols);
+                        if (catRow === rowIndex) {
+                            const thumbsInCat = trabajosData.filter(t => t.categoria === cat).length;
+                            const numRows = Math.ceil(thumbsInCat / thumbsPerRow);
+                            const blockH = numRows * thumbSize;
+                            maxInRow = Math.max(maxInRow, blockH);
+                        }
+                    });
+                    maxHeightPerRow.push(maxInRow);
+                }
+            }
+            
             categorias.forEach((categoria, catIndex) => {
                 // Obtener thumbs de esta categoría
                 const thumbsEnCategoria = trabajosData
@@ -584,18 +886,33 @@ if (vistaGlobalBtn) {
                 const numRows = Math.ceil(numThumbsInCat / thumbsPerRow);
                 const blockHeight = numRows * thumbSize;
                 
-                // Posición base del grupo
-                const groupBaseX = margin + (groupCol * groupWidth) + (groupWidth / 2);
+                // Posición base del grupo - Centrar correctamente
+                const totalGridWidth = cols * groupWidth;
+                const gridOffsetX = (viewportWidth - totalGridWidth) / 2;
+                const groupBaseX = gridOffsetX + (groupCol * groupWidth) + (groupWidth / 2);
                 
                 // En móvil (1 columna) usar posición vertical acumulativa
                 // En desktop/tablet usar grid basado en viewport
                 let groupBaseY;
                 if (viewportWidth <= 480) {
-                    groupBaseY = currentY + blockHeight / 2 + titleSpacing; // Usar variable de espaciado
-                    currentY = currentY + blockHeight + categorySpacing; // Usar variable de espaciado entre categorías
+                    groupBaseY = currentY + blockHeight / 2 + titleSpacing;
+                    currentY = currentY + blockHeight + categorySpacing;
                 } else {
-                    const groupHeight = (viewportHeight - margin * 2) / rows;
-                    groupBaseY = margin + (groupRow * groupHeight) + (groupHeight / 2);
+                    // Calcular altura total usando las alturas máximas por fila
+                    const totalContentHeight = maxHeightPerRow.reduce((sum, h) => sum + h, 0) + (rows - 1) * categorySpacing;
+                    const availableHeight = viewportHeight - margin * 2;
+                    
+                    // Centrar respecto al viewport visible, no al top de la página
+                    const verticalOffset = totalContentHeight < availableHeight 
+                        ? currentScrollY + margin + (availableHeight - totalContentHeight) / 2 
+                        : currentScrollY + margin;
+                    
+                    // Calcular Y acumulando las filas anteriores
+                    let yPosition = verticalOffset;
+                    for (let i = 0; i < groupRow; i++) {
+                        yPosition += maxHeightPerRow[i] + categorySpacing;
+                    }
+                    groupBaseY = yPosition + maxHeightPerRow[groupRow] / 2;
                 }
                 
                 // Dimensiones totales del bloque de thumbs
@@ -605,7 +922,7 @@ if (vistaGlobalBtn) {
                 const offsetX = -blockWidth / 2;
                 const offsetY = -blockHeight / 2;
                 
-                // Crear título de categoría
+                // Crear título de categoría METER EN CSS
                 const categoryTitle = document.createElement('div');
                 categoryTitle.className = 'category-title';
                 categoryTitle.textContent = categoria;
@@ -613,12 +930,6 @@ if (vistaGlobalBtn) {
                     position: absolute;
                     left: ${groupBaseX + offsetX}px;
                     top: ${groupBaseY + offsetY - titleSpacing}px;
-                    font-size: ${titleSize}px;
-                    font-weight: 500;
-                    color: var(--color-text);
-                    opacity: 0;
-                    pointer-events: none;
-                    z-index: 1000;
                 `;
                 document.body.appendChild(categoryTitle);
                 window.categoryTitles.push(categoryTitle);
@@ -652,6 +963,7 @@ if (vistaGlobalBtn) {
                     thumb.style.gridRow = 'auto';
                     thumb.style.gridColumn = 'auto';
                     thumb.style.aspectRatio = '1 / 1';
+                    thumb.style.borderRadius = '';
                 });
             });
             
@@ -667,6 +979,7 @@ if (vistaGlobalBtn) {
         } else {
             // Desactivar vista global - volver a vista aleatoria
             window.vistaGlobalActiva = false;
+            document.body.classList.remove('view-global');
             
             // Activar botón vistaGrid en el header
             if (window.headerLeftButtons && window.toggleActiveButton) {
@@ -708,6 +1021,7 @@ if (vistaGlobalBtn) {
                 thumb.style.top = '';
                 thumb.style.width = '';
                 thumb.style.height = '';
+                thumb.style.borderRadius = '';
                 
                 // Leer configuración actual de CSS para restaurar correctamente
                 const rootStyles = getComputedStyle(document.documentElement);
@@ -732,6 +1046,7 @@ if (vistaGlobalBtn) {
                     thumbs.forEach((thumb) => {
                         gsap.set(thumb, { clearProps: "transform" });
                     });
+                    
                     // Reiniciar parallax
                     thumbsMotion();
                 }
@@ -741,29 +1056,112 @@ if (vistaGlobalBtn) {
     });
 }
 
-// 7.- HOVER EFFECT - MOSTRAR IMAGEN
+// 7.- HOVER EFFECT - MOSTRAR IMAGEN Y WORK-INFO SIGUIENDO CURSOR
 
 function setupThumbsHover() {
-    const thumbs = document.querySelectorAll('[class*="thumb-"]');
+    const cuadriculaTrabajos = document.querySelector('#portfolio-items .thumbs-grid');
+    if (!cuadriculaTrabajos) return;
     
-    thumbs.forEach((thumb) => {
-        let wasImageHidden = false;
+    let hoverInfo = document.querySelector('.hover-work-info');
+    let hoverCategory = null;
+    let hoverTitle = null;
+
+    if (!hoverInfo) {
+        hoverInfo = document.createElement('div');
+        hoverInfo.className = 'hover-work-info';
+
+        hoverCategory = document.createElement('div');
+        hoverCategory.className = 'work-category';
+
+        hoverTitle = document.createElement('div');
+        hoverTitle.className = 'work-title text-display';
+
+        hoverInfo.appendChild(hoverCategory);
+        hoverInfo.appendChild(hoverTitle);
+        document.body.appendChild(hoverInfo);
+    } else {
+        hoverCategory = hoverInfo.querySelector('.work-category');
+        hoverTitle = hoverInfo.querySelector('.work-title');
+    }
+    
+    // Map para trackear estado de cada thumb
+    const thumbStates = new WeakMap();
+    
+    // Delegación de eventos - mouseenter
+    cuadriculaTrabajos.addEventListener('mouseenter', (e) => {
+        const thumb = e.target.closest('[class*="thumb-"]');
+        if (!thumb) return;
         
-        thumb.addEventListener('mouseenter', () => {
-            // Mostrar imagen si está oculta
-            wasImageHidden = thumb.classList.contains('hide-image');
-            if (wasImageHidden) {
-                thumb.classList.remove('hide-image');
+        const workCategory = thumb.querySelector('.work-category');
+        const workTitle = thumb.querySelector('.work-title');
+        
+        if (document.body.classList.contains('view-listado')) {
+            if (hoverCategory && workCategory) {
+                hoverCategory.textContent = workCategory.textContent;
             }
-        });
+            if (hoverTitle && workTitle) {
+                hoverTitle.textContent = workTitle.textContent;
+            }
+            hoverInfo.classList.add('is-visible');
+        }
         
-        thumb.addEventListener('mouseleave', () => {
-            // Ocultar imagen si estaba oculta
-            if (wasImageHidden) {
+        const wasImageHidden = thumb.classList.contains('hide-image');
+        thumbStates.set(thumb, { wasImageHidden });
+        
+        if (wasImageHidden) {
+            thumb.classList.remove('hide-image');
+            const media = thumb.querySelector('video, img');
+            if (media && document.body.classList.contains('view-listado')) {
+                media.style.display = '';
+                gsap.to(media, {
+                    opacity: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            }
+        }
+    }, true);
+    
+    // Delegación de eventos - mousemove
+    cuadriculaTrabajos.addEventListener('mousemove', (e) => {
+        const thumb = e.target.closest('[class*="thumb-"]');
+        if (!thumb) return;
+        
+        if (hoverInfo && document.body.classList.contains('view-listado')) {
+            const offsetX = 24;
+            const offsetY = -24;
+            hoverInfo.style.left = `${e.clientX + offsetX}px`;
+            hoverInfo.style.top = `${e.clientY + offsetY}px`;
+        }
+    });
+    
+    // Delegación de eventos - mouseleave
+    cuadriculaTrabajos.addEventListener('mouseleave', (e) => {
+        const thumb = e.target.closest('[class*="thumb-"]');
+        if (!thumb) return;
+        
+        if (document.body.classList.contains('view-listado')) {
+            hoverInfo.classList.remove('is-visible');
+        }
+        
+        const state = thumbStates.get(thumb);
+        if (state?.wasImageHidden) {
+            const media = thumb.querySelector('video, img');
+            if (media && document.body.classList.contains('view-listado')) {
+                gsap.to(media, {
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        thumb.classList.add('hide-image');
+                        media.style.display = 'none';
+                    }
+                });
+            } else {
                 thumb.classList.add('hide-image');
             }
-        });
-    });
+        }
+    }, true);
 }
 
 
@@ -771,6 +1169,9 @@ function setupThumbsHover() {
 // 8.- MOTION THUMBS - PARALLAX CON STAGGER
 
 function thumbsMotion() {
+    
+
+
     const section = document.querySelector("#portfolio-items");
     const thumbs = document.querySelectorAll('[class*="thumb-"]'); 
     
@@ -780,11 +1181,11 @@ function thumbsMotion() {
     }
     
     thumbs.forEach((thumb, index) => {
-        // Offset de 0.1 por cada thumb para crear stagger
-        const staggerOffset = index * .1;
+
+        const staggerOffset = index * .2; // Ajusta este valor para más o menos stagger
         
         gsap.to(thumb, {
-            y: 500, 
+            y: 0, // (500) Esto provoca el salto despues del flip
             ease: "none",
             scrollTrigger: {
                 trigger: section,
@@ -827,369 +1228,858 @@ if (themeToggleBtn) {
 }
 
 
-// 10 - QUICK VIEW FUNCTION
+// 10 - QUICK VIEW FUNCTION CON FLIP
 
 let activeThumb = null; // Variable para trackear el thumb activo
 let visitedThumbs = []; // Array para trackear thumbs visitados
+let expandedThumb = null; // El thumb expandido actual
 
 // Exponer visitedThumbs como variable global para gallery-navigation.js
 window.visitedThumbs = visitedThumbs;
 
 function setupQuickView() {
-    const quickView = document.querySelector('.quick-view');
-    const thumbs = document.querySelectorAll('[class*="thumb-"]');
-    const workInfo = quickView?.querySelector('.work-info');
-    const mediaContainer = quickView?.querySelector('.media');
-
+    const cuadriculaTrabajos = document.querySelector('#portfolio-items .thumbs-grid');
     
-    if (!quickView || thumbs.length === 0) {
-        console.warn('Quick view o thumbs no encontrados');
+    if (!cuadriculaTrabajos) {
+        console.warn('Contenedor de thumbs no encontrado');
         return;
     }
     
-    thumbs.forEach(thumb => {
-        thumb.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            // Si ya hay un thumb activo, desactivarlo
-            if (activeThumb && activeThumb !== thumb) {
-                // Mantener borderRadius si ha sido visitado
-                const borderRadiusValue = visitedThumbs.includes(activeThumb) ? '4rem' : '0rem';
+    // Delegación de eventos - un solo listener para todos los thumbs
+    cuadriculaTrabajos.addEventListener('click', (e) => {
+        const thumb = e.target.closest('[class*="thumb-"]');
+        if (!thumb) return;
+        
+        e.stopPropagation();
+        
+        // Si se hace clic en el mismo thumb activo, cerrarlo
+        if (activeThumb === thumb) {
+            cerrarDetalle();
+            return;
+        }
+        
+        // Si hay otro thumb activo, cerrarlo primero
+        if (activeThumb && activeThumb !== thumb) {
+            cerrarDetalle();
+            setTimeout(() => abrirThumb(thumb), 300);
+        } else {
+            abrirThumb(thumb);
+        }
+    });
+}
+
+function abrirThumb(thumb) {
+    // Activar morph de cara
+    if (typeof morphToSecondFace === 'function') {
+        morphToSecondFace();
+    }
+    
+    // Obtener datos del trabajo
+    const workId = thumb.dataset.workId;
+    const trabajo = trabajosData.find(t => t.id == workId);
+    
+    if (!trabajo) {
+        console.warn('Trabajo no encontrado:', workId);
+        return;
+    }
+    
+    console.log('Trabajo seleccionado:', trabajo);
+    
+    // Inicializar navegación de galería
+    if (typeof initGalleryNavigation === 'function') {
+        initGalleryNavigation(trabajo);
+    }
+    
+    // Marcar como visitado si no lo está
+    if (!visitedThumbs.includes(thumb)) {
+        visitedThumbs.push(thumb);
+    }
+    
+    // Mostrar scrim
+    scrim.style.display = 'block';
+    gsap.to(scrim, {
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power2.out'
+    });
+    
+    // Guardar el thumb original para poder revertir
+    activeThumb = thumb;
+    
+    // Crear una copia visual del thumb para expandir
+    const thumbClone = thumb.cloneNode(true);
+    thumbClone.classList.add('thumb-expanded');
+    thumbClone.style.position = 'fixed';
+    thumbClone.style.zIndex = '1001';
+    thumbClone.style.pointerEvents = 'auto';
+    thumbClone.style.cursor = 'default';
+    
+    // Copiar estilos computados del thumb original
+    const thumbRect = thumb.getBoundingClientRect();
+    thumbClone.style.top = thumbRect.top + 'px';
+    thumbClone.style.left = thumbRect.left + 'px';
+    thumbClone.style.width = thumbRect.width + 'px';
+    thumbClone.style.height = thumbRect.height + 'px';
+    
+    // Asegurar que el video/imagen dentro del clone mantenga el aspect ratio correcto
+    const media = thumbClone.querySelector('video, img');
+    if (media) {
+        media.style.objectFit = 'contain';
+    }
+    
+    document.body.appendChild(thumbClone);
+    expandedThumb = thumbClone;
+    
+    // Ocultar el thumb original temporalmente
+    thumb.style.opacity = '0';
+    
+    // Preparar contenido expandido dentro del clone
+    prepararContenidoExpandido(thumbClone, trabajo);
+    
+    // FLIP: Last - Calcular estado final (centrado en pantalla) con aspect ratio real
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Detectar si es vídeo o imagen
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
+    
+    // Función para calcular dimensiones con aspect ratio real
+    const calcularDimensiones = (aspectRatio) => {
+        let targetWidth = Math.min(960, viewportWidth * 0.9);
+        let targetHeight = targetWidth / aspectRatio;
+        
+        // Ajustar si la altura excede el máximo permitido
+        const maxHeight = viewportHeight * 0.6;
+        if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = targetHeight * aspectRatio;
+        }
+        
+        return { width: targetWidth, height: targetHeight };
+    };
+    
+    // Obtener aspect ratio real del media
+    if (media) {
+        if (isVideo) {
+            // Esperar a que el video tenga metadata para obtener dimensiones reales
+            media.addEventListener('loadedmetadata', () => {
+                const aspectRatio = media.videoWidth / media.videoHeight;
+                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
                 
-                gsap.to(activeThumb, {
-                    scale: 1,
-                    outline: 'var(--color-text) solid 0px',
-                    borderRadius: borderRadiusValue,
-                    duration: 0.4,
-                    ease: 'power2.out'
-                });
-            }
-            
-            // Si se hace clic en el thumb activo, desactivar
-            if (activeThumb === thumb) {
-                cerrarDetalle();
-                return;
-            }
-            
-            // Activar nuevo thumb
-            const wasActive = activeThumb !== null;
-            activeThumb = thumb;
-            
-            // Marcar como visitado si no lo está
-            if (!visitedThumbs.includes(thumb)) {
-                visitedThumbs.push(thumb);
-            }
-            
-            // Obtener datos del trabajo
-            const workId = thumb.dataset.workId;
-            const trabajo = trabajosData.find(t => t.id == workId); // Usar == para comparar sin tipo estricto
-            
-            if (!trabajo) {
-                console.warn('Trabajo no encontrado:', workId);
-                console.log('trabajosData disponibles:', trabajosData.map(t => ({id: t.id, title: t.title})));
-                return;
-            }
-            
-            console.log('Trabajo seleccionado:', trabajo);
-            
-            // Inicializar navegación de galería
-            initGalleryNavigation(trabajo);
-            
-            // Animar outline del thumb
-            gsap.to(thumb, {
-                scale: 1,
-                //outline: 'var(--color-text) solid 3px',
-                borderRadius: '4rem',
-                duration: 0.3,
-                ease: 'power2.out'
-            });
-            
-            // Función para actualizar el contenido
-            const updateQuickViewContent = (callback) => {
-                const mediaContainer = quickView.querySelector('.media');
-                const workTitle = quickView.querySelector('.work-title');
-                const workDetails = quickView.querySelector('.work-details');
-                const workInfoEl = quickView.querySelector('.work-info');
+                const targetLeft = (viewportWidth - targetWidth) / 2;
+                const targetTop = (viewportHeight - targetHeight) / 2;
                 
-                // Limpiar contenido anterior
-                mediaContainer.innerHTML = '';
-                mediaContainer.style.backgroundImage = '';
-                
-                // Detectar si es vídeo o imagen
-                const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
-                
-                if (isVideo) {
-                    const video = document.createElement('video');
-                    video.src = `assets/img/${trabajo.thumbnail}`;
-                    video.autoplay = true;
-                    video.loop = true;
-                    video.muted = true;
-                    video.playsInline = true;
-                    video.style.width = '100%';
-                    video.style.height = 'auto';
-                    video.style.display = 'block';
-                    
-                    // Crear contenedor de controles
-                    const videoControls = document.createElement('div');
-                    videoControls.className = 'video-controls';
-                    
-                    // Botón Play/Pause
-                    const playPauseBtn = document.createElement('button');
-                    playPauseBtn.className = 'video-control-btn play-pause-btn';
-                    playPauseBtn.setAttribute('data-state', 'playing');
-                    playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>'; // Placeholder - reemplaza con tu icono SVG
-                    
-                    playPauseBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (video.paused) {
-                            video.play();
-                            playPauseBtn.setAttribute('data-state', 'playing');
-                            playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
-                        } else {
-                            video.pause();
-                            playPauseBtn.setAttribute('data-state', 'paused');
-                            playPauseBtn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span>';
-                        }
-                    });
-                    
-                    // Botón Mute/Unmute
-                    const muteBtn = document.createElement('button');
-                    muteBtn.className = 'video-control-btn mute-btn';
-                    muteBtn.setAttribute('data-state', 'muted');
-                    muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>'; // Placeholder - reemplaza con tu icono SVG
-                    
-                    muteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        video.muted = !video.muted;
-                        if (video.muted) {
-                            muteBtn.setAttribute('data-state', 'muted');
-                            muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
-                        } else {
-                            muteBtn.setAttribute('data-state', 'unmuted');
-                            muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
-                        }
-                    });
-                    
-                    // Añadir botones al contenedor de controles
-                    videoControls.appendChild(playPauseBtn);
-                    videoControls.appendChild(muteBtn);
-                    
-                    // Asegurar que mediaContainer tenga position relative
-                    mediaContainer.style.position = 'relative';
-                    
-                    // Esperar a que el video esté listo
-                    video.addEventListener('loadedmetadata', () => {
-                        mediaContainer.style.height = 'auto';
-                        mediaContainer.style.aspectRatio = '';
-                        if (callback) callback();
-                    });
-                    
-                    mediaContainer.appendChild(video);
-                    mediaContainer.appendChild(videoControls);
-                } else {
-                    // Crear un elemento img para que tenga altura automática
-                    const img = document.createElement('img');
-                    img.src = `assets/img/${trabajo.thumbnail}`;
-                    img.style.width = '100%';
-                    img.style.height = 'auto';
-                    img.style.display = 'block';
-                    
-                    // Esperar a que la imagen se cargue completamente
-                    img.addEventListener('load', () => {
-                        mediaContainer.style.height = 'auto';
-                        mediaContainer.style.aspectRatio = '';
-                        if (callback) callback();
-                    });
-                    
-                    // Si la imagen ya está cargada (cache)
-                    if (img.complete) {
-                        mediaContainer.style.height = 'auto';
-                        mediaContainer.style.aspectRatio = '';
-                        if (callback) callback();
-                    }
-                    
-                    mediaContainer.appendChild(img);
-                }
-                
-                // Actualizar textos
-                workTitle.textContent = trabajo.titulo;
-                if (workDetails) {
-                    workDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-                } else if (workInfoEl) {
-                    const newDetails = document.createElement('p');
-                    newDetails.className = 'work-details';
-                    newDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-                    workInfoEl.appendChild(newDetails);
-                }
-            };
-            
-            // Si ya estaba activo, hacer fade del contenido antes de cambiar
-            if (wasActive) {
-                const mediaContainer = quickView.querySelector('.media');
-                
-                // Crear timeline para secuenciar la transición
-                const tl = gsap.timeline();
-                
-                // 1. Fade out de imagen y textos actuales (0.2s)
-                tl.to([mediaContainer, workInfo], {
-                    opacity: 0,
+                // FLIP: Play - Animar la transición
+
+                tl = gsap.timeline();
+                TweenLite.set(thumbClone, {perspective:500});
+
+                tl.to(thumbClone, { 
+                    scale: .8,
                     duration: 0.2,
-                    ease: 'power2.in'
-                });
-                
-                // 2. Actualizar contenido y obtener nueva altura después de que cargue
-                tl.call(() => {
-                    const currentHeight = quickView.offsetHeight;
-                    
-                    // Actualizar contenido con callback para cuando la imagen cargue
-                    updateQuickViewContent(() => {
-                        // Esperar un frame para que el DOM se actualice
-                        requestAnimationFrame(() => {
-                            const newHeight = quickView.scrollHeight;
-                            
-                            // Animar cambio de altura si es diferente
-                            if (Math.abs(currentHeight - newHeight) > 1) { // Tolerancia de 1px
-                                gsap.fromTo(quickView, 
-                                    { height: currentHeight },
-                                    { 
-                                        height: newHeight,
-                                        duration: 0.6,
-                                        ease: 'power2.inOut',
-                                        onComplete: () => {
-                                            quickView.style.height = 'auto';
-                                        }
-                                    }
-                                );
-                            }
-                        });
-                    });
-                });
-                
-                // 3. Fade in de nueva imagen y texto (0.6s)
-                tl.to([mediaContainer, workInfo], {
-                    opacity: 1,
+                    transform: 'rotateX(25deg)',
+                    rotationY: '-15deg',
+                    ease: 'power4.out' 
+                })
+                .to(thumbClone, {
+                    scale: 1,
+                    left: targetLeft,
+                    top: targetTop,
+                    width: targetWidth,
+                    height: targetHeight,
+                    borderRadius: '2rem',
                     duration: 0.6,
-                    ease: 'power2.out'
-                }, '+=0.3'); // Pequeño delay para que empiece el fade in mientras se expande
+                    transform: 'rotateX(0deg)',
+                    ease: 'power3.inOut',
+                    onStart: () => {
+                        setTimeout(() => {
+                            mostrarControlesYInfo(thumbClone);
+                            thumbClone.style.overflow = 'visible';
+                        }, 400); 
+                    }
+                });
+                
+            }, { once: true });
+            
+            // Si el video ya tiene metadata cargada, ejecutar inmediatamente
+            if (media.readyState >= 1) {
+                const aspectRatio = media.videoWidth / media.videoHeight;
+                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
+                
+                const targetLeft = (viewportWidth - targetWidth) / 2;
+                const targetTop = (viewportHeight - targetHeight) / 2;
+                
+                gsap.to(thumbClone, {
+                    left: targetLeft,
+                    top: targetTop,
+                    width: targetWidth,
+                    height: targetHeight,
+                    borderRadius: '2rem',
+                    duration: 0.6,
+                    ease: 'power2.inOut',
+                    onStart: () => {
+                        setTimeout(() => {
+                            mostrarControlesYInfo(thumbClone);
+                            thumbClone.style.overflow = 'visible';
+                        }, 400); 
+                    }
+                });
+            }
+        } else {
+            // Para imágenes, esperar a que carguen
+            if (media.complete && media.naturalWidth > 0) {
+                // Imagen ya cargada
+                const aspectRatio = media.naturalWidth / media.naturalHeight;
+                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
+                
+                const targetLeft = (viewportWidth - targetWidth) / 2;
+                const targetTop = (viewportHeight - targetHeight) / 2;
+                
+                gsap.to(thumbClone, {
+                    left: targetLeft,
+                    top: targetTop,
+                    width: targetWidth,
+                    height: targetHeight,
+                    borderRadius: '2rem',
+                    duration: 0.6,
+                    ease: 'power2.inOut',
+                    onStart: () => {
+                        setTimeout(() => {
+                            mostrarControlesYInfo(thumbClone);
+                            thumbClone.style.overflow = 'visible';
+                        }, 400);
+                    }
+                });
+
                 
             } else {
-                // Primera activación - preparar y animar contenedor
-                // Asegurar que el elemento esté visible (si fue ocultado con display:none al cerrar)
-                quickView.style.display = 'flex';
-                // Resetear opacidades internas para la animación
-                if (workInfo) workInfo.style.opacity = '0';
-                const mediaContainerEl = quickView.querySelector('.media');
-                if (mediaContainerEl) mediaContainerEl.style.opacity = '0';
-
-                updateQuickViewContent();
-
-                // Mostrar scrim
-                scrim.style.opacity = '1';
-                scrim.style.pointerEvents = 'auto';
-
-                // Animar quick-view desde escala pequeña
-                gsap.fromTo(quickView, 
-                    {
-                        scale: 0.8,
-                        opacity: 0
-                    },
-                    {
-                        scale: 1,
-                        opacity: 1,
-                        duration: 0.5,
-                        ease: 'power3.out',
-                        onComplete: () => {
-                            if (workInfo) {
-                                gsap.to(workInfo, {
-                                    opacity: 1,
-                                    duration: 0.3,
-                                    ease: 'power2.out'
-                                });
-                            }
-                            if (mediaContainerEl) {
-                                gsap.to(mediaContainerEl, { opacity: 1, duration: 0.3 });
-                            }
+                // Esperar a que la imagen cargue
+                media.addEventListener('load', () => {
+                    const aspectRatio = media.naturalWidth / media.naturalHeight;
+                    const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
+                    
+                    const targetLeft = (viewportWidth - targetWidth) / 2;
+                    const targetTop = (viewportHeight - targetHeight) / 2;
+                    
+                    gsap.to(thumbClone, {
+                        left: targetLeft,
+                        top: targetTop,
+                        width: targetWidth,
+                        height: targetHeight,
+                        borderRadius: '2rem',
+                        duration: 0.6,
+                        ease: 'power2.inOut',
+                        onStart: () => {
+                            setTimeout(() => {
+                                mostrarControlesYInfo(thumbClone);
+                                thumbClone.style.overflow = 'visible';
+                            }, 400);
                         }
-                    }
-                );
+                    });
+                }, { once: true });
             }
+        }
+    } else {
+        // Fallback: usar aspect ratio 1:1 si no hay media
+        const { width: targetWidth, height: targetHeight } = calcularDimensiones(1);
+        
+        const targetLeft = (viewportWidth - targetWidth) / 2;
+        const targetTop = (viewportHeight - targetHeight) / 2;
+        
+        tl = gsap.timeline();
+                TweenLite.set(thumbClone, {perspective:800});
+
+                tl.to(thumbClone, { 
+                    scale: .9,
+                    duration: 0.1,
+                    transform: 'rotateX(25deg)',
+                    rotationY: '-15deg',
+                    ease: 'power4.out' 
+                })
+                .to(thumbClone, {
+                    scale: 1,
+                    left: targetLeft,
+                    top: targetTop,
+                    width: targetWidth,
+                    height: targetHeight,
+                    borderRadius: '2rem',
+                    duration: 0.6,
+                    transform: 'rotateX(0deg)',
+                    ease: 'power3.inOut',
+                    onStart: () => {
+                        setTimeout(() => {
+                            mostrarControlesYInfo(thumbClone);
+                            thumbClone.style.overflow = 'visible';
+                        }, 400); 
+                    }
+                });
+    }
+}
+
+function prepararContenidoExpandido(thumbClone, trabajo) {
+    // Limpiar work-info existente del clone
+    const existingWorkInfo = thumbClone.querySelector('.work-info');
+    if (existingWorkInfo) {
+        existingWorkInfo.remove();
+    }
+    
+    // Detectar si es vídeo o imagen
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
+    
+    // Crear contenedor de controles si es video
+    if (isVideo) {
+        const video = thumbClone.querySelector('video');
+        if (video) {
+            // Crear contenedor de controles
+            const videoControls = document.createElement('div');
+            videoControls.className = 'video-controls';
+            videoControls.style.opacity = '0'; // Inicialmente oculto
+            
+            // Botón Play/Pause
+            const playPauseBtn = document.createElement('button');
+            playPauseBtn.className = 'video-control-btn play-pause-btn reactive-scale reactive-hover';
+            playPauseBtn.setAttribute('data-state', 'playing');
+            playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+            
+            playPauseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.setAttribute('data-state', 'playing');
+                    playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+                } else {
+                    video.pause();
+                    playPauseBtn.setAttribute('data-state', 'paused');
+                    playPauseBtn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span>';
+                }
+            });
+            
+            // Botón Mute/Unmute
+            const muteBtn = document.createElement('button');
+            muteBtn.className = 'video-control-btn mute-btn reactive-scale reactive-hover';
+            muteBtn.setAttribute('data-state', 'muted');
+            muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+            muteBtn.style.cssText = playPauseBtn.style.cssText;
+            
+            muteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                video.muted = !video.muted;
+                if (video.muted) {
+                    muteBtn.setAttribute('data-state', 'muted');
+                    muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+                } else {
+                    muteBtn.setAttribute('data-state', 'unmuted');
+                    muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+                }
+            });
+            
+            videoControls.appendChild(playPauseBtn);
+            videoControls.appendChild(muteBtn);
+            thumbClone.appendChild(videoControls);
+        }
+    }
+    
+    // Crear work info
+    const workInfo = document.createElement('div');
+    workInfo.className = 'work-info expanded-info';
+    
+    const workCategory = document.createElement('p');
+    workCategory.className = 'work-category';
+    workCategory.textContent = trabajo.categoria;
+    
+    const workTitle = document.createElement('h3');
+    workTitle.className = 'work-title text-display';
+    workTitle.textContent = trabajo.titulo;
+    
+    // Crear botón de expand
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'expand-btn reactive-scale reactive-hover';
+    expandBtn.innerHTML = '<span class="material-symbols-outlined">expand_content</span>';
+    
+    // Event listener para abrir el project wrapper al hacer clic en el botón
+    expandBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openProjectWrapper(trabajo);
+        cerrarDetalle(); // Opcional: cerrar el quick view al abrir el wrapper
+    });
+    
+    const workDetails = document.createElement('p');
+    workDetails.className = 'work-details';
+    const placeholderMessages = [
+        'Bonito, ¿no?. Si te gusta abre el proyecto para ver más.',
+        '¿Te intriga? Abre el proyecto para ver los detalles.',
+        'Más info dentro del proyecto. Ábrelo si te apetece.',
+        'Pequeño teaser. Abre el proyecto para verlo completo.',
+        'Si quieres ver más, entra al proyecto.'
+    ];
+
+    workDetails.textContent = trabajo.comentario || placeholderMessages[Math.floor(Math.random() * placeholderMessages.length)];
+
+
+    workInfo.appendChild(expandBtn);
+    workInfo.appendChild(workCategory);
+    workInfo.appendChild(workTitle);
+    workInfo.appendChild(workDetails);
+    
+    // Añadir work-info directamente al body (no al thumbClone) para que position: fixed funcione correctamente
+    document.body.appendChild(workInfo);
+    
+    // Botón de navegación (si existe galería)
+    if (trabajo.imagenes && trabajo.imagenes.length > 0) {
+        const navButtons = document.createElement('div');
+        navButtons.className = 'gallery-nav-buttons';
+        navButtons.style.opacity = '0';
+        navButtons.style.position = 'absolute';
+        navButtons.style.top = '50%';
+        navButtons.style.left = '1rem';
+        navButtons.style.right = '1rem';
+        navButtons.style.transform = 'translateY(-50%)';
+        navButtons.style.display = 'flex';
+        navButtons.style.justifyContent = 'space-between';
+        navButtons.style.pointerEvents = 'auto';
+        navButtons.style.zIndex = '10';
+        
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'nav-btn prev-btn';
+        prevBtn.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
+
+        
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'nav-btn next-btn';
+        nextBtn.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
+        
+        //navButtons.appendChild(prevBtn);
+        //navButtons.appendChild(nextBtn);
+        //thumbClone.appendChild(navButtons);
+    }
+}
+
+function mostrarControlesYInfo(thumbClone) {
+    // Obtener todos los elementos a animar
+    const videoControls = thumbClone.querySelector('.video-controls');
+    const workInfo = document.querySelector('.work-info.expanded-info'); // Ahora está en el body
+    const navButtons = thumbClone.querySelector('.gallery-nav-buttons');
+    
+    // Crear botón de cerrar si no existe
+    let closeButton = thumbClone.querySelector('.close-expanded-btn');
+    if (!closeButton) {
+        closeButton = document.createElement('button');
+        closeButton.className = 'close-expanded-btn reactive-scale reactive-hover';
+        closeButton.innerHTML = '<span class="material-symbols-outlined">close</span>';
+        
+        closeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cerrarDetalle();
         });
+        
+        thumbClone.appendChild(closeButton);
+    }
+    
+    // Animar la sombra del thumbClone
+    gsap.to(thumbClone, {
+        boxShadow: '0 0 134px 200px var(--scrim, #191922d4)',
+        duration: 1,
+        ease: 'power2.out'
+    });
+    
+    // Animar líneas del work-info con SplitText (solo líneas)
+    if (workInfo && typeof SplitText !== 'undefined') {
+        const split = new SplitText(workInfo, { type: 'lines' });
+        gsap.set(workInfo, { opacity: 1 });
+        gsap.fromTo(split.lines, {
+            opacity: 0,
+            y: 20
+        }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            stagger: 0.05,
+            ease: 'back.out(1.7)'
+        });
+    }
+    
+    const otherElements = [videoControls, navButtons, closeButton].filter(el => el !== null);
+    gsap.to(otherElements, {
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'back.out(1.7)'
     });
 }
 
 
-// 11.- SCRIM Y POPUP - QUICK-VIEW CENTRADO
+// CERRAR DETALLE QUICK VIEW
 
 // Crear scrim (overlay oscuro)
 const scrim = document.createElement('div');
 scrim.className = 'quick-view-scrim';
-scrim.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.75);
-    z-index: 999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-`;
 document.body.appendChild(scrim);
 
 // Función para cerrar el detalle
 function cerrarDetalle() {
-    const quickView = document.querySelector('.quick-view');
-    const workInfo = quickView?.querySelector('.work-info');
+    if (!activeThumb || !expandedThumb) return;
     
-    if (!quickView || !activeThumb) return;
+    // Volver a primera cara
+    if (typeof morphToFirstFace === 'function') {
+        morphToFirstFace();
+    }
     
-    // Animar cierre del quick-view
-    gsap.to(workInfo, {
+    // Guardar referencia al thumb antes de resetear
+    const currentThumb = activeThumb;
+    const wasVisited = visitedThumbs.includes(currentThumb);
+    
+    // Animar el cierre de controles y info primero
+    const videoControls = expandedThumb.querySelector('.video-controls');
+    const workInfo = document.querySelector('.work-info.expanded-info'); // Está en el body
+    const navButtons = expandedThumb.querySelector('.gallery-nav-buttons');
+    const closeButton = expandedThumb.querySelector('.close-expanded-btn');
+    
+    const elements = [videoControls, workInfo, navButtons, closeButton].filter(el => el !== null);
+    
+    gsap.to(elements, {
         opacity: 0,
-        duration: 0.3,
-        ease: 'power2.in',
+        duration: 0.2,
+        ease: 'power2.in'
     });
     
-    gsap.to(quickView, {
-        scale: 0.9,
+    // Animar la sombra al cerrar
+    gsap.to(expandedThumb, {
+        boxShadow: '0 0 0px 0px var(--color-bg, #191922)',
+        duration: 0.3,
+        ease: 'power2.in'
+    });
+    
+    // Obtener posición del thumb original
+    const thumbRect = currentThumb.getBoundingClientRect();
+    
+    // opacidad del expandedThumb a mitad de la transición
+    gsap.to(expandedThumb, {
         opacity: 0,
-        duration: 0.4,
-        ease: 'power2.inOut',
+        delay: 0.3,
+        duration: .2,
+        ease: 'power2.in'
+    });
+    
+    // Animar el thumb expandido de vuelta a su posición original
+    gsap.to(expandedThumb, {
+        left: thumbRect.left,
+        top: thumbRect.top,
+        width: thumbRect.width,
+        height: thumbRect.height,
+        borderRadius: wasVisited ? 'var(--radius-full)' : '0rem',
+        duration: 0.6,
+        ease: 'power3.inOut',
         onComplete: () => {
-            quickView.style.display = 'none';
+            // Remover el thumb expandido
+            if (expandedThumb && expandedThumb.parentNode) {
+                expandedThumb.parentNode.removeChild(expandedThumb);
+            }
+            expandedThumb = null;
+            
+            // Remover el work-info del body
+            const workInfoToRemove = document.querySelector('.work-info.expanded-info');
+            if (workInfoToRemove && workInfoToRemove.parentNode) {
+                workInfoToRemove.parentNode.removeChild(workInfoToRemove);
+            }
+            
+            // Mostrar el thumb original de nuevo con borderRadius aplicado
+            if (currentThumb) {
+                gsap.to(currentThumb, {
+                    opacity: 1,
+                    scale: 0.6,
+                    borderRadius: wasVisited ? '4rem' : '0rem',
+                    duration: 0.4,
+                    ease: 'power4.out',
+                    onComplete: () => {
+                        gsap.to(currentThumb, {
+                            scale: 1,
+                            duration: 0.3,
+                            ease: 'back.out(1.7)'
+                        });
+                    }
+                });
+            }
         }
     });
     
     // Ocultar scrim
-    scrim.style.opacity = '0';
-    setTimeout(() => {
-        scrim.style.pointerEvents = 'none';
-    }, 300);
+    gsap.to(scrim, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+            scrim.style.display = 'none';
+        }
+    });
     
-    // Desactivar outline del thumb activo
-    if (activeThumb) {
-        // Mantener borderRadius si ha sido visitado
-        const borderRadiusValue = visitedThumbs.includes(activeThumb) ? '4rem' : '0rem';
-        
-        gsap.to(activeThumb, {
-            scale: 1,
-            outline: 'var(--color-text) solid 0px',
-            borderRadius: borderRadiusValue,
-            duration: 0.4,
-            ease: 'power2.out'
-        });
-        activeThumb = null;
-    }
+    activeThumb = null;
 }
 
 // Event listener para cerrar al hacer clic en el scrim
 scrim.addEventListener('click', cerrarDetalle);
 
-// Event listener para cerrar con el botón
-document.addEventListener('DOMContentLoaded', () => {
-    const closeBtn = document.getElementById('dragPreview');
-    if (closeBtn) {
-        closeBtn.onclick = cerrarDetalle;
+// Event listener para cerrar con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && activeThumb) {
+        cerrarDetalle();
+    }
+});
+
+
+
+// 12.- PROJECT WRAPPER - ABRIR Y CERRAR (MÉTODO WINDOW TRANSLATE)
+
+const projectWrapper = document.querySelector('.project-wrapper');
+const pageContent = document.getElementById('page-content'); 
+// Seleccionamos el contenido interno que vamos a desplazar
+const mainContent = document.querySelector('.main-content'); 
+const closeProjectBtn = document.getElementById('closeProject');
+
+let savedScroll = 0;
+
+function createProjectVideoControls(video) {
+    const videoControls = document.createElement('div');
+    videoControls.className = 'video-controls';
+    videoControls.style.opacity = '1';
+
+    const playPauseBtn = document.createElement('button');
+    playPauseBtn.className = 'video-control-btn play-pause-btn reactive-scale reactive-hover';
+    playPauseBtn.setAttribute('data-state', 'playing');
+    playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+
+    playPauseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (video.paused) {
+            video.play();
+            playPauseBtn.setAttribute('data-state', 'playing');
+            playPauseBtn.innerHTML = '<span class="material-symbols-outlined">pause</span>';
+        } else {
+            video.pause();
+            playPauseBtn.setAttribute('data-state', 'paused');
+            playPauseBtn.innerHTML = '<span class="material-symbols-outlined">play_arrow</span>';
+        }
+    });
+
+    const muteBtn = document.createElement('button');
+    muteBtn.className = 'video-control-btn mute-btn reactive-scale reactive-hover';
+    muteBtn.setAttribute('data-state', 'muted');
+    muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+
+    muteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        if (video.muted) {
+            muteBtn.setAttribute('data-state', 'muted');
+            muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_off</span>';
+        } else {
+            muteBtn.setAttribute('data-state', 'unmuted');
+            muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+        }
+    });
+
+    videoControls.appendChild(playPauseBtn);
+    videoControls.appendChild(muteBtn);
+
+    return videoControls;
+}
+
+function openProjectWrapper(trabajo) {
+    if (!projectWrapper || !pageContent || !mainContent) return;
+    
+    console.log('Abriendo proyecto:', trabajo);
+
+    // 1. Rellenar el cover-image (video o imagen) con aspect ratio
+    const coverImage = projectWrapper.querySelector('.cover-image');
+    if (coverImage) {
+        // Limpiar contenido anterior
+        coverImage.innerHTML = '';
+        coverImage.style.backgroundImage = '';
+        coverImage.style.aspectRatio = '';
+        
+        // Detectar si es video o imagen
+        const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
+        
+        if (isVideo) {
+            // Crear video
+            const video = document.createElement('video');
+            video.src = `assets/img/${trabajo.thumbnail}`;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.playsInline = true;
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'contain';
+            
+            // Obtener aspect ratio cuando tenga metadata
+            video.addEventListener('loadedmetadata', () => {
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                coverImage.style.aspectRatio = aspectRatio;
+            });
+            
+            coverImage.appendChild(video);
+        } else {
+            // Crear imagen
+            const img = document.createElement('img');
+            img.src = `assets/img/${trabajo.thumbnail}`;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain';
+            
+            // Obtener aspect ratio cuando cargue
+            img.addEventListener('load', () => {
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                coverImage.style.aspectRatio = aspectRatio;
+            });
+            
+            coverImage.appendChild(img);
+        }
+    }
+
+    // 2. Rellenar datos del proyecto
+    const projectTitle = projectWrapper.querySelector('.project-info .title');
+    const projectSubtitle = projectWrapper.querySelector('.project-info .subtitle');
+    
+    if (projectTitle) {
+        projectTitle.textContent = trabajo.titulo;
+    }
+    
+    if (projectSubtitle) {
+        if (trabajo.descripcion && typeof marked !== 'undefined') {
+            if (trabajo.descripcion.endsWith('.md')) {
+                fetch(trabajo.descripcion)
+                    .then(res => res.text())
+                    .then(md => {
+                        projectSubtitle.innerHTML = marked.parse(md);
+                    })
+                    .catch(() => {
+                        projectSubtitle.textContent = 'Descripción no disponible';
+                    });
+            } else {
+                projectSubtitle.innerHTML = marked.parse(trabajo.descripcion);
+            }
+        } else {
+            projectSubtitle.textContent = trabajo.descripcion || '';
+        }
+    }
+
+    // 3. Rellenar row-grid con imágenes/videos
+    const projectContent = projectWrapper.querySelector('.project-content');
+    if (projectContent) {
+        const existingRows = projectContent.querySelectorAll('.row-grid');
+        existingRows.forEach((row) => row.remove());
+
+        const mediaItems = Array.isArray(trabajo.imagenes) ? trabajo.imagenes : [];
+        // Filtrar solo imágenes con random: false (imágenes del proyecto)
+        const projectImages = mediaItems.filter(item => {
+            // Si es string (formato antiguo), incluirlo
+            if (typeof item === 'string') return true;
+            // Si es objeto, solo incluir si random es false
+            return item.random === false;
+        });
+        
+        if (projectImages.length > 0) {
+            projectImages.forEach((mediaItem) => {
+                // Obtener la ruta (puede ser string directo o objeto con path)
+                const mediaPath = typeof mediaItem === 'string' ? mediaItem : mediaItem.path;
+                
+                const rowGrid = document.createElement('div');
+                rowGrid.className = 'row-grid';
+
+                const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(mediaPath);
+                if (isVideo) {
+                    const video = document.createElement('video');
+                    video.src = `assets/img/${mediaPath}`;
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.objectFit = 'contain';
+
+                    rowGrid.appendChild(video);
+                    rowGrid.appendChild(createProjectVideoControls(video));
+                } else {
+                    const img = document.createElement('img');
+                    img.src = `assets/img/${mediaPath}`;
+                    img.alt = '';
+                    rowGrid.appendChild(img);
+                }
+
+                projectContent.appendChild(rowGrid);
+            });
+        }
+    }
+
+    // 4. Guardar dónde estamos
+    savedScroll = window.scrollY || document.documentElement.scrollTop;
+
+    // 4. Parar Lenis
+    if (typeof lenis !== 'undefined') lenis.stop();
+
+    // 5. EL TRUCO: 
+    // Mover el contenido interno hacia arriba tantos píxeles como hayamos hecho scroll.
+    // Así parece que seguimos en el mismo sitio, pero el contenedor padre empieza en 0.
+    mainContent.style.transform = `translateY(-${savedScroll}px)`;
+
+    // 6. Activar la clase (El CSS se encarga de fijar el padre y escalar)
+    document.body.classList.add('project-open');
+    
+    // Opcional: Scrolear el body real a 0 para evitar saltos internos del navegador
+    window.scrollTo(0, 0);
+
+    // 7. Animar elementos del project-wrapper con stagger
+    const projectElements = projectWrapper.querySelectorAll('.project-info, .cover-image, .row-grid');
+    
+    gsap.fromTo(projectElements, 
+        {
+            opacity: 0,
+            y: 24
+        },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 1, 
+            ease: "var(--easing-decelerate)",
+            stagger: 0.1, 
+            delay: 0.25 
+        }
+    );
+}
+
+function closeProjectWrapper() {
+    if (!projectWrapper) return;
+
+    // Volver a primera cara
+    if (typeof morphToFirstFace === 'function') {
+        morphToFirstFace();
+    }
+
+    // 1. Quitar la clase (Inicia animación de vuelta)
+    document.body.classList.remove('project-open');
+
+    // 2. Esperar a que termine la animación (800ms)
+    setTimeout(() => {
+        // 3. Quitar el desplazamiento manual del contenido
+        mainContent.style.transform = '';
+
+        // 4. Restaurar el scroll real del navegador
+        window.scrollTo(0, savedScroll);
+
+        // 5. Reactivar Lenis
+        if (typeof lenis !== 'undefined') {
+            lenis.start();
+            // A veces es bueno forzar a Lenis a sincronizarse
+            // lenis.scrollTo(savedScroll, { immediate: true });
+        }
+    }, 800);
+}
+
+// Event Listeners
+if (closeProjectBtn) closeProjectBtn.addEventListener('click', closeProjectWrapper);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('project-open')) {
+        closeProjectWrapper();
     }
 });
