@@ -965,6 +965,10 @@ button.nav-control-btn.next-btn {
     .project-content {
         padding: 3rem 0rem 2rem 2rem!important;
     }
+
+    .layout .logo {
+        right: 24px;
+    }
 }
 
 
