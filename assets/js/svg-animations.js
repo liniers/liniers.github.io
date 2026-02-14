@@ -272,21 +272,21 @@ function switchAvatar() {
     // Determinar siguiente avatar
     let nextAvatar = currentAvatar + 1;
     if (nextAvatar > totalAvatars) nextAvatar = 1;
-    
+
     // Obtener el contenedor .logo
     const logoContainer = document.querySelector('.logo');
-    
+
     // Obtener el template del siguiente avatar
     const template = document.querySelector(`#avatar-svg-${nextAvatar}`);
     const svgContent = template.content.cloneNode(true);
-    
+
     // Reemplazar el contenido del .logo
     logoContainer.innerHTML = '';
     logoContainer.appendChild(svgContent);
-    
+
     // Actualizar avatar actual
     currentAvatar = nextAvatar;
-    
+
     // Re-configurar visibilidad de elementos de referencia si es avatar-1
     if (currentAvatar === 1) {
         gsap.set("#ojo1-ref, #ojo2-ref, #pupila1-ref, #pupila2-ref, #nariz2-ref, .nariz2, .cejas", { visibility: "hidden" });
@@ -295,11 +295,30 @@ function switchAvatar() {
     if (currentAvatar === 3) {
         gsap.set("#nariz3-ref, .nariz3", { visibility: "hidden" });
     }
-    
+
     // Actualizar animaciones de respiración para el nuevo avatar
-        // Reiniciar blinks con el nuevo avatar
-        createBlinkTimeline();
+    createBlinkTimeline();
     updateBreathTargets();
+
+    // --- CAMBIO DE VISTA SEGÚN AVATAR ---
+    if (window.headerLeftButtons && window.toggleActiveButton) {
+        // Avatar 1: vista All (random)
+        if (currentAvatar === 1 && window.headerLeftButtons.vistaAllBtn) {
+            const btn = window.headerLeftButtons.vistaAllBtn;
+            if (!btn.classList.contains('button-active')) {
+                btn.click();
+            }
+        }
+        // Avatar 2: vista Categories
+        if (currentAvatar === 2 && window.headerLeftButtons.vistaCategoriesBtn) {
+            const btn = window.headerLeftButtons.vistaCategoriesBtn;
+            if (!btn.classList.contains('button-active')) {
+                btn.click();
+            }
+        }
+        // Avatar 3: (reservado para futuro)
+        // if (currentAvatar === 3) { ... }
+    }
 }
 
 

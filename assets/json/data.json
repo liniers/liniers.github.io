@@ -1,984 +1,659 @@
 [
     {
-        "id": 1,
-        "titulo": "100 años de Radio",
-        "proyecto": "100 años de Radio",
+        "id": 28,
+        "titulo": "Card de Presentación",
+        "proyecto": "El Cuento de Navidad de la SER",
         "categoria": "Art Direction",
-        "thumbnail": "work/100 años de Radio/_100 años de Radio_2024_cover.jpg",
+        "thumbnail": "case studies/Art Direction/El Cuento de Navidad de la SER/Cover_Card de Presentación_2024.mp4",
         "imagenes": [
             {
-                "path": "work/100 años de Radio/4x5-humor.jpg",
-                "random": true
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/1.mp4"
             },
             {
-                "path": "work/100 años de Radio/4x5-ticket.jpg",
-                "random": true
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/2.mp4"
             },
             {
-                "path": "work/100 años de Radio/4x5-unlibro.jpg",
-                "random": true
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/3.mp4"
             },
             {
-                "path": "work/100 años de Radio/Cien-anos-contigo-by-FLAT26_4.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/4.mp4"
             },
             {
-                "path": "work/100 años de Radio/Escenografia 100 años de Humor by FLAT26_2.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_2.mp4"
             },
             {
-                "path": "work/100 años de Radio/Escenografia-100-1.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_3.mp4"
             },
             {
-                "path": "work/100 años de Radio/Escenografia-100-anos-de-Humor-by-FLAT26_5.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_4.mp4"
             },
             {
-                "path": "work/100 años de Radio/Escenografia-Gira-centenario-SER-by-FLAT26-1024x682.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_5.mp4"
             },
             {
-                "path": "work/100 años de Radio/Escenografia-nieves-concostrina-1536x956.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_6.mp4"
             },
             {
-                "path": "work/100 años de Radio/Master-1-1536x864.png",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/El amor en los tiempos del colera - FLAT26.mp4"
             },
             {
-                "path": "work/100 años de Radio/Master-1536x864.png",
-                "random": false
-            },
-            {
-                "path": "work/100 años de Radio/unlibro-escenografia-1536x1303.jpg",
-                "random": false
-            },
-            {
-                "path": "work/100 años de Radio/unlibrounahora-1536x864.jpg",
-                "random": false
+                "path": "case studies/Art Direction/El Cuento de Navidad de la SER/_Cover_Hansel y Gretel Audio Card_2023.mp4"
             }
         ],
         "fecha": "2024",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Art Direction/El Cuento de Navidad de la SER/_description.md"
     },
     {
-        "id": 2,
+        "id": 29,
         "titulo": "vistra design system",
         "proyecto": "Vistra",
-        "categoria": "Design System",
-        "thumbnail": "work/Vistra/_cover_vistra-design-system-2025.png",
+        "categoria": "Design Systems",
+        "thumbnail": "case studies/Design Systems/Vistra/_cover_vistra-design-system-2025.png",
         "imagenes": [
             {
-                "path": "work/Vistra/Motion documentation.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Vistra/Geni Expression.mp4"
             },
             {
-                "path": "work/Vistra/vistra-design-system-Components.png",
-                "random": false
+                "path": "case studies/Design Systems/Vistra/Motion documentation.mp4"
             },
             {
-                "path": "work/Vistra/vistra-design-system-Documentation.png",
-                "random": false
+                "path": "case studies/Design Systems/Vistra/vistra-design-system-Components.png"
             },
             {
-                "path": "work/Vistra/vistra-design-system-Overview-notexts.png",
-                "random": true
+                "path": "case studies/Design Systems/Vistra/vistra-design-system-Documentation.png"
             },
             {
-                "path": "work/Vistra/vistra-design-system-Templates.png",
-                "random": false
+                "path": "case studies/Design Systems/Vistra/vistra-design-system-Overview-notexts.png"
+            },
+            {
+                "path": "case studies/Design Systems/Vistra/vistra-design-system-Templates.png"
             }
         ],
         "fecha": "2025",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 3,
+        "id": 30,
         "titulo": "Ditto App",
-        "proyecto": "Ditto App",
-        "categoria": "Design System",
-        "thumbnail": "work/Ditto App/_Ditto App_cover.png",
+        "proyecto": "Ditto Design System",
+        "categoria": "Design Systems",
+        "thumbnail": "case studies/Design Systems/Ditto Design System/_Ditto App_cover.png",
         "imagenes": [
             {
-                "path": "work/Ditto App/Ditto App_1.png",
-                "random": true
+                "path": "case studies/Design Systems/Ditto Design System/Ditto App_1.png"
             },
             {
-                "path": "work/Ditto App/Ditto App_2.png",
-                "random": true
+                "path": "case studies/Design Systems/Ditto Design System/Ditto App_2.png"
             },
             {
-                "path": "work/Ditto App/Ditto App_3.png",
-                "random": true
+                "path": "case studies/Design Systems/Ditto Design System/Ditto App_3.png"
             },
             {
-                "path": "work/Ditto App/Ditto App_4.png",
-                "random": true
+                "path": "case studies/Design Systems/Ditto Design System/Ditto App_4.png"
             },
             {
-                "path": "work/Ditto App/Ditto App_5.mp4",
-                "random": true
+                "path": "case studies/Design Systems/Ditto Design System/Ditto App_5.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Design Systems/Ditto Design System/_description.md"
     },
     {
-        "id": 4,
-        "titulo": "SER Podcast covers",
-        "proyecto": "SER Podcast covers",
+        "id": 31,
+        "titulo": "Gira Centenario Cadena SER 100",
+        "proyecto": "Gira Centenario Cadena SER",
         "categoria": "Art Direction",
-        "thumbnail": "work/SER Podcast covers/_Cover_SER Podcast covers_2023.jpg",
+        "thumbnail": "case studies/Art Direction/Gira Centenario Cadena SER/Cover_Gira Centenario Cadena SER_100.jpg",
         "imagenes": [
             {
-                "path": "work/SER Podcast covers/Acontece que no es poco_2023.jpg",
-                "random": false
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_101.jpg"
             },
             {
-                "path": "work/SER Podcast covers/El Placer de Escuchar_2023.jpg",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_102.jpg"
             },
             {
-                "path": "work/SER Podcast covers/El Rincon y la Esquina_2023.jpg",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_103.jpg"
             },
             {
-                "path": "work/SER Podcast covers/Humor en la SER_2023.jpg",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_144.jpg"
             },
             {
-                "path": "work/SER Podcast covers/Las Noches de Ortega_2023.jpg",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_145.jpg"
             },
             {
-                "path": "work/SER Podcast covers/Por el principio_2023.jpg",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_146.jpg"
             },
             {
-                "path": "work/SER Podcast covers/Portadas-movil@2x.png",
-                "random": true
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_147.jpg"
             },
             {
-                "path": "work/SER Podcast covers/Sidecar_2023.jpg",
-                "random": true
-            }
-        ],
-        "fecha": "2023",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 5,
-        "titulo": "Pausa & Crescente",
-        "proyecto": "Pausa & Crescente",
-        "categoria": "Art Direction",
-        "thumbnail": "work/Pausa & Crescente/_cover_Pausa & Crescente_2023jpg.jpg",
-        "imagenes": [
-            {
-                "path": "work/Pausa & Crescente/01_Crescente_logo.mp4",
-                "random": false
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_148.jpg"
             },
             {
-                "path": "work/Pausa & Crescente/1x1_Crescente.mp4",
-                "random": false
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_157.jpg"
             },
             {
-                "path": "work/Pausa & Crescente/Apron.jpg",
-                "random": false
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_158.jpg"
             },
             {
-                "path": "work/Pausa & Crescente/Donato-apron.jpg",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/P&C-b.jpg",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/Pausa & Crescente_Header-05.png",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/Pausa & Crescente_Header-06.png",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/Saturno devorando a..._2023.gif",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/Video Donato.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Pausa & Crescente/video.jpg",
-                "random": false
+                "path": "case studies/Art Direction/Gira Centenario Cadena SER/Gira Centenario Cadena SER_99.jpg"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Art Direction/Gira Centenario Cadena SER/_description.md"
     },
     {
-        "id": 6,
-        "titulo": "El Amor En Los Tiempos del Cólera",
-        "proyecto": "El Amor En Los Tiempos del Cólera",
-        "categoria": "Art Direction",
-        "thumbnail": "work/El Amor en los tiempos del colera/_Cover-El amor en los tiempos del colera - FLAT26.mp4",
+        "id": 32,
+        "titulo": "Rethinking Spotify by Alvaro Liniers",
+        "proyecto": "Spotify Concept Design",
+        "categoria": "Personal",
+        "thumbnail": "case studies/Personal/Spotify Concept Design/Spotify Project/00_feed.png",
         "imagenes": [
             {
-                "path": "work/El Amor en los tiempos del colera/1.mp4",
-                "random": false
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/01_Rethinking Spotify by FLAT26.mp4"
             },
             {
-                "path": "work/El Amor en los tiempos del colera/2.mp4",
-                "random": false
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/02_Sense of Space.mov"
             },
             {
-                "path": "work/El Amor en los tiempos del colera/3.mp4",
-                "random": false
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/03_Navigation_1.mp4"
             },
             {
-                "path": "work/El Amor en los tiempos del colera/4.mp4",
-                "random": false
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/03_Navigation_2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/04_Dimensionality.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/05_Navigation Layering.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/06_Hierarchy.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/07_Skip_1.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/07_Skip_2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/08_Gestures.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/09_Press_1.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/09_Press_2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/10_Fluid Transitions.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/11_Preview_1.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/11_Preview_2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/12_Visual Hints.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/13_Swipe up.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/14_Playfulness.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/15_1_Final.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/15_2_Final.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Dots.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Fast forward.gif"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Fast forward.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Fast forward_21.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Fast-Scrolling.gif"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Horizontal Scrolling_3.mov"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Mockup_Next Song.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Mockup_Seek.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Next song_Black.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Next song_Black_21.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Preview Cards.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Preview Cards_2.gif"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Preview Cards_optimized.gif"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Rethinking Spotify by Alvaro Liniers.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Round-style.jpg"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Round-style.png"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/Spotify Project/Stories.mp4"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/Swipe up slow.mov"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/dots.gif"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/layering.jpg"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/layering.png"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/prelistening-cards.jpg"
+            },
+            {
+                "path": "case studies/Personal/Spotify Concept Design/01_Black/text.gif"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 7,
-        "titulo": "Card de Presentación",
-        "proyecto": "Manolito Gafotas",
+        "id": 35,
+        "titulo": "atropos",
+        "proyecto": "Atroposbelladonna",
         "categoria": "Art Direction",
-        "thumbnail": "work/Manolito Gafotas/Cover_Card de Presentación_2024.mp4",
-        "imagenes": [],
-        "fecha": "2024",
+        "thumbnail": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_cover.jpg",
+        "imagenes": [
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_01.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_02.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_03.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_04.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_05.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_06.jpg"
+            },
+            {
+                "path": "case studies/Art Direction/Atroposbelladonna/Atroposbelladonna_07.mp4"
+            }
+        ],
+        "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 8,
+        "id": 37,
+        "titulo": "Interacciones de usuario",
+        "proyecto": "Motion Systems",
+        "categoria": "Personal",
+        "thumbnail": "case studies/Personal/Motion Systems/Interacciones de usuario.gif",
+        "imagenes": [
+            {
+                "path": "case studies/Personal/Motion Systems/Interacciones de usuario.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Interacciones del sistema.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Interacciones del sistema.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Navigation.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Principles-16x9-texts-1920.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Principles-16x9-texts-noise-2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Principles-16x9-texts-noise.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Principles-16x9-texts.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Principles-16x9-texts.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Transitions overview 20fps.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Transitions overview 4_2.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/Triggers_clean.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_Navigation.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_Physical Environment.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_Physical Environment.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_System Events.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_System Events.mp4"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_User Input.gif"
+            },
+            {
+                "path": "case studies/Personal/Motion Systems/_User Input.mp4"
+            }
+        ],
+        "fecha": "",
+        "tag": "",
+        "descripcion": ""
+    },
+    {
+        "id": 38,
         "titulo": "Ditto Animation",
         "proyecto": "Ditto Animation",
         "categoria": "Motion Graphics",
-        "thumbnail": "work/Ditto Animation/_Ditto Animation_cover.mp4",
+        "thumbnail": "case studies/Motion Graphics/Ditto Animation/_Ditto Animation_cover.mp4",
         "imagenes": [
             {
-                "path": "work/Ditto Animation/Ditto Animation_2.jpg",
-                "random": false
-            },
-            {
-                "path": "work/Ditto Animation/Ditto Animation_3.mp4",
-                "random": false
+                "path": "case studies/Motion Graphics/Ditto Animation/Ditto Animation_2.jpg"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Motion Graphics/Ditto Animation/_description.md"
     },
     {
-        "id": 9,
-        "titulo": "Experimenta Penha",
-        "proyecto": "Experimenta Penha",
-        "categoria": "Art Direction",
-        "thumbnail": "work/Experimenta Penha/Experimenta Penha_cover.mp4",
+        "id": 39,
+        "titulo": "01 Layers",
+        "proyecto": "Soundcloud DS",
+        "categoria": "Design Systems",
+        "thumbnail": "case studies/Design Systems/Soundcloud DS/01_Layers.mov",
         "imagenes": [
             {
-                "path": "work/Experimenta Penha/_cover_Experimenta Penha_2023.jpg",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/02_Implementation.mp4"
             },
             {
-                "path": "work/Experimenta Penha/desktop-mockup.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Desktop.mp4"
             },
             {
-                "path": "work/Experimenta Penha/instagram_1.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Hover.mov"
             },
             {
-                "path": "work/Experimenta Penha/instagram_2.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Layers_1.mov"
             },
             {
-                "path": "work/Experimenta Penha/instagram_3.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Modular.mov"
             },
             {
-                "path": "work/Experimenta Penha/instagram_4.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Open Track.mov"
             },
             {
-                "path": "work/Experimenta Penha/instagram_5.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Player open Desktop.mov"
             },
             {
-                "path": "work/Experimenta Penha/instagram_6.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Scroll.mov"
             },
             {
-                "path": "work/Experimenta Penha/revista-1.png",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Sidebar container HD.mp4"
             },
             {
-                "path": "work/Experimenta Penha/revista-2.png",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/Slide up Player Iteration.mp4"
             },
             {
-                "path": "work/Experimenta Penha/revista-3.png",
-                "random": false
+                "path": "case studies/Design Systems/Soundcloud DS/SoundCloud_music.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 10,
-        "titulo": "Hansel y Gretel Audio Card",
-        "proyecto": "Hansel y Gretel",
-        "categoria": "Art Direction",
-        "thumbnail": "work/Hansel y Gretel/_Cover_Hansel y Gretel Audio Card_2023.mp4",
-        "imagenes": [
-            {
-                "path": "work/Hansel y Gretel/Audio Card_2023_2.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Hansel y Gretel/Audio Card_2023_3.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Hansel y Gretel/Audio Card_2023_4.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Hansel y Gretel/Audio Card_2023_5.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Hansel y Gretel/Audio Card_2023_6.mp4",
-                "random": false
-            }
-        ],
-        "fecha": "2023",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 11,
-        "titulo": "sbt",
-        "proyecto": "SBT",
-        "categoria": "Interaction Design",
-        "thumbnail": "work/SBT/_sbt_2020_cover.mp4",
-        "imagenes": [
-            {
-                "path": "work/SBT/Grid-design-system.png",
-                "random": false
-            },
-            {
-                "path": "work/SBT/SBT-GIF-Wireframes.gif",
-                "random": false
-            },
-            {
-                "path": "work/SBT/sbt_portfolio_14-2048x1152.jpg",
-                "random": false
-            },
-            {
-                "path": "work/SBT/sbt_portfolio_15-2048x2048.jpg",
-                "random": false
-            }
-        ],
-        "fecha": "2020",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 12,
+        "id": 40,
         "titulo": "LOS40 Podcast",
         "proyecto": "Grupo Prisa Podcasts",
         "categoria": "Motion Graphics",
-        "thumbnail": "work/Grupo Prisa Podcasts/_cover_LOS40 Podcast_2023.mp4",
+        "thumbnail": "case studies/Motion Graphics/Grupo Prisa Podcasts/_cover_LOS40 Podcast_2023.mp4",
         "imagenes": [
             {
-                "path": "work/Grupo Prisa Podcasts/Dial Podcast_2021.mp4",
-                "random": false
+                "path": "case studies/Motion Graphics/Grupo Prisa Podcasts/Dial Podcast_2021.mp4"
             },
             {
-                "path": "work/Grupo Prisa Podcasts/Presentación SER Podcast.mp4",
-                "random": false
+                "path": "case studies/Motion Graphics/Grupo Prisa Podcasts/Presentación SER Podcast.mp4"
             }
         ],
         "fecha": "2023",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Motion Graphics/Grupo Prisa Podcasts/_description.md"
     },
     {
-        "id": 13,
-        "titulo": "qisetna",
-        "proyecto": "Qisetna",
-        "categoria": "Art Direction",
-        "thumbnail": "work/Qisetna/_cover_qisetna_2018.mp4",
-        "imagenes": [
-            {
-                "path": "work/Qisetna/AR_QISETNA_story-box.png",
-                "random": false
-            },
-            {
-                "path": "work/Qisetna/QISETNA_story-box.png",
-                "random": false
-            },
-            {
-                "path": "work/Qisetna/qisetna_logojpg.jpg",
-                "random": false
-            },
-            {
-                "path": "work/Qisetna/qtn_Web-overall-view.png",
-                "random": false
-            },
-            {
-                "path": "work/Qisetna/qtn_logo.gif",
-                "random": false
-            },
-            {
-                "path": "work/Qisetna/qtn_web.mp4",
-                "random": false
-            }
-        ],
-        "fecha": "2018",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 14,
-        "titulo": "Theo Parrish",
-        "proyecto": "Personal - Theo Parrish",
-        "categoria": "Personal",
-        "thumbnail": "work/Personal - Theo Parrish/_Theo Parrish_2018_cover.mp4",
-        "imagenes": [
-            {
-                "path": "work/Personal - Theo Parrish/Theo Parrish_2018_1.gif",
-                "random": false
-            },
-            {
-                "path": "work/Personal - Theo Parrish/Theo Parrish_2018_2.png",
-                "random": false
-            }
-        ],
-        "fecha": "2018",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 15,
+        "id": 41,
         "titulo": "Infografias EGM",
         "proyecto": "Infografías EGM",
         "categoria": "Art Direction",
-        "thumbnail": "work/Infografías EGM/_Cover_Infografias EGM_2021.png",
+        "thumbnail": "case studies/Art Direction/Infografías EGM/_Cover_Infografias EGM_2021.png",
         "imagenes": [
             {
-                "path": "work/Infografías EGM/720x720.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/720x720.png"
             },
             {
-                "path": "work/Infografías EGM/Cine en la SER - IG.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Cine en la SER - IG.png"
             },
             {
-                "path": "work/Infografías EGM/Deportes Conjunta_B - TW y FB.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Deportes Conjunta_B - TW y FB.png"
             },
             {
-                "path": "work/Infografías EGM/Deportes Fin de Semana_B - IG.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Deportes Fin de Semana_B - IG.png"
             },
             {
-                "path": "work/Infografías EGM/Deportes Noche - IG.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Deportes Noche - IG.png"
             },
             {
-                "path": "work/Infografías EGM/EGM-LOS40_V2-Completo.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/EGM-SER-Infografia-Final.png"
             },
             {
-                "path": "work/Infografías EGM/EGM-SER-Infografia-Final.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Infografía Cadena SER - 2ª ola EGM 2021.png"
             },
             {
-                "path": "work/Infografías EGM/Infografia LOS40 EGM 3 OLA.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Infografía Cadena SER - 3ª ola EGM 2021.png"
             },
             {
-                "path": "work/Infografías EGM/Infografia_LOS40.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Lideres Noches - IG.png"
             },
             {
-                "path": "work/Infografías EGM/Infografía Cadena SER - 2ª ola EGM 2021.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Programas Mañana - TW_FB Card.png"
             },
             {
-                "path": "work/Infografías EGM/Infografía Cadena SER - 3ª ola EGM 2021.png",
-                "random": false
-            },
-            {
-                "path": "work/Infografías EGM/Lideres Noches - IG.png",
-                "random": false
-            },
-            {
-                "path": "work/Infografías EGM/Programas Mañana - TW_FB Card.png",
-                "random": false
-            },
-            {
-                "path": "work/Infografías EGM/Radio Hablada - TW_FB Card.png",
-                "random": false
+                "path": "case studies/Art Direction/Infografías EGM/Radio Hablada - TW_FB Card.png"
             }
         ],
         "fecha": "2021",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 16,
-        "titulo": "Random",
-        "proyecto": "Random",
+        "id": 45,
+        "titulo": "00",
+        "proyecto": "Personal - Music Squares",
         "categoria": "Personal",
-        "thumbnail": "work/Random/_Cover_Random.mp4",
+        "thumbnail": "case studies/Personal/Personal - Music Squares/00.mp4",
         "imagenes": [
             {
-                "path": "work/Random/1.0 to 2.0 1x1.mov",
-                "random": false
+                "path": "case studies/Personal/Personal - Music Squares/Acid Attack 2.mp4"
             },
             {
-                "path": "work/Random/13_A.mp4",
-                "random": false
+                "path": "case studies/Personal/Personal - Music Squares/Andres - Moments in life.mp4"
             },
             {
-                "path": "work/Random/14 - Spider Verse Fox_.mp4",
-                "random": false
+                "path": "case studies/Personal/Personal - Music Squares/Andres - Moments in life_30\".mp4"
             },
             {
-                "path": "work/Random/14 - Time lapse Spide verse.mp4",
-                "random": false
+                "path": "case studies/Personal/Personal - Music Squares/Ben Klock - Subzero.mp4"
             },
             {
-                "path": "work/Random/14542549_1361173013907952_6598615133265470807_o.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/15 - Fox Grande.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/16 - Fox Joven.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/16x9_24-08_10mb.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/17 - Fox Kid.mov",
-                "random": false
-            },
-            {
-                "path": "work/Random/1x1_60.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/21 - Cat Mahou.gif",
-                "random": false
-            },
-            {
-                "path": "work/Random/30 - Stop Motion Seassons.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/35_2.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/54 - Puleva.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/59 - Spotify.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/A.gif",
-                "random": false
-            },
-            {
-                "path": "work/Random/Agora-Hora-25_V1.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/BLACK PANTHER.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/CAPITAN AMERICA.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Cartel.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Clean.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Don Quijote, Un Libro Una Hora.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/El desenlace de La Liga_baja.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/FLAT26 Presentation_2019.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Funny walkers_2016.gif",
-                "random": false
-            },
-            {
-                "path": "work/Random/Intro Capaña DIAL_2021.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Intro.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Korean Glow Connect_2025.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Mockup Post Tasjeelat_Web.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Outro.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/ROCKET Y GROOT.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/RealManager App_2018.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Santander Golden Rules_2021.gif",
-                "random": false
-            },
-            {
-                "path": "work/Random/Say Property Sliding Effect.mov",
-                "random": false
-            },
-            {
-                "path": "work/Random/Screenshot 2021-04-22 at 11.11.35.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Shake it!_2021.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Shape Pattern_2019.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Sin Respeto No hay Juego.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Verano en la SER 1x1.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Vídeo.mp4",
-                "random": false
+                "path": "case studies/Personal/Personal - Music Squares/V2.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     },
     {
-        "id": 17,
-        "titulo": "FLAT26 Showreel",
-        "proyecto": "Showreel F26",
-        "categoria": "Motion Graphics",
-        "thumbnail": "work/Random/Showreel F26/_cover_FLAT26 Showreel_2019.mp4",
+        "id": 46,
+        "titulo": "Morelos DS",
+        "proyecto": "Gobierno de Morelos",
+        "categoria": "Design Systems",
+        "thumbnail": "case studies/Design Systems/Gobierno de Morelos/_Morelos DS - Cover.png",
         "imagenes": [
             {
-                "path": "work/Random/Showreel F26/00_Reel Completo.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Audit Zoom.png"
             },
             {
-                "path": "work/Random/Showreel F26/00_Reel Completo_1.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Audit.png"
             },
             {
-                "path": "work/Random/Showreel F26/01_branding_ok.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Documentation.png"
             },
             {
-                "path": "work/Random/Showreel F26/02_Social Media.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Overview.png"
             },
             {
-                "path": "work/Random/Showreel F26/03_UX:UI.mp4",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Screens Zoom.png"
             },
             {
-                "path": "work/Random/Showreel F26/04_Mix A.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Showreel F26/05_Audiovisual.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Showreel F26/06_Mix B.mp4",
-                "random": false
-            },
-            {
-                "path": "work/Random/Showreel F26/Khaled.mp4",
-                "random": false
-            }
-        ],
-        "fecha": "2019",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 18,
-        "titulo": "Insights Cadena SER",
-        "proyecto": "Insights Cadena SER",
-        "categoria": "Art Direction",
-        "thumbnail": "work/Random/Insights Cadena SER/Cover_Insights Cadena SER.png",
-        "imagenes": [
-            {
-                "path": "work/Random/Insights Cadena SER/Datos.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Insights Cadena SER/Grafica.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Insights Cadena SER/Grid.png",
-                "random": false
-            },
-            {
-                "path": "work/Random/Insights Cadena SER/Imagen.png",
-                "random": false
+                "path": "case studies/Design Systems/Gobierno de Morelos/Morelos DS - Screens.png"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": "case studies/Design Systems/Gobierno de Morelos/Morelos.md"
     },
     {
-        "id": 19,
-        "titulo": "SER Podcast Visual Identity",
-        "proyecto": "SER Podcast Identity",
-        "categoria": "Art Direction",
-        "thumbnail": "work/SER Podcast Identity/_Cover_SER Podcast Visual Identity.mp4",
+        "id": 47,
+        "titulo": "Covers 53",
+        "proyecto": "Moodycolors",
+        "categoria": "Personal",
+        "thumbnail": "case studies/Personal/Moodycolors/Covers/Covers_53.jpg",
         "imagenes": [
             {
-                "path": "work/SER Podcast Identity/(Berto) Mas reproducciones que en una granja de conejos_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/03_Taras Van de Voorde_720_low.gif"
             },
             {
-                "path": "work/SER Podcast Identity/(Broncano) Mas reproducciones que en una granja de conejos_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/16x9-Felipe Gordon - Run Run Run.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/(Buenafuente y Berto) El Podcastinar se va a aacabar_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Aleksandir - Jardin_2.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/(Burque) Mas reproducciones que en una granja de conejos_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Artist of the Month.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/(Henar Álvarez) Mas reproducciones que en una granja de conejos_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/ButchSelections.gif"
             },
             {
-                "path": "work/SER Podcast Identity/(Peinado) El Podcastinar se va a acabar_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Chris Stussy & Toman - Boiling Point.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/(Silvia Abril) Mas reproducciones que en una granja de conejos_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Christopher Rau - In The Water Full.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Adaptaciones.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/Comp 1.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Cards Dinamicas_1.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/Comp 2.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Cards Dinamicas_2.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/Concept Sphere customization.png"
             },
             {
-                "path": "work/SER Podcast Identity/Cards Dinamicas_3.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/Concept.jpg"
             },
             {
-                "path": "work/SER Podcast Identity/Cards Dinamicas_4.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Cosmonection - Paraiso Perdido.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Colores.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Covers_54.jpg"
             },
             {
-                "path": "work/SER Podcast Identity/Donde Nacen, crecen y se reproducen los podcast más escuchados_2021.mp4",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Covers_55.jpg"
             },
             {
-                "path": "work/SER Podcast Identity/FB TW YT.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Covers_56.jpg"
             },
             {
-                "path": "work/SER Podcast Identity/IG Stories.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Covers_75.jpg"
             },
             {
-                "path": "work/SER Podcast Identity/Landing-Mockup.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/IG_Loleatta Holloway - Can't Let You Go (Louie Vega & Josh .mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Live project_1.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Ian Pooley Selections_lowest.gif"
             },
             {
-                "path": "work/SER Podcast Identity/Live project_2.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Kevin-Yost-Selections_160kb.gif"
             },
             {
-                "path": "work/SER Podcast Identity/Live project_3.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Louie Vega - Love Paradox_01.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Live project_4.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/Louie Vega - Love Paradox_03.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Mesa de trabajo.jpg",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/Site.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/V1.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Covers/Track of the Month.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Vista-global-1.png",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Product/V1.mp4"
             },
             {
-                "path": "work/SER Podcast Identity/Web_blue.mp4",
-                "random": false
-            },
-            {
-                "path": "work/SER Podcast Identity/YT ejemplo.png",
-                "random": false
-            },
-            {
-                "path": "work/SER Podcast Identity/moovilmockup.jpg",
-                "random": false
+                "path": "case studies/Personal/Moodycolors/Social Media/YT_Christopher Rau - In The Water.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
-    },
-    {
-        "id": 20,
-        "titulo": "Solan de Cabras Sabor Limón",
-        "proyecto": "Solan de Cabras Stop Motion",
-        "categoria": "Motion Graphics",
-        "thumbnail": "work/Solan de Cabras Stop Motion/Cover_Solan de Cabras Sabor Limón_2022.mp4",
-        "imagenes": [],
-        "fecha": "2022",
-        "tag": "",
-        "descripcion": "",
-        "comentario": "",
-        "tipo": "proyecto",
-        "oculto": false
+        "descripcion": ""
     }
 ]
