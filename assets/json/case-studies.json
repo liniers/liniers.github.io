@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "titulo": "00 feed",
+        "titulo": "Spotify Concept Redesign",
         "proyecto": "Spotify Concept Design",
         "categoria": "Personal",
         "thumbnail": "case-studies/Personal/Spotify Concept Design/Spotify Project/00_feed.png",
@@ -142,7 +142,7 @@
     },
     {
         "id": 2,
-        "titulo": "Interacciones de usuario",
+        "titulo": "Motion Systems Research",
         "proyecto": "Motion Systems",
         "categoria": "Personal",
         "thumbnail": "case-studies/Personal/Motion Systems/Interacciones de usuario.gif",
@@ -211,7 +211,7 @@
     },
     {
         "id": 3,
-        "titulo": "Covers 53",
+        "titulo": "Moodycolors - Musica, emociones y color",
         "proyecto": "Moodycolors",
         "categoria": "Personal",
         "thumbnail": "case-studies/Personal/Moodycolors/Covers/Covers_53.jpg",
@@ -298,7 +298,7 @@
     },
     {
         "id": 4,
-        "titulo": "00",
+        "titulo": "Music squares - Visualizaciones experimentales",
         "proyecto": "Personal - Music Squares",
         "categoria": "Personal",
         "thumbnail": "case-studies/Personal/Personal - Music Squares/00.mp4",
@@ -355,7 +355,7 @@
     },
     {
         "id": 6,
-        "titulo": "Ditto App",
+        "titulo": "Ditto Design System",
         "proyecto": "Ditto Design System",
         "categoria": "Design Systems",
         "thumbnail": "case-studies/Design Systems/Ditto Design System/_Ditto App_cover.png",
@@ -382,8 +382,8 @@
     },
     {
         "id": 7,
-        "titulo": "01 Layers",
-        "proyecto": "Soundcloud DS",
+        "titulo": "Soundcloud Design System",
+        "proyecto": "Soundcloud Design System",
         "categoria": "Design Systems",
         "thumbnail": "case-studies/Design Systems/Soundcloud DS/01_Layers.mov",
         "imagenes": [
@@ -427,8 +427,8 @@
     },
     {
         "id": 8,
-        "titulo": "Morelos DS",
-        "proyecto": "Gobierno de Morelos",
+        "titulo": "Gobierno de Morelos Design System",
+        "proyecto": "Gobierno de Morelos Design System",
         "categoria": "Design Systems",
         "thumbnail": "case-studies/Design Systems/Gobierno de Morelos/_Morelos DS - Cover.png",
         "imagenes": [
@@ -457,8 +457,8 @@
     },
     {
         "id": 9,
-        "titulo": "Ditto Animation",
-        "proyecto": "Ditto Animation",
+        "titulo": "Ditto Animation Series",
+        "proyecto": "Ditto Animation Series",
         "categoria": "Motion Graphics",
         "thumbnail": "case-studies/Motion Graphics/Ditto Animation/_Ditto Animation_cover.mp4",
         "imagenes": [
@@ -472,7 +472,7 @@
     },
     {
         "id": 10,
-        "titulo": "LOS40 Podcast",
+        "titulo": "Grupo Prisa Podcasts",
         "proyecto": "Grupo Prisa Podcasts",
         "categoria": "Motion Graphics",
         "thumbnail": "case-studies/Motion Graphics/Grupo Prisa Podcasts/_cover_LOS40 Podcast_2023.mp4",
@@ -490,7 +490,7 @@
     },
     {
         "id": 11,
-        "titulo": "Card de Presentación",
+        "titulo": "El Cuento de Navidad de la SER",
         "proyecto": "El Cuento de Navidad de la SER",
         "categoria": "Art Direction",
         "thumbnail": "case-studies/Art Direction/El Cuento de Navidad de la SER/Cover_Card de Presentación_2024.mp4",
