@@ -1599,179 +1599,99 @@ function abrirThumb(thumb) {
         return { width: targetWidth, height: targetHeight };
     };
     
+    // Función auxiliar para animar la expansión con 3D flip
+    const animateExpansion = (aspectRatio) => {
+        const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
+        const targetLeft = (viewportWidth - targetWidth) / 2;
+        const targetTop = (viewportHeight - targetHeight) / 2;
+
+        const tl = gsap.timeline();
+        TweenLite.set(thumbClone, {perspective:500});
+
+        tl.to(thumbClone, {
+            scale: .8,
+            duration: 0.2,
+            transform: 'rotateX(25deg)',
+            rotationY: '-15deg',
+            ease: 'power4.out'
+        })
+        .to(thumbClone, {
+            scale: 1,
+            left: targetLeft,
+            top: targetTop,
+            width: targetWidth,
+            height: targetHeight,
+            duration: 0.6,
+            transform: 'rotateX(0deg)',
+            ease: 'power3.inOut',
+            onStart: () => {
+                setTimeout(() => {
+                    mostrarControlesYInfo(thumbClone);
+                    thumbClone.style.overflow = 'visible';
+                }, 400);
+            },
+            onComplete: () => {
+                // ✅ Reproducir video automáticamente cuando se abre el quick view
+                const video = thumbClone.querySelector('video');
+                if (video && video.src) {
+                    video.play().catch(err => {
+                        console.log('[QuickView] Autoplay bloqueado (normal en algunos navegadores)');
+                    });
+                }
+            }
+        });
+    };
+
     // Obtener aspect ratio real del media
     if (media) {
         if (isVideo) {
             // Esperar a que el video tenga metadata para obtener dimensiones reales
             media.addEventListener('loadedmetadata', () => {
                 const aspectRatio = media.videoWidth / media.videoHeight;
-                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
-                
-                const targetLeft = (viewportWidth - targetWidth) / 2;
-                const targetTop = (viewportHeight - targetHeight) / 2;
-                
-                // FLIP: Play - Animar la transición
-
-                tl = gsap.timeline();
-                TweenLite.set(thumbClone, {perspective:500});
-
-                tl.to(thumbClone, { 
-                    scale: .8,
-                    duration: 0.2,
-                    transform: 'rotateX(25deg)',
-                    rotationY: '-15deg',
-                    ease: 'power4.out' 
-                })
-                .to(thumbClone, {
-                    scale: 1,
-                    left: targetLeft,
-                    top: targetTop,
-                    width: targetWidth,
-                    height: targetHeight,
-                    //borderRadius: '2rem',
-                    duration: 0.6,
-                    transform: 'rotateX(0deg)',
-                    ease: 'power3.inOut',
-                    onStart: () => {
-                        setTimeout(() => {
-                            mostrarControlesYInfo(thumbClone);
-                            thumbClone.style.overflow = 'visible';
-                        }, 400); 
-                    },
-                    onComplete: () => {
-                        // ✅ Reproducir video automáticamente cuando se abre el quick view
-                        const video = thumbClone.querySelector('video');
-                        if (video && video.src) {
-                            video.play().catch(err => {
-                                console.log('[QuickView] Autoplay bloqueado (normal en algunos navegadores)');
-                            });
-                        }
-                    }
-                });
-                
+                animateExpansion(aspectRatio);
             }, { once: true });
-            
+
             // Si el video ya tiene metadata cargada, ejecutar inmediatamente
             if (media.readyState >= 1) {
                 const aspectRatio = media.videoWidth / media.videoHeight;
-                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
-                
-                const targetLeft = (viewportWidth - targetWidth) / 2;
-                const targetTop = (viewportHeight - targetHeight) / 2;
-                
-                gsap.to(thumbClone, {
-                    left: targetLeft,
-                    top: targetTop,
-                    width: targetWidth,
-                    height: targetHeight,
-                    borderRadius: '2rem',
-                    duration: 0.6,
-                    ease: 'power2.inOut',
-                    onStart: () => {
-                        setTimeout(() => {
-                            mostrarControlesYInfo(thumbClone);
-                            thumbClone.style.overflow = 'visible';
-                        }, 400); 
-                    },
-                    onComplete: () => {
-                        // ✅ Reproducir video automáticamente cuando se abre el quick view
-                        const video = thumbClone.querySelector('video');
-                        if (video && video.src) {
-                            video.play().catch(err => {
-                                console.log('[QuickView] Autoplay bloqueado (normal en algunos navegadores)');
-                            });
-                        }
-                    }
-                });
+                animateExpansion(aspectRatio);
             }
         } else {
-            // Para imágenes, esperar a que carguen
+            // Para imágenes <img>, esperar a que carguen
             if (media.complete && media.naturalWidth > 0) {
                 // Imagen ya cargada
                 const aspectRatio = media.naturalWidth / media.naturalHeight;
-                const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
-                
-                const targetLeft = (viewportWidth - targetWidth) / 2;
-                const targetTop = (viewportHeight - targetHeight) / 2;
-                
-                gsap.to(thumbClone, {
-                    left: targetLeft,
-                    top: targetTop,
-                    width: targetWidth,
-                    height: targetHeight,
-                    borderRadius: '2rem',
-                    duration: 0.6,
-                    ease: 'power2.inOut',
-                    onStart: () => {
-                        setTimeout(() => {
-                            mostrarControlesYInfo(thumbClone);
-                            thumbClone.style.overflow = 'visible';
-                        }, 400);
-                    }
-                });
-
-                
+                animateExpansion(aspectRatio);
             } else {
                 // Esperar a que la imagen cargue
                 media.addEventListener('load', () => {
                     const aspectRatio = media.naturalWidth / media.naturalHeight;
-                    const { width: targetWidth, height: targetHeight } = calcularDimensiones(aspectRatio);
-                    
-                    const targetLeft = (viewportWidth - targetWidth) / 2;
-                    const targetTop = (viewportHeight - targetHeight) / 2;
-                    
-                    gsap.to(thumbClone, {
-                        left: targetLeft,
-                        top: targetTop,
-                        width: targetWidth,
-                        height: targetHeight,
-                        // borderRadius: '2rem',
-                        duration: 0.6,
-                        ease: 'power2.inOut',
-                        onStart: () => {
-                            setTimeout(() => {
-                                mostrarControlesYInfo(thumbClone);
-                                thumbClone.style.overflow = 'visible';
-                            }, 400);
-                        }
-                    });
+                    animateExpansion(aspectRatio);
                 }, { once: true });
             }
         }
+    } else if (thumbClone.classList.contains('thumb-image')) {
+        // Para imágenes de background, crear <img> temporal para obtener dimensiones
+        const bgImageSrc = thumbClone.dataset.src || thumbClone.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+
+        if (bgImageSrc) {
+            const tempImg = new Image();
+            tempImg.onload = () => {
+                const aspectRatio = tempImg.naturalWidth / tempImg.naturalHeight;
+                animateExpansion(aspectRatio);
+            };
+            tempImg.onerror = () => {
+                // Fallback a 1:1 si no carga
+                animateExpansion(1);
+            };
+            tempImg.src = bgImageSrc;
+        } else {
+            // Fallback a 1:1
+            animateExpansion(1);
+        }
     } else {
         // Fallback: usar aspect ratio 1:1 si no hay media
-        const { width: targetWidth, height: targetHeight } = calcularDimensiones(1);
-        
-        const targetLeft = (viewportWidth - targetWidth) / 2;
-        const targetTop = (viewportHeight - targetHeight) / 2;
-        
-        tl = gsap.timeline();
-                TweenLite.set(thumbClone, {perspective:800});
-
-                tl.to(thumbClone, { 
-                    scale: .9,
-                    duration: 0.1,
-                    transform: 'rotateX(25deg)',
-                    rotationY: '-15deg',
-                    ease: 'power4.out' 
-                })
-                .to(thumbClone, {
-                    scale: 1,
-                    left: targetLeft,
-                    top: targetTop,
-                    width: targetWidth,
-                    height: targetHeight,
-                    borderRadius: '2rem',
-                    duration: 0.6,
-                    transform: 'rotateX(0deg)',
-                    ease: 'power3.inOut',
-                    onStart: () => {
-                        setTimeout(() => {
-                            mostrarControlesYInfo(thumbClone);
-                            thumbClone.style.overflow = 'visible';
-                        }, 400); 
-                    }
-                });
+        animateExpansion(1);
     }
 }
 
