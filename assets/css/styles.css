@@ -961,6 +961,10 @@ button.nav-control-btn.next-btn {
     .container-scroll {
         display: none !important;
     }
+
+    .project-content {
+        padding: 3rem 0rem 2rem 2rem!important;
+    }
 }
 
 
