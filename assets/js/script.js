@@ -1,42 +1,229 @@
-/* ÍNDICE DE FUNCIONALIDADES
 
-1.- Maquetar thumbs - Lineas 34 a 263
-2.- GSAP + Lenis Setup - Líneas 157 a 171
-3.- Toggle botones vista grid / vista global - Líneas 187 a 348
-4.- Animación texto tubo 3D - Líneas 354 a 398
-5.- Toggle de imágenes - Líneas 405 a 459
-6.- Toggle vista global - agrupado por categorías - Líneas 465 a 689
-7.- Hover Effect - Mostrar imagen - Líneas 694 a 715
-8.- Motion Thumbs - Parallax con Stagger - Líneas 721 a 746
-9.- Theme Toggle con Morph SVG - Revisar - Líneas 751 a 775
-10.- Quick View Function - Líneas 780 a 1070
-11.- Scrim y Popup - Quick-view centrado - Líneas 1075 a 1130
+// ===== VARIABLES GLOBALES DE DATOS =====
 
-*/
+// Fuentes de datos
+let randomData = []; // Datos de random.json (pequeños proyectos)
+let caseStudiesData = []; // Datos de case-studies.json (proyectos grandes)
 
+// ===== CONFIGURACIÓN DE ASSETS REMOTOS =====
+const ASSET_BASE_URL = 'https://pub-b7331ec578274f5fa4797ea882ba092d.r2.dev/img/';
 
-// Variables globales
+function buildAssetUrl(path) {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    let cleaned = String(path).replace(/^\.?\/*/, '');
+    if (cleaned.startsWith('assets/img/')) {
+        cleaned = cleaned.replace(/^assets\/img\//, '');
+    }
+    if (cleaned.startsWith('img/')) {
+        cleaned = cleaned.replace(/^img\//, '');
+    }
+    return `${ASSET_BASE_URL}${encodeURI(cleaned)}`;
+}
 
-let trabajosData = []; // Datos de trabajos cargados desde JSON
+// Función auxiliar para extraer título del thumbnail
+function getTitleFromThumbnail(thumbnail) {
+    // Extraer el nombre del archivo sin extensión
+    const filename = thumbnail.split('/').pop(); // Último segmento
+    const titleWithoutExt = filename.replace(/\.[^/.]+$/, ''); // Quitar extensión
+    return titleWithoutExt || 'Sin título';
+}
+
+// Variable para rastrear qué fuente está activa
+let currentDataSource = 'random'; // 'random' o 'case-studies'
+
+// Helper para obtener los datos de la fuente actual
+function getCurrentData() {
+    return currentDataSource === 'random' ? randomData : caseStudiesData;
+}
+
+// Helper para cambiar de fuente de datos
+function setDataSource(source) {
+    if (source === 'random' || source === 'case-studies') {
+        currentDataSource = source;
+        return true;
+    }
+    console.error('[DATA] Fuente inválida:', source);
+    return false;
+}
+
 let posicionesOriginales = []; // Guardar posiciones originales de los thumbs
 let vistaRandomActiva = false; // Estado para saber si estamos mostrando imágenes random
 
-// Paleta de colores para los thumbs
-const colorPalette = [
-    '#C02822', // Rojo
-    '#728D3B', // Verde oliva
-    '#1A4575', // Azul oscuro
-    '#D2605F', // Coral
-    '#F4B33F', // Amarillo dorado
-    '#2C5F6F', // Azul petróleo
-    '#A3333D', // Rojo vino
-    '#4A7C59', // Verde bosque
-    '#E8927C', // Salmón
-    '#5B8C85'  // Verde azulado
+// ===== FUNCIONES DE CARGA DE DATOS =====
+
+// Cargar ambos JSONs de forma asincrónica
+async function loadAllData() {
+    try {
+        // Cargar random.json
+        const randomResponse = await fetch('assets/json/random.json');
+        randomData = await randomResponse.json();
+        console.log('[DATA] random.json cargado:', randomData.length, 'items');
+
+        // Cargar case-studies.json
+        const caseStudiesResponse = await fetch('assets/json/case-studies.json');
+        caseStudiesData = await caseStudiesResponse.json();
+        console.log('[DATA] case-studies.json cargado:', caseStudiesData.length, 'items');
+
+        return true;
+    } catch (error) {
+        console.error('[DATA] Error cargando JSONs:', error);
+        return false;
+    }
+}
+
+// Función para remaquetear el grid cuando cambia el dataset
+function remaquetearGrid() {
+    // Limpiar grid actual
+    const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+    if (cuadriculaTrabajos) {
+        cuadriculaTrabajos.innerHTML = '';
+    }
+    
+    // Remaquetear con nuevos datos
+    maquetar_inicio();
+    console.log(`[DATA] Grid remaquetado con fuente: ${currentDataSource}`);
+}
+
+// Función para cambiar entre fuentes de datos
+async function switchDataSource(newSource) {
+    if (newSource === currentDataSource) {
+        console.log('[DATA] Ya estás en la fuente:', newSource);
+        return false;
+    }
+    
+    if (!setDataSource(newSource)) {
+        return false;
+    }
+    
+    console.log(`[DATA] Cambiado a fuente: ${newSource}`);
+    remaquetearGrid();
+    return true;
+}
+
+// ===== SWITCH PARA TUBO 3D =====
+// Cambia este valor para elegir entre dos modos:
+// true = Scroll Trigger (animación vinculada al scroll)
+// false = Auto Rotate (rotación automática continua)
+const USE_TUBE_SCROLL_TRIGGER = true;
+
+// ===== CONFIGURACIÓN DE DISTRIBUCIÓN =====
+// Cambia este valor para elegir la estrategia de organización
+// Opciones: 'random', 'byDate', 'manual', 'original'
+const DISTRIBUTION_STRATEGY = 'manual';
+
+// Si usas estrategia 'manual', define aquí el orden de IDs de proyectos
+// Ejemplo: const MANUAL_ORDER = ['proyecto-1', 'proyecto-5', 'proyecto-3', ...];
+const MANUAL_ORDER = [23];
+
+// Paleta de colores para los thumbs 
+const colorNames = [
+    'rojo',
+    'verde-oliva',
+    'azul-oscuro',
+    'coral',
+    'amarillo-dorado',
+    'azul-petroleo',
+    'rojo-vino',
+    'verde-bosque',
+    'salmon',
+    'verde-azulado'
 ];
 
+// ===== SISTEMA DE DISTRIBUCIÓN DE TRABAJOS =====
 
-// 1.- Maquetar thumbs
+// Fisher-Yates shuffle para distribución aleatoria
+function randomDistribution(data) {
+    const shuffled = [...data];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+// Distribución por fecha (más reciente primero)
+function byDateDistribution(data) {
+    return [...data].sort((a, b) => {
+        const dateA = new Date(a.fecha || 0);
+        const dateB = new Date(b.fecha || 0);
+        return dateB - dateA;
+    });
+}
+
+// Distribución manual según orden especificado
+function manualDistribution(data, order) {
+    if (!order || order.length === 0) {
+        console.warn('MANUAL_ORDER está vacía, usando orden original');
+        return [...data];
+    }
+    
+    const sorted = [];
+    const used = new Set();
+    
+    // Primero añade los que están en MANUAL_ORDER en ese orden
+    order.forEach(id => {
+        const trabajo = data.find(t => t.id === id);
+        if (trabajo) {
+            sorted.push(trabajo);
+            used.add(id);
+        }
+    });
+    
+    // Luego añade los que no están en MANUAL_ORDER pero ALEATORIAMENTE
+    const remaining = [];
+    data.forEach(trabajo => {
+        if (!used.has(trabajo.id)) {
+            remaining.push(trabajo);
+        }
+    });
+    
+    // Shuffle de los restantes (Fisher-Yates)
+    for (let i = remaining.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+    }
+    
+    // Combina: primero los de MANUAL_ORDER, luego los aleatorizados
+    return [...sorted, ...remaining];
+}
+
+// Distribución original (sin cambios)
+function originalDistribution(data) {
+    return [...data];
+}
+
+// Organizador principal que aplica la estrategia seleccionada
+function organizeWorks(data, strategy = DISTRIBUTION_STRATEGY) {
+    switch(strategy.toLowerCase()) {
+        case 'random':
+            return randomDistribution(data);
+        case 'bydate':
+            return byDateDistribution(data);
+        case 'manual':
+            return manualDistribution(data, MANUAL_ORDER);
+        case 'original':
+            return originalDistribution(data);
+        default:
+            console.warn(`Estrategia desconocida: ${strategy}, usando 'original'`);
+            return originalDistribution(data);
+    }
+}
+
+// Mapeo de categorías a colores
+const categoryColorMap = {
+    'Art Direction': 'rojo',
+    'Design Systems': 'amarillo-dorado',
+    'Motion Graphics': 'azul-oscuro',
+    'Experimental, Personal': 'verde-oliva',
+    'Interaction Design': 'salmon',
+    'Illustration, Graphic Design': 'rojo-vino',
+};
+
+const colorPalette = colorNames.map(name => getComputedStyle(document.documentElement).getPropertyValue(`--color-${name}`).trim()); 
+
+
+// 1.- MAQUETAR INICIO
 
 // Función helper para obtener configuración del grid
 function getGridConfig() {
@@ -58,7 +245,7 @@ function calculateGridPosition(index, config) {
     let elementsInCurrentRow = 0;
     let tempIndex = 0;
     
-    while (tempIndex < index) {
+    while (tempIndex < index) { 
         const itemsInThisRow = currentRow % 2 === 0 ? config.itemsPerRow1 : config.itemsPerRow2;
         elementsInCurrentRow++;
         tempIndex++;
@@ -71,20 +258,23 @@ function calculateGridPosition(index, config) {
     
     const colIndex = elementsInCurrentRow;
     const gridRow = config.startRow + (currentRow * config.spacingV);
-    const itemsInCurrentRow = currentRow % 2 === 0 ? config.itemsPerRow1 : config.itemsPerRow2;
+    const itemsInCurrentRow = currentRow % 2 === 0 ? config.itemsPerRow1 : config.itemsPerRow2; 
     const colOffset = currentRow % 2 === 0 ? 0 : config.spacingH / 2;
     const gridColumn = config.startCol + colOffset + (colIndex * config.spacingH);
     
     return { gridRow, gridColumn };
 }
-
-function maquetar_thumbs(data){
-    trabajosData = data;
+function maquetar_inicio(){ 
+    // Obtener datos de la fuente actual (random por defecto)
+    const trabajosData = getCurrentData();
+    
+    // Aplicar estrategia de distribución configurada
+    const organized = organizeWorks(trabajosData);
     const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
     const gridConfig = getGridConfig();
     posicionesOriginales = [];
 
-    data.forEach((trabajo, index) => {
+    organized.forEach((trabajo, index) => {
         const miniaturaCuadrada = document.createElement("article");
         miniaturaCuadrada.classList.add(`thumb-${index + 1}`, 'hide-image', 'reactive-scale');
         miniaturaCuadrada.dataset.workId = trabajo.id;
@@ -93,35 +283,37 @@ function maquetar_thumbs(data){
         workInfo.classList.add('work-info');
         miniaturaCuadrada.appendChild(workInfo);
         
-        miniaturaCuadrada.style.backgroundColor = colorPalette[index % colorPalette.length];
+        // Asignar color según la categoría
+        const colorName = categoryColorMap[trabajo.categoria] || 'coral';
+        const colorValue = getComputedStyle(document.documentElement).getPropertyValue(`--color-${colorName}`).trim();
+        miniaturaCuadrada.style.backgroundColor = colorValue;
         
-        const isVideo = /\.(mp4|webm|ogg)$/i.test(trabajo.thumbnail);
+        const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(trabajo.thumbnail);
         
         if (isVideo) {
             const video = document.createElement('video');
             Object.assign(video, {
-                src: `assets/img/${trabajo.thumbnail}`,
-                autoplay: true,
+                src: '',  // ✅ LAZY: src vacío, se carga con IntersectionObserver
+                autoplay: false,  // ✅ No autoplay, carga bajo demanda
                 loop: true,
                 muted: true,
-                playsInline: true
+                playsInline: true,
+                loading: 'lazy'
             });
-            Object.assign(video.style, {
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                position: 'absolute',
-                top: '0',
-                left: '0'
-            });
+            video.dataset.src = buildAssetUrl(trabajo.thumbnail); // Guardar ruta para lazy load
             miniaturaCuadrada.appendChild(video);
             miniaturaCuadrada.style.position = 'relative';
+            
+            // ✅ Registrar con MediaManager para lazy loading
+            window.mediaManager.observe(video);
         } else {
-            Object.assign(miniaturaCuadrada.style, {
-                backgroundImage: `url('assets/img/${trabajo.thumbnail}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-            });
+            // ✅ LAZY: No cargar imagen inmediatamente, solo guardar rutas
+            miniaturaCuadrada.classList.add('thumb-image');
+            miniaturaCuadrada.dataset.src = buildAssetUrl(trabajo.thumbnail);
+            miniaturaCuadrada.style.backgroundColor = miniaturaCuadrada.style.backgroundColor; // Mantener color placeholder
+            
+            // ✅ Registrar con MediaManager para lazy loading
+            window.mediaManager.observe(miniaturaCuadrada);
         }
 
         const workCategory = document.createElement('p');
@@ -131,7 +323,7 @@ function maquetar_thumbs(data){
         
         const workTitle = document.createElement('h3');
         workTitle.classList.add('work-title', 'text-display');
-        workTitle.textContent = trabajo.titulo;
+        workTitle.textContent = trabajo.titulo || getTitleFromThumbnail(trabajo.thumbnail);
         workInfo.appendChild(workTitle);
         
         const position = calculateGridPosition(index, gridConfig);
@@ -143,81 +335,47 @@ function maquetar_thumbs(data){
         cuadriculaTrabajos.appendChild(miniaturaCuadrada);
     });
 
+    // Actualizar leyenda del sidebar con categorías
+    updateSidebarLegend(organized);
     
     // Inicializar interacciones y animaciones con delay para asegurar renderizado
 
 
     setTimeout(() => {
         setupThumbsHover(); // Inicializar hover de todas las thumbs con GSAP
-        thumbsMotion(); // Activar efecto parallax con stagger
         setupQuickView(); // Inicializar quick view
-        
-        // Activar vista listado por defecto sin animación inicial
-        window.vistaListadoActiva = false;
-        const vistaListadoBtn = document.getElementById('vistaListado');
-        if (vistaListadoBtn && !window.vistaListadoActiva) {
-            // Simular el click sin mostrar la transición
-            const thumbs = document.querySelectorAll('[class*="thumb-"]');
-            
-            window.vistaListadoActiva = true;
-            document.body.classList.add('view-listado');
-            document.body.classList.remove('view-global');
-            
-            // Ocultar container-scroll
-            const containerScroll = document.querySelector('.container-scroll');
-            if (containerScroll) {
-                containerScroll.style.opacity = '0';
-                containerScroll.style.display = 'none';
-            }
-            
-            // Matar ScrollTriggers del parallax
-            ScrollTrigger.getAll().forEach(st => {
-                if (st.vars && st.vars.trigger === document.querySelector("#portfolio-items")) {
-                    st.kill();
-                }
-            });
-            
-            // Limpiar transforms de parallax
-            thumbs.forEach(thumb => {
-                gsap.set(thumb, { y: 0, clearProps: "transform" });
-            });
-            
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            
-            const thumbHeight = 100;
-            const thumbWidth = Math.min(viewportWidth * 0.4, 100);
-            const spacing = 16;
-            
-            const centerX = (viewportWidth - thumbWidth) / 2;
-            const startY = 40;
-            const totalHeight = (thumbs.length * thumbHeight) + ((thumbs.length - 1) * spacing) + 80;
-            
-            document.body.style.minHeight = `${totalHeight}px`;
-            
-            thumbs.forEach((thumb, index) => {
-                thumb.style.position = 'absolute';
-                thumb.style.left = `${centerX}px`;
-                thumb.style.top = `${startY + (index * (thumbHeight + spacing))}px`;
-                thumb.style.width = `${thumbWidth}px`;
-                thumb.style.height = `${thumbHeight}px`;
-                thumb.style.gridRow = 'auto';
-                thumb.style.gridColumn = 'auto';
-                thumb.style.zIndex = '1';
-            });
-            
-            // Activar botón vistaListado en el header
-            if (window.headerLeftButtons && window.toggleActiveButton) {
-                const currentActive = Array.from(document.querySelectorAll('.toggle-grid button')).find(btn => btn.classList.contains('button-active'));
-                if (currentActive !== vistaListadoBtn) {
-                    toggleActiveButton(vistaListadoBtn, currentActive);
-                }
-            }
-        }
         
         // Hacer visible el body
         gsap.to('body', { opacity: 1, duration: 1, ease: 'power2.inOut'});
     }, 100);
+}
+// --- Fin maquetar_inicio --- \\
+
+// Función para actualizar la leyenda del sidebar con categorías
+function updateSidebarLegend(data) {
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+    
+    // Obtener categorías únicas en orden de aparición
+    const categoriesSet = new Map();
+    data.forEach(trabajo => {
+        if (!categoriesSet.has(trabajo.categoria)) {
+            categoriesSet.set(trabajo.categoria, categoryColorMap[trabajo.categoria] || 'coral');
+        }
+    });
+    
+    // Crear la lista de leyenda
+    const mainFilter = sidebar.querySelector('.main-filter');
+    if (mainFilter) {
+        mainFilter.innerHTML = ''; // Limpiar contenido anterior
+        
+        categoriesSet.forEach((colorName, categoria) => {
+            const colorValue = getComputedStyle(document.documentElement).getPropertyValue(`--color-${colorName}`).trim();
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="color-bullet" style="background-color: ${colorValue};"></span><span>${categoria}</span>`;
+            mainFilter.appendChild(li);
+        });
+    }
 }
 
 
@@ -238,8 +396,7 @@ requestAnimationFrame(onRaf);
 // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
 lenis.on('scroll', ScrollTrigger.update);
 
-// Add Lenis's requestAnimationFrame (raf) method to GSAP's ticker
-// This ensures Lenis's smooth scroll animation updates on each GSAP tick
+
 gsap.ticker.add((time) => {
   lenis.raf(time * 1000); // Convert time from seconds to milliseconds
 });
@@ -250,286 +407,404 @@ gsap.ticker.lagSmoothing(0);
 
 
 
-
 // 3.- TOGGLE BOTONES VISTA RANDOM / VISTA GLOBAL
 
+// ===== INICIALIZACIÓN DE VARIABLES DE ESTADO =====
+window.vistaCategoriesActiva = false;
+window.vistaAllActiva = false;
+window.vistaCaseStudiesActiva = false;
+window.categoryTitles = []; // Array para guardar los títulos de categoría
 
+// ===== REFERENCIAS A BOTONES =====
+const vistaAllBtn = document.getElementById('vistaRandomBtn'); // Botón "All"
+const vistaCategoriesBtn = document.getElementById('vistaGlobal'); // Botón "Categories"
+const vistaCaseStudiesBtn = document.getElementById('caseStudiesBtn'); // Botón "Case Studies"
+const viewNavButtons = document.querySelectorAll('.views-nav button');
+const viewsNavContainer = document.querySelector('.views-nav');
 
-const headerLeftButtons = document.querySelectorAll('.toggle-grid button');
+// Guardar referencias globales
+window.viewNavButtons = {
+    vistaAllBtn,
+    vistaCategoriesBtn,
+    vistaCaseStudiesBtn
+};
 
-if (headerLeftButtons.length >= 2) {
-    const vistaListadoBtn = document.getElementById('vistaListado');
-    const vistaGlobalBtnHeader = document.getElementById('vistaGlobal');
-    const vistaGridBtn = headerLeftButtons[headerLeftButtons.length - 1]; // El último botón es random/grid
-    const headerLeft = document.querySelector('.toggle-grid');
-    
-    // Crear elemento de fondo deslizante
-    const slidingBackground = document.createElement('div');
-    slidingBackground.className = 'button-background-slider';
-    
-    // Insertar el fondo en el miniaturaCuadrada
-    headerLeft.insertBefore(slidingBackground, headerLeft.firstChild);
-    
-    // Asegurar que los botones estén por encima del fondo y sin su propio fondo // MEJOR SOLO CSS
-    vistaGridBtn.style.position = 'relative';
-    vistaGridBtn.style.zIndex = '1';
-    vistaGlobalBtnHeader.style.position = 'relative';
-    vistaGlobalBtnHeader.style.zIndex = '1';
-    if (vistaListadoBtn) {
-        vistaListadoBtn.style.position = 'relative';
-        vistaListadoBtn.style.zIndex = '1';
-    }
-    
-    // Inicializar posición y tamaño del fondo según el botón activo
-    function initSlidingBackground() {
-        const activeButton = Array.from(headerLeftButtons).find(btn => btn.classList.contains('button-active'));
-        
-        slidingBackground.style.width = `${activeButton.offsetWidth}px`;
-        slidingBackground.style.height = `${activeButton.offsetHeight}px`;
-        slidingBackground.style.left = `${activeButton.offsetLeft}px`; //
-        slidingBackground.style.top = `${activeButton.offsetTop}px`;
-    }
-    
-    // Inicializar después de un pequeño delay para asegurar que el DOM esté listo
-    setTimeout(initSlidingBackground, 50);
-    
-    // Función para mover el fondo al botón activo
-    window.toggleActiveButton = function(buttonToActivate, buttonToDeactivate) {
-        buttonToDeactivate.classList.remove('button-active');
-        buttonToActivate.classList.add('button-active');
-        
-        const currentLeft = parseFloat(slidingBackground.style.left);
-        const currentWidth = parseFloat(slidingBackground.style.width);
-        const targetLeft = buttonToActivate.offsetLeft;
-        const targetWidth = buttonToActivate.offsetWidth;
-        const targetHeight = buttonToActivate.offsetHeight;
-        const targetTop = buttonToActivate.offsetTop;
-        
-        // Calcular si vamos a la derecha o izquierda
-        const goingRight = targetLeft > currentLeft;
-        
-        // Calcular el ancho del stretch: desde el inicio del botón actual hasta el final del botón destino
-        const stretchWidth = goingRight 
-            ? (targetLeft + targetWidth) - currentLeft  // Desde left actual hasta right del destino
-            : (currentLeft + currentWidth) - targetLeft; // Desde left del destino hasta right actual
-        
-        // Crear timeline para el efecto de stretch
-        const tl = gsap.timeline();
-        
-        if (goingRight) {
-            // Moverse a la derecha: expandir desde la izquierda, luego contraer desde la izquierda
-            tl.to(slidingBackground, {
-                width: '-200%',
-                duration: 0.3,
-                ease: "back.in(1.2)"
-            })
-            .to(slidingBackground, {
-                left: targetLeft,
-                top: targetTop,
-                width: targetWidth,
-                height: targetHeight,
-                duration: 0.3,
-                ease: "back.out(1.2)"
-            }, '-=0.2');
-        } else {
-            // Moverse a la izquierda: expandir width, luego mover left y contraer
-            tl.to(slidingBackground, {
-                width: '100%',
-                top: targetTop,
-                height: targetHeight,
-                duration: 0.3,
-                ease: "back.in(1.2)"
-            })
-            .to(slidingBackground, {
-                left: targetLeft,
-                width: targetWidth,
-                duration: 0.3,
-                ease: "back.out(1.2)"
-            }, '-=0.2');
-        }
-    }
-    
-    // Event listener para el botón de vista grid (el primero)
-    vistaGridBtn.addEventListener('click', () => {
-        console.log('Click en vistaGrid - Estado actual: vistaRandom=' + vistaRandomActiva + ', vistaGlobal=' + window.vistaGlobalActiva + ', vistaListado=' + window.vistaListadoActiva);
-        
-        // Si estamos en vista listado, salir usando su propio handler
-        if (window.vistaListadoActiva && window.headerLeftButtons?.vistaListadoBtn) {
-            window.headerLeftButtons.vistaListadoBtn.click();
-            document.body.classList.remove('view-listado');
-            return;
-        }
+// ===== SETUP: CREAR ELEMENTO DE FONDO DESLIZANTE =====
+const slidingBackground = document.createElement('div');
+slidingBackground.className = 'button-background-slider';
+viewsNavContainer.insertBefore(slidingBackground, viewsNavContainer.firstChild);
 
-        // Si estamos en vista global, volver a la última vista activa (proyectos o random)
-        const currentActive = Array.from(headerLeftButtons).find(btn => btn.classList.contains('button-active'));
-        if (currentActive !== vistaGridBtn) {
-            toggleActiveButton(vistaGridBtn, currentActive);
-            
-            // Eliminar títulos de categoría si existen
-            if (window.categoryTitles && window.categoryTitles.length > 0) {
-                window.categoryTitles.forEach(title => {
-                    gsap.to(title, {
-                        opacity: 0,
-                        duration: 0.3,
-                        ease: 'power2.in',
-                        onComplete: () => {
-                            title.remove();
-                        }
-                    });
-                });
-                window.categoryTitles = [];
-            }
-            
-            // Si estaba en vista global, volver a vista grid (proyectos o random según estado)
-            if (window.vistaGlobalActiva) {
-                const thumbs = document.querySelectorAll('[class*="thumb-"]');
-                const state = Flip.getState(thumbs);
-                
-                window.vistaGlobalActiva = false;
-                document.body.classList.remove('view-global');
-                
-                // Mostrar container-scroll
-                const containerScroll = document.querySelector('.container-scroll');
-                if (containerScroll) {
-                    gsap.to(containerScroll, {
-                        opacity: 1,
-                        duration: 0.6,
-                        display: 'block',
-                        ease: 'power2.inOut'
-                    });
-                }
-                
-                // Leer configuración actual de CSS para restaurar correctamente
-                const rootStyles = getComputedStyle(document.documentElement);
-                const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
-                
-                thumbs.forEach((thumb) => {
-                    const classList = Array.from(thumb.classList);
-                    const thumbClass = classList.find(c => c.startsWith('thumb-'));
-                    const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
-                    
-                    // Reset estilos inline aplicados en vista global para restaurar grid
-                    thumb.style.position = '';
-                    thumb.style.left = '';
-                    thumb.style.top = '';
-                    thumb.style.width = '';
-                    thumb.style.height = '';
-                    thumb.style.borderRadius = '';
-                    
-                    if (posicionesOriginales[index]) {
-                        thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
-                        thumb.style.gridColumn = `${posicionesOriginales[index].gridColumn} / span ${thumbSpan}`;
-                        thumb.style.aspectRatio = '1 / 1';
-                    }
-                });
-                
-                Flip.from(state, {
-                    duration: 1.2,
-                    ease: "power2.inOut",
-                    stagger: 0.02,
-                    scale: true,
-                    simple: true,
-                    onComplete: () => {
-                        thumbs.forEach((thumb) => {
-                            gsap.set(thumb, { clearProps: "transform" });
-                        });
-                        thumbsMotion();
-                    }
-                });
-            }
-        } else {
-            // Ya estamos en vista grid - alternar entre proyectos y random
-            const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
-            if (!cuadriculaTrabajos || !trabajosData.length) return;
-            
-            // Animar fade out de thumbs actuales
-            const thumbs = document.querySelectorAll('[class*="thumb-"]');
-            
-            gsap.to(thumbs, {
-                opacity: 0,
-                scale: 0.9,
-                duration: 0.4,
-                stagger: 0.02,
-                ease: 'power2.in',
-                onComplete: () => {
-                    // Limpiar todos los thumbs
-                    thumbs.forEach(thumb => thumb.remove());
-                    
-                    // Matar ScrollTriggers existentes
-                    ScrollTrigger.getAll().forEach(st => st.kill());
-                    
-                    // Alternar estado y regenerar thumbs
-                    vistaRandomActiva = !vistaRandomActiva;
-                    console.log('Alternando a vista:', vistaRandomActiva ? 'RANDOM' : 'PROYECTOS');
-                    
-                    // Mostrar proyectos (funcionalidad random eliminada)
-                    maquetar_thumbs(trabajosData);
-                }
-            });
-        }
-    });
+// Asegurar que los botones estén por encima del fondo
+Array.from(viewNavButtons).forEach(btn => {
+    btn.style.position = 'relative';
+    btn.style.zIndex = '1';
+});
+
+// ===== FUNCIÓN PARA MOVER EL FONDO DEL BOTÓN =====
+function initSlidingBackground() {
+    const activeButton = Array.from(viewNavButtons).find(btn => btn.classList.contains('button-active'));
     
-    // Guardar referencia global para uso en otras funciones
-    window.headerLeftButtons = { vistaGridBtn, vistaGlobalBtnHeader, vistaListadoBtn };
+    slidingBackground.style.width = `${activeButton.offsetWidth}px`;
+    slidingBackground.style.height = `${activeButton.offsetHeight}px`;
+    slidingBackground.style.left = `${activeButton.offsetLeft}px`;
+    slidingBackground.style.top = `${activeButton.offsetTop}px`;
 }
 
-// 4.- ANIMACIÓN TEXTO TUBO 3D
+setTimeout(initSlidingBackground, 50);
 
-const width = window.innerWidth;
-const depth = -width / 30; // Profundidad del rodillo
-const transformOrigin = `50% 50% ${depth}px`;
+window.toggleActiveButton = function(buttonToActivate, buttonToDeactivate) {
+    console.log('[MENU DEBUG] Cambio de botón - De:', buttonToDeactivate?.textContent.trim(), 'A:', buttonToActivate?.textContent.trim());
+    
+    if (buttonToDeactivate && buttonToDeactivate !== buttonToActivate) { 
+        buttonToDeactivate.classList.remove('button-active');
+    }
+    buttonToActivate.classList.add('button-active');
+    buttonToActivate.style.backgroundColor = 'transparent';
+    
+    const currentLeft = parseFloat(slidingBackground.style.left);
+    const currentWidth = parseFloat(slidingBackground.style.width);
+    const targetLeft = buttonToActivate.offsetLeft;
+    const targetWidth = buttonToActivate.offsetWidth;
+    const targetHeight = buttonToActivate.offsetHeight;
+    const targetTop = buttonToActivate.offsetTop;
+    
+    const goingRight = targetLeft > currentLeft;
+    const tl = gsap.timeline();
+    
+    if (goingRight) {
+        tl.to(slidingBackground, {
+            width: '-200%',
+            duration: 0.3,
+            ease: "back.in(1.2)"
+        })
+        .to(slidingBackground, {
+            left: targetLeft,
+            top: targetTop,
+            width: targetWidth,
+            height: targetHeight,
+            duration: 0.3,
+            ease: "back.out(1.2)"
+        }, '-=0.2');
+    } else {
+        tl.to(slidingBackground, {
+            width: '100%',
+            top: targetTop,
+            height: targetHeight,
+            duration: 0.3,
+            ease: "back.in(1.2)"
+        })
+        .to(slidingBackground, {
+            left: targetLeft,
+            width: targetWidth,
+            duration: 0.3,
+            ease: "back.out(1.2)"
+        }, '-=0.2');
+    }
+}
 
-// Make container visible y fijo en centro
-const containerScroll = document.querySelector(".container-scroll");
-if (containerScroll) {
-    // Posicionar fijo en centro centro
+// ===== FUNCIÓN HELPER: LIMPIAR TODAS LAS VISTAS =====
+function cleanAllViews() {
+    console.log('[MENU DEBUG] Limpiando todas las vistas');
+    
+    // Resetear flags
+    window.vistaCategoriesActiva = false;
+    window.vistaAllActiva = false;
+    window.vistaCaseStudiesActiva = false;
+    
+    // Remover clases
+    document.body.classList.remove('view-global', 'view-random', 'view-categories', 'view-case-studies');
+    
+    // Limpiar categorías
+    if (window.categoryTitles && window.categoryTitles.length > 0) {
+        window.categoryTitles.forEach(title => title.remove());
+        window.categoryTitles = [];
+    }
+    
+    // Matar ScrollTriggers (el texto 3D dejará de rotar y se congelará, lo cual está bien para salir)
+    ScrollTrigger.getAll().forEach(st => st.kill()); 
+    
+    
+    // Restaurar estilos body
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+    document.body.style.minHeight = '';
+    
+    // Asegurar que lenis está activo después de limpiar
+    lenis.start();
+}
+
+// ===== HELPERS PARA REALIZAR TRANSICIONES =====
+
+// ===== VISTA ALL: Grid completo de random.json =====
+if (vistaAllBtn) {
+    vistaAllBtn.addEventListener('click', () => {
+        console.log('[MENU DEBUG] Click en All (Vista grid completo)');
+        
+        const currentActive = Array.from(viewNavButtons).find(btn => btn.classList.contains('button-active'));
+        
+        if (currentActive === vistaAllBtn) return; // Ya está activo
+        
+        // Cambiar a random.json si no está
+        if (currentDataSource !== 'random') {
+            setDataSource('random');
+            remaquetearGrid(); // Reconstruir grid con thumbs random
+        }
+        
+        // Limpiar primero
+        cleanAllViews();
+        updateImageToggleVisibility();
+        
+        // Scroll a top
+        window.scrollTo(0, 0);
+        if (typeof lenis !== 'undefined') {
+            lenis.scrollTo(0, { immediate: true });
+        }
+        
+        init3DTube(); // Reinicializamos el tubo 3D
+        
+        // Activar vista All
+        window.vistaAllActiva = true;
+        document.body.classList.add('view-global', 'view-random');
+        document.body.style.overflow = '';
+        lenis.start();
+        
+        // Cambiar botón activo
+        window.toggleActiveButton(vistaAllBtn, currentActive);
+        
+        // Mostrar container-scroll
+        const containerScroll = document.querySelector('.container-scroll');
+        if (containerScroll) {
+            gsap.to(containerScroll, {
+                opacity: 1,
+                duration: 0.6,
+                display: 'block',
+                ease: 'power2.inOut'
+            });
+        }
+        
+        // Restaurar a grid layout
+        const thumbs = document.querySelectorAll('[class*="thumb-"]');
+        const rootStyles = getComputedStyle(document.documentElement);
+        const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
+        const state = Flip.getState(thumbs);
+        
+        thumbs.forEach((thumb) => {
+            const classList = Array.from(thumb.classList);
+            const thumbClass = classList.find(c => c.startsWith('thumb-'));
+            const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
+            
+            // Reset a grid
+            thumb.style.position = '';
+            thumb.style.left = '';
+            thumb.style.top = '';
+            thumb.style.width = '';
+            thumb.style.height = '';
+            thumb.style.borderRadius = '';
+            thumb.style.zIndex = '';
+            
+            if (posicionesOriginales[index]) {
+                thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
+                thumb.style.gridColumn = `${posicionesOriginales[index].gridColumn} / span ${thumbSpan}`;
+                thumb.style.aspectRatio = '1 / 1';
+            }
+        });
+        
+        // Animar entrada con Flip
+        Flip.from(state, {
+            duration: 1,
+            ease: "power4.out",
+            // stagger: 0.005,
+            scale: true,
+            simple: true, 
+            onComplete: () => {
+                thumbs.forEach((thumb) => {
+                    gsap.set(thumb, { clearProps: "transform" });
+                });
+                // Reinicializar quick-view después de que termine la animación
+                setupQuickView();
+            }
+        });
+    });
+}
+
+// 4.- ANIMACIÓN TEXTO TUBO 3D (ENCAPSULADA)
+
+let tubeSplit = null; 
+let tubeAutoRotateTimeline = null;
+let tube3dScrollTrigger = null;
+
+// ===== VERSIÓN CON SCROLL TRIGGER =====
+function init3DTube_ScrollTrigger() {
+    const containerScroll = document.querySelector(".container-scroll");
+    if (!containerScroll) return;
+
+    // 1. IMPORTANTE: Detener cualquier fade-out que esté ocurriendo en este momento
+    gsap.killTweensOf(containerScroll);
+    
+    // Eliminar ScrollTrigger previo si existe
+    if (tube3dScrollTrigger) {
+        tube3dScrollTrigger.kill();
+        tube3dScrollTrigger = null;
+    }
+    
+    // Matar auto-rotate timeline si está activo
+    if (tubeAutoRotateTimeline) {
+        tubeAutoRotateTimeline.kill();
+        tubeAutoRotateTimeline = null;
+    }
+
+    // 2. Limpieza de SplitText
+    if (tubeSplit) {
+        tubeSplit.revert();
+        tubeSplit = null;
+    }
+
+    const width = window.innerWidth;
+    const depth = -width / 30;
+    const transformOrigin = `50% 50% ${depth}px`;
+
+    // 3. Configuración CSS
     containerScroll.style.position = 'fixed';
     containerScroll.style.top = '50%';
     containerScroll.style.left = '50%';
     containerScroll.style.transform = 'translate(-50%, -50%)';
     containerScroll.style.zIndex = '0';
     containerScroll.style.pointerEvents = 'none';
-    
-    gsap.set(containerScroll, { visibility: "visible" });
+    containerScroll.style.display = 'block';
+    containerScroll.style.width = '100%';
+    containerScroll.style.height = '100vh';
 
-    // Grab all lines
-    const linesScroll = document.querySelectorAll(".container-scroll .line");
-
-    // Split characters for all lines
-    const splitLinesScroll = Array.from(linesScroll).map(line => 
-      new SplitText(line, { type: "chars", charsClass: "char" })
-    );
-
-    // 3D setup
+    // 4. Setup
+    const linesScroll = containerScroll.querySelectorAll(".line");
+    tubeSplit = new SplitText(linesScroll, { type: "chars", charsClass: "char" });
     gsap.set(linesScroll, { perspective: 700, transformStyle: "preserve-3d" });
 
-    // Animación 3D suave y continua en scroll (sin pin)
+    // 5. ScrollTrigger - usar la altura total de la página para que el tubo ruede de inicio a fin
     const tlScroll = gsap.timeline({
-      scrollTrigger: {
-        trigger: "#portfolio-items",
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-        markers: false
-      }
+        scrollTrigger: {
+            trigger: "#portfolio-items",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0,
+            markers: false,
+            refreshPriority: -1
+        }
+    });
+    
+    tube3dScrollTrigger = tlScroll.scrollTrigger;
+    
+    // Forzar refresh de ScrollTrigger después de que los elementos se hayan renderizado
+    setTimeout(() => {
+        ScrollTrigger.refresh();
+    }, 500);
+
+    linesScroll.forEach((line, index) => {
+        const chars = line.querySelectorAll('.char');
+        tlScroll.fromTo(chars,
+            { rotationX: -90 },
+            { rotationX: 90, stagger: 0.03, ease: "none", transformOrigin },
+            index * 0.3 
+        );
     });
 
-    // Animate each line in scroll
-    splitLinesScroll.forEach((split, index) => { 
-      tlScroll.fromTo( 
-        split.chars,
-        { rotationX: -90 },
-        { rotationX: 90, stagger: 0.03, ease: "none", transformOrigin },
-        index * 0.3 // stagger between lines
-      );
-    });
+    // 6. FADE IN
+    gsap.fromTo(containerScroll, 
+        { opacity: 0 }, 
+        { opacity: 1, duration: 1, ease: "power2.out" }
+    );
 }
 
+// ===== VERSIÓN CON ROTACIÓN AUTOMÁTICA =====
+function init3DTube_AutoRotate() {
+    const containerScroll = document.querySelector(".container-scroll");
+    if (!containerScroll) return;
 
-// 5.- TOGGLE DE IMÁGENES
+    // 1. Detener tweens anteriores
+    gsap.killTweensOf(containerScroll);
+    
+    // Matar ScrollTrigger si está activo
+    if (tube3dScrollTrigger) {
+        tube3dScrollTrigger.kill();
+        tube3dScrollTrigger = null;
+    }
+    
+    if (tubeAutoRotateTimeline) {
+        tubeAutoRotateTimeline.kill();
+        tubeAutoRotateTimeline = null;
+    }
 
-const toggleBtn = document.querySelector('.header-right button:first-child');
+    // 2. Limpieza de SplitText
+    if (tubeSplit) {
+        tubeSplit.revert();
+        tubeSplit = null;
+    }
+
+    const width = window.innerWidth;
+    const depth = -width / 30;
+    const transformOrigin = `50% 50% ${depth}px`;
+
+    // 3. Configuración CSS
+    containerScroll.style.position = 'fixed';
+    containerScroll.style.top = '50%';
+    containerScroll.style.left = '50%';
+    containerScroll.style.transform = 'translate(-50%, -50%)';
+    containerScroll.style.zIndex = '0';
+    containerScroll.style.pointerEvents = 'none';
+    containerScroll.style.display = 'block';
+    containerScroll.style.width = '100%';
+    containerScroll.style.height = '100vh';
+
+    // 4. Setup
+    const linesScroll = containerScroll.querySelectorAll(".line");
+    tubeSplit = new SplitText(linesScroll, { type: "chars", charsClass: "char" });
+    gsap.set(linesScroll, { perspective: 700, transformStyle: "preserve-3d" });
+
+    // 5. Rotación automática continua
+    tubeAutoRotateTimeline = gsap.timeline({ repeat: -1 }); // Repetir infinitamente
+
+    linesScroll.forEach((line, index) => {
+        const chars = line.querySelectorAll('.char');
+        tubeAutoRotateTimeline.fromTo(chars,
+            { rotationX: -90 },
+            { rotationX: 90, stagger: 0.1, ease: "linear", transformOrigin, duration: 1.5 },
+            index * 1  // Mayor separación entre líneas para evitar solapamiento
+        );
+    });
+
+    // 6. FADE IN
+    gsap.fromTo(containerScroll, 
+        { opacity: 0 }, 
+        { opacity: 1, duration: 1, ease: "power2.out" }
+    );
+}
+
+// ===== FUNCIÓN ROUTER QUE ELIGE AUTOMÁTICAMENTE SEGÚN EL SWITCH =====
+function init3DTube() {
+    if (USE_TUBE_SCROLL_TRIGGER) {
+        init3DTube_ScrollTrigger();
+    } else {
+        init3DTube_AutoRotate();
+    }
+}
+
+// Inicializar al cargar la página
+init3DTube();
+
+
+// 5.- TOGGLE DE IMÁGENES (Ocultar en Case Studies)
+
+const toggleImgColor = document.querySelector('.header-right button:first-child');
 let imagesVisible = false; // Empiezan ocultas
+
+// Mostrar/ocultar el botón según la vista:
+function updateImageToggleVisibility() {
+    if (!toggleImgColor) return;
+    if (document.body.classList.contains('view-case-studies')) {
+        toggleImgColor.style.display = 'none'; // Ocultar en case studies
+    } else {
+        toggleImgColor.style.display = ''; // Mostrar en otras vistas
+    }
+}
 
 // SVGs para el toggle (lo podría animar en el futuro)
 const svgHidden = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="10" viewBox="0 0 22 10" fill="none">
@@ -540,14 +815,14 @@ const svgVisible = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="1
   <path d="M1.81111 2.76126C6.22784 -0.0642495 13.1007 -1.69941 19.3951 2.78861C21.5933 4.35643 21.6503 7.55629 19.4781 9.18119C17.4232 10.7182 14.7147 12.0633 11.6236 12.357C8.50637 12.653 5.07116 11.8707 1.62849 9.26712C-0.563416 7.60929 -0.581643 4.29219 1.81111 2.76126ZM6.95271 2.58158C5.46627 3.02071 4.08922 3.67818 2.88923 4.44583C1.74653 5.17686 1.67989 6.79838 2.83552 7.6724C4.01832 8.56684 5.18509 9.20663 6.32087 9.64408C5.78925 8.84967 5.47908 7.89439 5.47908 6.86673V6.12747C5.47918 4.74176 6.04201 3.4871 6.95271 2.58158ZM13.7418 2.34134C14.8047 3.25817 15.479 4.61364 15.4791 6.12747V6.86673C15.4791 7.87182 15.1799 8.80654 14.6695 9.59037C16.0101 9.0759 17.2298 8.36505 18.2799 7.57962C19.3574 6.77356 19.3396 5.20524 18.234 4.41654C16.7599 3.36553 15.2451 2.70179 13.7418 2.34134ZM10.4771 3.49564C8.82047 3.49564 7.47746 4.83907 7.47712 6.49564C7.47712 8.15249 8.82027 9.49564 10.4771 9.49564C12.1338 9.49545 13.4771 8.15238 13.4771 6.49564C13.4768 4.83918 12.1336 3.49583 10.4771 3.49564Z" fill="var(--color-text)"/>
 </svg>`;
 
-if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
+if (toggleImgColor) {
+    toggleImgColor.addEventListener('click', () => {
         const thumbs = document.querySelectorAll('[class*="thumb-"]');
         imagesVisible = !imagesVisible;
         
         // Leer configuración actual de CSS
-        const rootStyles = getComputedStyle(document.documentElement);
-        const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
+        const rootStyles = getComputedStyle(document.documentElement); 
+        const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2; 
         const largeSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span-large')) || thumbSpan + 3;
         
         // Capturar estado inicial con Flip
@@ -577,486 +852,366 @@ if (toggleBtn) {
         
         // Animar la transición con Flip - instantáneo
         Flip.from(state, {
-            duration: 1,
+            duration: .6,
             ease: "power4.out",
-            stagger: 0.01,
+            stagger: 0.02,
             scale: true,
             simple: true,
         });
         
+        // Actualizar visibilidad del botón toggle de imágenes
+        updateImageToggleVisibility();
+        
         // Cambiar SVG del botón
-        toggleBtn.innerHTML = imagesVisible ? svgVisible : svgHidden;
+        toggleImgColor.innerHTML = imagesVisible ? svgVisible : svgHidden;
     });
 }
 
 
-// 6.- TOGGLE VISTA LISTADO - LISTA VERTICAL
+// 6.- VISTA CATEGORIES: Agrupadas por categoría (random.json)
 
-const vistaListadoBtn = document.getElementById('vistaListado');
-window.vistaListadoActiva = false;
-
-if (vistaListadoBtn) {
-    vistaListadoBtn.addEventListener('click', () => {
+if (vistaCategoriesBtn) {
+    vistaCategoriesBtn.addEventListener('click', () => {
+        console.log('[MENU DEBUG] Click en Categories');
+        
+        // Cambiar a random.json si no está
+        if (currentDataSource !== 'random') {
+            setDataSource('random');
+            remaquetearGrid(); // Remaquetear con datos de random
+        }
+        
+        // Limpiar el grid antes de reorganizar
+        const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+        if (cuadriculaTrabajos) {
+            cuadriculaTrabajos.innerHTML = '';
+            maquetar_inicio(); // Volver a maquetear con datos de random
+        }
+        
         const thumbs = document.querySelectorAll('[class*="thumb-"]');
+        
         const state = Flip.getState(thumbs);
         
-        if (!window.vistaListadoActiva) {
-            // Activar vista listado
-            window.vistaListadoActiva = true;
-            document.body.classList.add('view-listado');
-            document.body.classList.remove('view-global');
-            
-            // Guardar posición de scroll actual
-            const currentScrollY = window.scrollY || window.pageYOffset;
-            
-            // Activar botón vistaListado en el header
-            if (window.headerLeftButtons && window.toggleActiveButton) {
-                toggleActiveButton(window.headerLeftButtons.vistaListadoBtn, 
-                    window.vistaGlobalActiva ? window.headerLeftButtons.vistaGlobalBtnHeader : window.headerLeftButtons.vistaGridBtn);
-            }
-            
-            // Si venimos de vista global, desactivarla
-            if (window.vistaGlobalActiva) {
-                window.vistaGlobalActiva = false;
-                // Eliminar títulos de categoría
-                window.categoryTitles.forEach(title => title.remove());
-                window.categoryTitles = [];
-            }
-            
-            // Ocultar container-scroll
-            const containerScroll = document.querySelector('.container-scroll');
-            if (containerScroll) {
-                gsap.to(containerScroll, {
-                    opacity: 0,
-                    duration: 0.6,
-                    display: 'none',
-                    ease: 'power2.inOut'
+        const currentActive = Array.from(viewNavButtons).find(btn => btn.classList.contains('button-active'));
+        
+        if (currentActive === vistaCategoriesBtn) return; // Ya está activo
+        
+        cleanAllViews();
+        updateImageToggleVisibility();
+        
+        window.scrollTo(0, 0);
+        if (typeof lenis !== 'undefined') {
+            lenis.scrollTo(0, { immediate: true });
+        }
+        
+        // Activar vista categories
+        window.vistaCategoriesActiva = true;
+        document.body.classList.add('view-global', 'view-categories');
+        
+        // --- DETECTAR SI ES DESKTOP O MOVIL ---
+        const viewportWidth = window.innerWidth;
+        const isDesktop = viewportWidth > 480;
+        
+        // --- LOGICA CONDICIONAL DE SCROLL ---
+        if (isDesktop) {
+            // DESKTOP: Bloquear scroll y centrar
+            document.body.style.overflow = 'hidden'; 
+            document.body.style.height = '100vh';    
+            lenis.stop();   
+        } else {
+            // MOVIL: Permitir scroll normal
+            document.body.style.overflow = ''; 
+            document.body.style.height = '';    
+            lenis.start();   
+        }
+        
+        // Cambiar botón activo
+        window.toggleActiveButton(vistaCategoriesBtn, currentActive);
+        
+        // Asegurar que el container-scroll (tubo) NO se muestre
+        const containerScroll = document.querySelector('.container-scroll');
+        if (containerScroll) {
+            gsap.set(containerScroll, { display: 'none', opacity: 0 });
+        }
+        
+        // Obtener categorías únicas del dataset actual
+        const categorias = [...new Set(getCurrentData().map(t => t.categoria))];
+        const rootStyles = getComputedStyle(document.documentElement);
+        const globalViewCols = parseInt(rootStyles.getPropertyValue('--global-view-cols')) || 2;
+        const globalViewRows = rootStyles.getPropertyValue('--global-view-rows').trim() === 'auto' 
+            ? Math.ceil(categorias.length / globalViewCols) 
+            : parseInt(rootStyles.getPropertyValue('--global-view-rows')) || 2;
+        const thumbsPerRow = parseInt(rootStyles.getPropertyValue('--global-thumbs-per-row')) || 6;
+        const categorySpacing = parseInt(rootStyles.getPropertyValue('--global-category-spacing')) || 60;
+        const titleSpacing = parseInt(rootStyles.getPropertyValue('--global-title-spacing')) || 40;
+        
+        const cols = globalViewCols;
+        const rows = globalViewRows;
+        const viewportHeight = window.innerHeight;
+        const margin = isDesktop ? 120 : 40; 
+        
+        const groupWidth = (viewportWidth - margin * 2) / cols;
+        const thumbSpan = 1;
+        
+        const thumbSize = Math.min(
+            (groupWidth - (isDesktop ? 100 : 40)) / thumbsPerRow,
+            isDesktop ? 60 : 50
+        );
+        
+        let currentY = margin;
+        
+        // Cálculos de altura por fila (Solo relevante para centrado en Desktop)
+        const maxHeightPerRow = [];
+        if (isDesktop) {
+            for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+                let maxInRow = 0;
+                categorias.forEach((cat, catIndex) => {
+                    const catRow = Math.floor(catIndex / cols);
+                    if (catRow === rowIndex) {
+                        const thumbsInCat = getCurrentData().filter(t => t.categoria === cat).length;
+                        const numRows = Math.ceil(thumbsInCat / thumbsPerRow);
+                        const blockH = numRows * thumbSize;
+                        maxInRow = Math.max(maxInRow, blockH);
+                    }
                 });
+                maxHeightPerRow.push(maxInRow);
+            }
+        }
+        
+        categorias.forEach((categoria, catIndex) => {
+            const thumbsEnCategoria = getCurrentData()
+                .filter(trabajo => trabajo.categoria === categoria);
+            
+            const groupCol = catIndex % cols;
+            const groupRow = Math.floor(catIndex / cols);
+            const numThumbsInCat = thumbsEnCategoria.length;
+            const numRows = Math.ceil(numThumbsInCat / thumbsPerRow);
+            const blockHeight = numRows * thumbSize;
+            
+            // Cálculos de posición X
+            let groupBaseX;
+            if (isDesktop) {
+                const totalGridWidth = cols * groupWidth;
+                const gridOffsetX = (viewportWidth - totalGridWidth) / 2;
+                groupBaseX = gridOffsetX + (groupCol * groupWidth) + (groupWidth / 2);
+            } else {
+                groupBaseX = viewportWidth / 2; 
             }
             
-            // Matar ScrollTriggers del parallax
-            ScrollTrigger.getAll().forEach(st => {
-                if (st.vars && st.vars.trigger === document.querySelector("#portfolio-items")) {
-                    st.kill();
+            // Cálculos de posición Y
+            let groupBaseY;
+            
+            if (!isDesktop) {
+                // MOVIL: Flujo vertical
+                groupBaseY = currentY + blockHeight / 2 + titleSpacing;
+                currentY = currentY + blockHeight + categorySpacing + titleSpacing;
+            } else {
+                // DESKTOP: Centrado vertical absoluto en pantalla
+                const totalContentHeight = maxHeightPerRow.reduce((sum, h) => sum + h, 0) + (rows - 1) * categorySpacing;
+                const availableHeight = viewportHeight - margin * 2;
+                const verticalOffset = margin + (availableHeight - totalContentHeight) / 2;
+                
+                let yPosition = verticalOffset;
+                for (let i = 0; i < groupRow; i++) {
+                    yPosition += maxHeightPerRow[i] + categorySpacing;
                 }
+                groupBaseY = yPosition + maxHeightPerRow[groupRow] / 2;
+            }
+            
+            const blockWidth = thumbsPerRow * thumbSize;
+            const offsetX = -blockWidth / 2;
+            const offsetY = -blockHeight / 2;
+            
+            // Crear título de categoría
+            const categoryTitle = document.createElement('div');
+            categoryTitle.className = 'category-title';
+            categoryTitle.textContent = categoria;
+            categoryTitle.style.cssText = `
+                position: absolute;
+                left: ${groupBaseX + offsetX}px;
+                top: ${groupBaseY + offsetY - titleSpacing}px;
+                opacity: 0;
+            `;
+            document.body.appendChild(categoryTitle);
+            window.categoryTitles.push(categoryTitle);
+            
+            gsap.to(categoryTitle, {
+                opacity: 1,
+                duration: 1,
+                delay: 0.3,
+                ease: 'power2.out'
             });
             
-            // Limpiar transforms de parallax
-            thumbs.forEach(thumb => {
-                gsap.set(thumb, { y: 0, clearProps: "transform" });
-            });
-            
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            
-            // Tamaño horizontal con máximo 200px de alto
-            const thumbHeight = 100;
-            const thumbWidth = Math.min(viewportWidth * 0.4, 100); // 60% del ancho o máximo 600px
-            const spacing = 16; // Espacio entre thumbs
-            
-            // Centrar horizontalmente
-            const centerX = (viewportWidth - thumbWidth) / 2;
-            
-            // Calcular posición inicial - siempre desde el top del documento + margen
-            const startY = 40; // Margen superior fijo
-            const totalHeight = (thumbs.length * thumbHeight) + ((thumbs.length - 1) * spacing) + 80; // +80 para margen inferior
-            
-            // Asegurar que el body tenga altura suficiente para scroll
-            document.body.style.minHeight = `${totalHeight}px`;
-            
-            thumbs.forEach((thumb, index) => {
+            thumbsEnCategoria.forEach((trabajo, thumbIndexInCat) => {
+                // Encontrar el thumb por data-workId en lugar de por índice
+                const thumb = document.querySelector(`[data-work-id="${trabajo.id}"]`);
+                if (!thumb) {
+                    console.warn(`[CATEGORIES] Thumb no encontrado para trabajo ID: ${trabajo.id}`);
+                    return; // Saltar si no existe
+                }
+                
+                const colInGroup = thumbIndexInCat % thumbsPerRow;
+                const rowInGroup = Math.floor(thumbIndexInCat / thumbsPerRow);
+                
+                const thumbX = groupBaseX + offsetX + (colInGroup * thumbSize);
+                const thumbY = groupBaseY + offsetY + (rowInGroup * thumbSize);
+                
                 thumb.style.position = 'absolute';
-                thumb.style.left = `${centerX}px`;
-                thumb.style.top = `${startY + (index * (thumbHeight + spacing))}px`;
-                thumb.style.width = `${thumbWidth}px`;
-                thumb.style.height = `${thumbHeight}px`;
+                thumb.style.left = `${thumbX}px`;
+                thumb.style.top = `${thumbY}px`;
+                thumb.style.zIndex = '1';
+                thumb.style.width = `${thumbSize}px`;
+                thumb.style.height = `${thumbSize}px`;
+                thumb.style.borderRadius = ''; 
                 thumb.style.gridRow = 'auto';
                 thumb.style.gridColumn = 'auto';
-                thumb.style.zIndex = '1';
-                //thumb.style.willChange = 'auto';
-                //thumb.style.borderRadius = '99px'; 
             });
-            
-            // Animar con Flip
-            Flip.from(state, {
-                duration: 1.2,
-                ease: "power2.inOut",
-                stagger: 0.02,
-                absolute: true,
-                scale: true
-            });
-            
-        } else {
-            // Desactivar vista listado - volver a vista grid
-            window.vistaListadoActiva = false;
-            document.body.classList.remove('view-listado');
-            
-            // Restaurar altura del body
-            document.body.style.minHeight = '';
-            
-            // Activar botón vistaGrid en el header
-            if (window.headerLeftButtons && window.toggleActiveButton) {
-                toggleActiveButton(window.headerLeftButtons.vistaGridBtn, window.headerLeftButtons.vistaListadoBtn);
-            }
-            
-            // Mostrar container-scroll
-            const containerScroll = document.querySelector('.container-scroll');
-            if (containerScroll) {
-                gsap.to(containerScroll, {
-                    opacity: 1,
-                    duration: 0.6,
-                    display: 'block',
-                    ease: 'power2.inOut'
-                });
-            }
-            
-            thumbs.forEach((thumb) => {
-                const classList = Array.from(thumb.classList);
-                const thumbClass = classList.find(c => c.startsWith('thumb-'));
-                const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
-                
-                thumb.style.position = '';
-                thumb.style.left = '';
-                thumb.style.top = '';
-                thumb.style.width = '';
-                thumb.style.height = '';
-                thumb.style.borderRadius = '';
-                
-                const rootStyles = getComputedStyle(document.documentElement);
-                const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
-                
-                if (posicionesOriginales[index]) {
-                    thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
-                    thumb.style.gridColumn = `${posicionesOriginales[index].gridColumn} / span ${thumbSpan}`;
-                    thumb.style.aspectRatio = '1 / 1';
-                }
-            });
-            
-            Flip.from(state, {
-                duration: 1.2,
-                ease: "power2.inOut",
-                stagger: 0.02,
-                scale: true,
-                simple: true,
-                onComplete: () => {
-                    thumbs.forEach((thumb) => {
-                        gsap.set(thumb, { clearProps: "transform" });
-                    });
-                    thumbsMotion();
-                }
-            });
+        });
+        
+        // Altura total solo en móvil
+        if (!isDesktop) {
+            const totalHeight = currentY + margin;
+            document.body.style.minHeight = `${totalHeight}px`;
         }
+        
+        // Animar entrada Flip categories
+        Flip.from(state, {
+            duration: 1,
+            ease: "power4.out",
+            // stagger: 0.005,
+            scale: true,
+            simple: true,
+            onComplete: () => {
+                // Reinicializar quick-view después de que termine la animación
+                setupQuickView();
+            }
+        });
     });
 }
 
-// 7.- TOGGLE VISTA GLOBAL - AGRUPADO POR CATEGORÍAS
+// 7.- VISTA CASE STUDIES: Grid 3 columnas (case-studies.json)
 
-
-const vistaGlobalBtn = document.getElementById('vistaGlobal');
-window.vistaGlobalActiva = false;
-window.categoryTitles = []; // Array para guardar los títulos de categoría
-
-if (vistaGlobalBtn) {
-    vistaGlobalBtn.addEventListener('click', () => {
-        // Solo ejecutar si el botón no está activo
-        if (window.headerLeftButtons && window.headerLeftButtons.vistaGlobalBtnHeader.classList.contains('button-active')) {
+if (vistaCaseStudiesBtn) {
+    vistaCaseStudiesBtn.addEventListener('click', () => {
+        console.log('[MENU DEBUG] Click en Case Studies');
+        
+        const currentActive = Array.from(viewNavButtons).find(btn => btn.classList.contains('button-active'));
+        
+        if (currentActive === vistaCaseStudiesBtn) return; // Ya está activo
+        
+        // Cambiar a case-studies.json
+        const switched = switchDataSource('case-studies');
+        if (!switched) {
+            console.error('[CASE STUDIES] Error al cambiar a case-studies');
             return;
         }
         
-        const thumbs = document.querySelectorAll('[class*="thumb-"]');
-        const state = Flip.getState(thumbs);
-
+        // Limpiar vistas anteriores
+        cleanAllViews();
         
+        // Activar vista case studies
+        window.vistaCaseStudiesActiva = true;
+        document.body.classList.add('view-case-studies');
+        document.body.style.overflow = '';
+        lenis.start();
         
-        if (!window.vistaGlobalActiva) {
-            // Activar vista global
-            window.vistaGlobalActiva = true;
-            document.body.classList.add('view-global');
-            
-            // Guardar posición de scroll actual
-            const currentScrollY = window.scrollY || window.pageYOffset;
-            
-            // Si venimos de vista listado, desactivarla
-            const comingFromListado = window.vistaListadoActiva;
-            if (comingFromListado) {
-                window.vistaListadoActiva = false;
-                document.body.classList.remove('view-listado');
-            }
-            
-            // Activar botón vistaGlobal en el header
-            if (window.headerLeftButtons && window.toggleActiveButton) {
-                const buttonToDeactivate = comingFromListado ? window.headerLeftButtons.vistaListadoBtn : window.headerLeftButtons.vistaGridBtn;
-                toggleActiveButton(window.headerLeftButtons.vistaGlobalBtnHeader, buttonToDeactivate);
-            }
-            
-            // Ocultar container-scroll
-            const containerScroll = document.querySelector('.container-scroll');
-            if (containerScroll) {
-                gsap.to(containerScroll, {
-                    opacity: 0,
-                    duration: 0.6,
-                    display: 'none',
-                    ease: 'power2.inOut'
-                });
-            }
-
-            
-            // Matar ScrollTriggers del parallax y limpiar transforms
-            ScrollTrigger.getAll().forEach(st => {
-                if (st.vars && st.vars.trigger === document.querySelector("#portfolio-items")) {
-                    st.kill();
-                }
-            });
-            
-            // Limpiar transforms de parallax de todos los thumbs
-            thumbs.forEach(thumb => {
-                gsap.set(thumb, { y: 0, clearProps: "transform" });
-            });
-            
-            // Obtener categorías únicas
-            const categorias = [...new Set(trabajosData.map(t => t.categoria))];
-            const numCategorias = categorias.length;
-            
-            // Leer configuración de vista global desde CSS
-            const rootStyles = getComputedStyle(document.documentElement);
-            const globalViewCols = parseInt(rootStyles.getPropertyValue('--global-view-cols')) || 2;
-            const globalViewRows = rootStyles.getPropertyValue('--global-view-rows').trim() === 'auto' 
-                ? Math.ceil(numCategorias / globalViewCols) 
-                : parseInt(rootStyles.getPropertyValue('--global-view-rows')) || 2;
-            const thumbsPerRow = parseInt(rootStyles.getPropertyValue('--global-thumbs-per-row')) || 6;
-            const categorySpacing = parseInt(rootStyles.getPropertyValue('--global-category-spacing')) || 60;
-            const titleSpacing = parseInt(rootStyles.getPropertyValue('--global-title-spacing')) || 40;
-            const titleSize = parseInt(rootStyles.getPropertyValue('--global-title-size')) || 14;
-            
-            // Calcular distribución de grupos en el viewport
-            const cols = globalViewCols;
-            const rows = globalViewRows;
-            
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const margin = viewportWidth <= 480 ? 40 : 120; // Menos margen en móvil INCLUIR EN VARIABLES CSS
-            
-            // Espacio disponible para cada grupo
-            const groupWidth = (viewportWidth - margin * 2) / cols;
-            
-            // Configuración de thumbs dentro de cada grupo
-            const thumbSpan = 1;
-            const gapSpan = 1;
-            const totalSpanPerRow = thumbsPerRow * (thumbSpan + gapSpan);
-            
-            // Tamaño de cada thumb basado en el espacio del grupo
-            const thumbSize = Math.min(
-                (groupWidth - (viewportWidth <= 480 ? 40 : 100)) / thumbsPerRow,
-                viewportWidth <= 480 ? 50 : 60 // Tamaño máximo adaptado
-            );
-            
-            // Variable para tracking de posición vertical acumulativa
-            let currentY = margin;
-            
-            // Pre-calcular altura máxima por fila en desktop para centrado correcto
-            const maxHeightPerRow = [];
-            if (viewportWidth > 480) {
-                for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
-                    let maxInRow = 0;
-                    categorias.forEach((cat, catIndex) => {
-                        const catRow = Math.floor(catIndex / cols);
-                        if (catRow === rowIndex) {
-                            const thumbsInCat = trabajosData.filter(t => t.categoria === cat).length;
-                            const numRows = Math.ceil(thumbsInCat / thumbsPerRow);
-                            const blockH = numRows * thumbSize;
-                            maxInRow = Math.max(maxInRow, blockH);
-                        }
-                    });
-                    maxHeightPerRow.push(maxInRow);
-                }
-            }
-            
-            categorias.forEach((categoria, catIndex) => {
-                // Obtener thumbs de esta categoría
-                const thumbsEnCategoria = trabajosData
-                    .map((trabajo, index) => ({ trabajo, index }))
-                    .filter(({ trabajo }) => trabajo.categoria === categoria);
-                
-                // Calcular posición del grupo en la cuadrícula de grupos
-                const groupCol = catIndex % cols;
-                const groupRow = Math.floor(catIndex / cols);
-                
-                // Calcular filas necesarias para esta categoría ANTES de calcular posición
-                const numThumbsInCat = thumbsEnCategoria.length;
-                const numRows = Math.ceil(numThumbsInCat / thumbsPerRow);
-                const blockHeight = numRows * thumbSize;
-                
-                // Posición base del grupo - Centrar correctamente
-                const totalGridWidth = cols * groupWidth;
-                const gridOffsetX = (viewportWidth - totalGridWidth) / 2;
-                const groupBaseX = gridOffsetX + (groupCol * groupWidth) + (groupWidth / 2);
-                
-                // En móvil (1 columna) usar posición vertical acumulativa
-                // En desktop/tablet usar grid basado en viewport
-                let groupBaseY;
-                if (viewportWidth <= 480) {
-                    groupBaseY = currentY + blockHeight / 2 + titleSpacing;
-                    currentY = currentY + blockHeight + categorySpacing;
-                } else {
-                    // Calcular altura total usando las alturas máximas por fila
-                    const totalContentHeight = maxHeightPerRow.reduce((sum, h) => sum + h, 0) + (rows - 1) * categorySpacing;
-                    const availableHeight = viewportHeight - margin * 2;
-                    
-                    // Centrar respecto al viewport visible, no al top de la página
-                    const verticalOffset = totalContentHeight < availableHeight 
-                        ? currentScrollY + margin + (availableHeight - totalContentHeight) / 2 
-                        : currentScrollY + margin;
-                    
-                    // Calcular Y acumulando las filas anteriores
-                    let yPosition = verticalOffset;
-                    for (let i = 0; i < groupRow; i++) {
-                        yPosition += maxHeightPerRow[i] + categorySpacing;
-                    }
-                    groupBaseY = yPosition + maxHeightPerRow[groupRow] / 2;
-                }
-                
-                // Dimensiones totales del bloque de thumbs
-                const blockWidth = thumbsPerRow * thumbSize;
-                
-                // Offset para centrar el bloque
-                const offsetX = -blockWidth / 2;
-                const offsetY = -blockHeight / 2;
-                
-                // Crear título de categoría METER EN CSS
-                const categoryTitle = document.createElement('div');
-                categoryTitle.className = 'category-title';
-                categoryTitle.textContent = categoria;
-                categoryTitle.style.cssText = `
-                    position: absolute;
-                    left: ${groupBaseX + offsetX}px;
-                    top: ${groupBaseY + offsetY - titleSpacing}px;
-                `;
-                document.body.appendChild(categoryTitle);
-                window.categoryTitles.push(categoryTitle);
-                
-                // Animar entrada del título
-                gsap.to(categoryTitle, {
-                    opacity: 1,
-                    duration: 1,
-                    delay: 1,
-                    ease: 'power2.out'
-                });
-                
-                thumbsEnCategoria.forEach(({ index }, thumbIndexInCat) => {
-                    const thumb = thumbs[index];
-                    
-                    // Calcular posición dentro del grupo
-                    const colInGroup = thumbIndexInCat % thumbsPerRow;
-                    const rowInGroup = Math.floor(thumbIndexInCat / thumbsPerRow);
-                    
-                    const thumbX = groupBaseX + offsetX + (colInGroup * thumbSize);
-                    const thumbY = groupBaseY + offsetY + (rowInGroup * thumbSize);
-                    
-                    // Aplicar position absolute en lugar de fixed para permitir scroll
-                    thumb.style.position = 'absolute';
-                    thumb.style.left = `${thumbX}px`;
-                    thumb.style.top = `${thumbY}px`;
-                    thumb.style.zIndex = '1'; // Z-index explícito para thumbs
-                    thumb.style.willChange = 'auto'; // Desactivar will-change para que z-index funcione
-                    thumb.style.width = `${thumbSize}px`;
-                    thumb.style.height = `${thumbSize}px`;
-                    thumb.style.gridRow = 'auto';
-                    thumb.style.gridColumn = 'auto';
-                    thumb.style.aspectRatio = '1 / 1';
-                    thumb.style.borderRadius = '';
-                });
-            });
-            
-            // Animar con Flip
-            Flip.from(state, {
-                duration: 1.2,
-                ease: "power2.inOut",
-                stagger: 0.02,
-                absolute: true,
-                scale: true
-            });
-            
-        } else {
-            // Desactivar vista global - volver a vista aleatoria
-            window.vistaGlobalActiva = false;
-            document.body.classList.remove('view-global');
-            
-            // Activar botón vistaGrid en el header
-            if (window.headerLeftButtons && window.toggleActiveButton) {
-                toggleActiveButton(window.headerLeftButtons.vistaGridBtn, window.headerLeftButtons.vistaGlobalBtnHeader);
-            }
-            // Eliminar títulos de categoría
-            window.categoryTitles.forEach(title => {
-                gsap.to(title, {
-                    opacity: 0,
-                    duration: 0.3,
-                    ease: 'power2.in',
-                    onComplete: () => {
-                        title.remove();
-                    }
-                });
-            });
-            window.categoryTitles = [];
-            
-            // Mostrar container-scroll
-            const containerScroll = document.querySelector('.container-scroll');
-            if (containerScroll) {
-                gsap.to(containerScroll, {
-                    opacity: 1,
-                    duration: 0.6,
-                    display: 'block',
-                    ease: 'power2.inOut'
-                });
-            }
-            
-            thumbs.forEach((thumb) => {
-                // Obtener el índice correcto desde la clase del thumb
-                const classList = Array.from(thumb.classList);
-                const thumbClass = classList.find(c => c.startsWith('thumb-'));
-                const index = parseInt(thumbClass.replace('thumb-', '')) - 1;
-                
-                // Quitar position fixed y restaurar grid
-                thumb.style.position = '';
-                thumb.style.left = '';
-                thumb.style.top = '';
-                thumb.style.width = '';
-                thumb.style.height = '';
-                thumb.style.borderRadius = '';
-                
-                // Leer configuración actual de CSS para restaurar correctamente
-                const rootStyles = getComputedStyle(document.documentElement);
-                const thumbSpan = parseInt(rootStyles.getPropertyValue('--grid-thumb-span')) || 2;
-                
-                // Restaurar posiciones originales con el span correcto
-                if (posicionesOriginales[index]) {
-                    thumb.style.gridRow = `${posicionesOriginales[index].gridRow} / span ${thumbSpan}`;
-                    thumb.style.gridColumn = `${posicionesOriginales[index].gridColumn} / span ${thumbSpan}`;
-                    thumb.style.aspectRatio = '1 / 1';
-                }
-            });
-            
-            // Animar con Flip
-            Flip.from(state, {
-                duration: 1.2,
-                ease: "power2.inOut",
-                stagger: 0.02,
-                scale: true,
-                simple: true,
-                onComplete: () => {
-                    thumbs.forEach((thumb) => {
-                        gsap.set(thumb, { clearProps: "transform" });
-                    });
-                    
-                    // Reiniciar parallax
-                    thumbsMotion();
-                }
+        // Actualizar visibilidad del botón (DESPUÉS de agregar la clase)
+        updateImageToggleVisibility();
+        
+        // Cambiar botón activo
+        window.toggleActiveButton(vistaCaseStudiesBtn, currentActive);
+        
+        // Ocultar el tubo 3D
+        const containerScroll = document.querySelector('.container-scroll');
+        if (containerScroll) {
+            gsap.to(containerScroll, {
+                opacity: 0,
+                duration: 0.3,
+                display: 'none'
             });
         }
+        
+        // Crear grid de Case Studies (3 columnas)
+        const cuadriculaTrabajos = document.querySelector("#portfolio-items .thumbs-grid");
+        cuadriculaTrabajos.innerHTML = ''; // Limpiar contenido anterior
+        
+        const caseStudies = getCurrentData();
+        
+        caseStudies.forEach((proyecto) => {
+            // Crear artículo para cada case study
+            const article = document.createElement('article');
+            article.className = 'case-study-card';
+            article.dataset.projectId = proyecto.id;
             
+            // Thumbnail
+            const thumbnailContainer = document.createElement('div');
+            thumbnailContainer.className = 'case-study-card__thumbnail';
+            
+            const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(proyecto.thumbnail);
+            
+            if (isVideo) {
+                const video = document.createElement('video');
+                video.src = '';  // ✅ LAZY: src vacío
+                video.autoplay = false;  // ✅ No autoplay
+                video.loop = true;
+                video.muted = true;
+                video.playsInline = true;
+                video.dataset.src = buildAssetUrl(proyecto.thumbnail);
+                thumbnailContainer.appendChild(video);
+                
+                // ✅ Registrar con MediaManager
+                window.mediaManager.observe(video);
+            } else {
+                const img = document.createElement('img');
+                img.src = '';  // ✅ LAZY: src vacío
+                img.alt = proyecto.titulo;
+                img.dataset.src = buildAssetUrl(proyecto.thumbnail);
+                thumbnailContainer.appendChild(img);
+                
+                // ✅ Registrar con MediaManager
+                window.mediaManager.observe(img);
+            }
+            
+            article.appendChild(thumbnailContainer);
+            
+            // Info: Categoría y Título
+            const infoContainer = document.createElement('div');
+            infoContainer.className = 'case-study-card__info';
+            
+            const categoria = document.createElement('p');
+            categoria.className = 'case-study-card__category work-category';
+            categoria.textContent = proyecto.categoria || 'Sin categoría';
+            infoContainer.appendChild(categoria);
+            
+            const titulo = document.createElement('h3');
+            titulo.className = 'case-study-card__title work-title text-display';
+            titulo.textContent = proyecto.titulo;
+            infoContainer.appendChild(titulo);
+            
+            article.appendChild(infoContainer);
+            
+            // Click handler: abrir el project wrapper directamente
+            article.addEventListener('click', () => {
+                console.log('[CASE STUDIES] Abriendo proyecto:', proyecto.titulo);
+                openProjectWrapper(proyecto);
+            });
+            
+            cuadriculaTrabajos.appendChild(article);
+        });
+        
+        // Animar entrada con fade-in
+        gsap.fromTo(cuadriculaTrabajos.querySelectorAll('.case-study-card'),
+            { opacity: 0, y: 24 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1, 
+                ease: 'power4.out',
+                stagger: 0.02
+            }
+        );
     });
 }
-
-// 7.- HOVER EFFECT - MOSTRAR IMAGEN Y WORK-INFO SIGUIENDO CURSOR
+// 8.- HOVER EFFECT - MOSTRAR IMAGEN Y WORK-INFO SIGUIENDO CURSOR
 
 function setupThumbsHover() {
     const cuadriculaTrabajos = document.querySelector('#portfolio-items .thumbs-grid');
@@ -1087,124 +1242,144 @@ function setupThumbsHover() {
     // Map para trackear estado de cada thumb
     const thumbStates = new WeakMap();
     
-    // Delegación de eventos - mouseenter
-    cuadriculaTrabajos.addEventListener('mouseenter', (e) => {
-        const thumb = e.target.closest('[class*="thumb-"]');
-        if (!thumb) return;
-        
-        const workCategory = thumb.querySelector('.work-category');
-        const workTitle = thumb.querySelector('.work-title');
-        
-        if (document.body.classList.contains('view-listado')) {
-            if (hoverCategory && workCategory) {
-                hoverCategory.textContent = workCategory.textContent;
-            }
-            if (hoverTitle && workTitle) {
-                hoverTitle.textContent = workTitle.textContent;
-            }
-            hoverInfo.classList.add('is-visible');
-        }
-        
-        const wasImageHidden = thumb.classList.contains('hide-image');
-        thumbStates.set(thumb, { wasImageHidden });
-        
-        if (wasImageHidden) {
-            thumb.classList.remove('hide-image');
-            const media = thumb.querySelector('video, img');
-            if (media && document.body.classList.contains('view-listado')) {
-                media.style.display = '';
-                gsap.to(media, {
-                    opacity: 1,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
-            }
-        }
-    }, true);
+    // Obtener todos los thumbs
+    const thumbs = document.querySelectorAll('[class*="thumb-"]');
     
-    // Delegación de eventos - mousemove
-    cuadriculaTrabajos.addEventListener('mousemove', (e) => {
-        const thumb = e.target.closest('[class*="thumb-"]');
-        if (!thumb) return;
-        
-        if (hoverInfo && document.body.classList.contains('view-listado')) {
-            const offsetX = 24;
-            const offsetY = -24;
-            hoverInfo.style.left = `${e.clientX + offsetX}px`;
-            hoverInfo.style.top = `${e.clientY + offsetY}px`;
-        }
-    });
-    
-    // Delegación de eventos - mouseleave
-    cuadriculaTrabajos.addEventListener('mouseleave', (e) => {
-        const thumb = e.target.closest('[class*="thumb-"]');
-        if (!thumb) return;
-        
-        if (document.body.classList.contains('view-listado')) {
-            hoverInfo.classList.remove('is-visible');
-        }
-        
-        const state = thumbStates.get(thumb);
-        if (state?.wasImageHidden) {
-            const media = thumb.querySelector('video, img');
-            if (media && document.body.classList.contains('view-listado')) {
-                gsap.to(media, {
-                    opacity: 0,
-                    duration: 0.3,
-                    ease: 'power2.in',
-                    onComplete: () => {
-                        thumb.classList.add('hide-image');
-                        media.style.display = 'none';
-                    }
-                });
-            } else {
+    thumbs.forEach(thumb => {
+        // Evento mouseenter en cada thumb
+        thumb.addEventListener('mouseenter', (e) => {
+            const workCategory = thumb.querySelector('.work-category');
+            const workTitle = thumb.querySelector('.work-title');
+            
+            // Vista Listado, Random y Categorías: hover info sigue el cursor
+            if (document.body.classList.contains('view-listado') || 
+                document.body.classList.contains('view-random') ||
+                document.body.classList.contains('view-categories')) {
+                if (hoverCategory && workCategory) {
+                    hoverCategory.textContent = workCategory.textContent;
+                }
+                if (hoverTitle && workTitle) {
+                    hoverTitle.textContent = workTitle.textContent;
+                }
+                hoverInfo.classList.add('is-visible');
+                hoverInfo.classList.remove('is-centered');
+            }
+            // Vista Clients: hover info centrado
+            else if (document.body.classList.contains('view-clients')) {
+                if (hoverCategory && workCategory) {
+                    hoverCategory.textContent = workCategory.textContent;
+                }
+                if (hoverTitle && workTitle) {
+                    hoverTitle.textContent = workTitle.textContent;
+                }
+                hoverInfo.classList.add('is-visible', 'is-centered');
+                
+                // Posicionar en el centro
+                hoverInfo.style.left = '50%';
+                hoverInfo.style.top = '50%';
+                hoverInfo.style.transform = 'translate(-50%, -50%)';
+            }
+            
+            // Guardar estado actual de imagesVisible
+            const globalImagesVisible = imagesVisible;
+            thumbStates.set(thumb, { globalImagesVisible });
+            
+            // En hover, mostrar lo opuesto a lo que está visible globalmente
+            if (imagesVisible) {
+                // Si imágenes están visibles → ocultar imagen (mostrar color)
                 thumb.classList.add('hide-image');
+                const media = thumb.querySelector('video, img');
+                if (media) {
+                    gsap.to(media, {
+                        opacity: 0,
+                        duration: 0.3,
+                        ease: 'power2.in'
+                    });
+                }
+            } else {
+                // Si imágenes están ocultas → mostrar imagen
+                thumb.classList.remove('hide-image');
+                const media = thumb.querySelector('video, img');
+                if (media) {
+                    media.style.display = '';
+                    gsap.to(media, {
+                        opacity: 1,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                }
             }
-        }
-    }, true);
-}
-
-
-
-// 8.- MOTION THUMBS - PARALLAX CON STAGGER
-
-function thumbsMotion() {
-    
-
-
-    const section = document.querySelector("#portfolio-items");
-    const thumbs = document.querySelectorAll('[class*="thumb-"]'); 
-    
-    if (thumbs.length === 0) { 
-        console.warn('No se encontraron elementos .thumb-*');
-        return; 
-    }
-    
-    thumbs.forEach((thumb, index) => {
-
-        const staggerOffset = index * .2; // Ajusta este valor para más o menos stagger
+        });
         
-        gsap.to(thumb, {
-            y: 0, // (500) Esto provoca el salto despues del flip
-            ease: "none",
-            scrollTrigger: {
-                trigger: section,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: staggerOffset, // Cada thumb tiene un scrub diferente
-                markers: false,
+        // Evento mousemove en cada thumb
+        thumb.addEventListener('mousemove', (e) => {
+            // Solo seguir cursor en vista listado, random y categorías
+            if (hoverInfo && (document.body.classList.contains('view-listado') || 
+                document.body.classList.contains('view-random') ||
+                document.body.classList.contains('view-categories'))) {
+                const offsetX = 24;
+                const offsetY = -24;
+                hoverInfo.style.left = `${e.clientX + offsetX}px`;
+                hoverInfo.style.top = `${e.clientY + offsetY}px`;
+                hoverInfo.style.transform = '';
+            }
+        });
+        
+        // Evento mouseleave en cada thumb
+        thumb.addEventListener('mouseleave', (e) => {
+            if (document.body.classList.contains('view-listado') || 
+                document.body.classList.contains('view-random') ||
+                document.body.classList.contains('view-categories') ||
+                document.body.classList.contains('view-clients')) {
+                hoverInfo.classList.remove('is-visible');
+            }
+            
+            const state = thumbStates.get(thumb);
+            if (state) {
+                const globalImagesVisible = state.globalImagesVisible;
+                const media = thumb.querySelector('video, img');
+                
+                // Restaurar al estado global actual
+                if (globalImagesVisible) {
+                    // Las imágenes deberían estar visibles globalmente
+                    thumb.classList.remove('hide-image');
+                    if (media) {
+                        gsap.to(media, {
+                            opacity: 1,
+                            duration: 0.3,
+                            ease: 'power2.out'
+                        });
+                    }
+                } else {
+                    // Las imágenes deberían estar ocultas globalmente
+                    thumb.classList.add('hide-image');
+                    if (media) {
+                        gsap.to(media, {
+                            opacity: 0,
+                            duration: 0.3,
+                            ease: 'power2.in',
+                            onComplete: () => {
+                                media.style.display = 'none';
+                            }
+                        });
+                    }
+                }
             }
         });
     });
 }
 
 
+
+
+
+
 // 9.- THEME TOGGLE CON MORPH SVG - REVISAR
 
-const themeToggleBtn = document.querySelector('.header-right button:last-child');
+const themetoggleImgColor = document.querySelector('.header-right button:last-child');
 
-if (themeToggleBtn) {
-    const svgPath = themeToggleBtn.querySelector('svg path');
+if (themetoggleImgColor) {
+    const svgPath = themetoggleImgColor.querySelector('svg path');
     
     // Paths del SVG
     const moonPath = "M7 0C8.07363 0 9.09073 0.241865 10 0.673828C7.63509 1.79731 6 4.20763 6 7C6 9.79222 7.6353 12.2016 10 13.3252C9.09063 13.7573 8.07378 14 7 14C3.13401 14 0 10.866 0 7C0 3.13401 3.13401 0 7 0Z";
@@ -1212,7 +1387,7 @@ if (themeToggleBtn) {
     
     let isLightMode = false;
     
-    themeToggleBtn.addEventListener('click', () => {
+    themetoggleImgColor.addEventListener('click', () => {
         isLightMode = !isLightMode;
         
         // Morph del path con GSAP
@@ -1233,9 +1408,50 @@ if (themeToggleBtn) {
 let activeThumb = null; // Variable para trackear el thumb activo
 let visitedThumbs = []; // Array para trackear thumbs visitados
 let expandedThumb = null; // El thumb expandido actual
+let reelQuickView = null;
+let reelQuickViewVideo = null;
 
 // Exponer visitedThumbs como variable global para gallery-navigation.js
 window.visitedThumbs = visitedThumbs;
+
+// Variable para guardar la referencia al listener de quick-view
+let quickViewListenerFn = null;
+
+function ensureThumbMediaVisible(thumbElement) {
+    if (!thumbElement) return;
+
+    // Asegurar que el estado de ocultación no afecte al quick view
+    thumbElement.classList.remove('hide-image');
+
+    const media = thumbElement.querySelector('video, img');
+    if (media) {
+        media.style.display = '';
+        media.style.opacity = '1';
+
+        if (media.tagName === 'VIDEO') {
+            if (!media.src && media.dataset && media.dataset.src) {
+                media.src = media.dataset.src;
+                media.load();
+            }
+        } else if (media.tagName === 'IMG') {
+            if (!media.src && media.dataset && media.dataset.src) {
+                media.src = media.dataset.src;
+            }
+        }
+    } else if (thumbElement.classList.contains('thumb-image')) {
+        const src = thumbElement.dataset ? thumbElement.dataset.src : '';
+        const hasBg = thumbElement.style.backgroundImage && thumbElement.style.backgroundImage !== 'none';
+
+        if (src && !hasBg) {
+            if (window.mediaManager && typeof window.mediaManager.loadMedia === 'function') {
+                window.mediaManager.loadMedia(thumbElement);
+            } else {
+                thumbElement.style.backgroundImage = `url('${src}')`;
+                thumbElement.style.opacity = '1';
+            }
+        }
+    }
+}
 
 function setupQuickView() {
     const cuadriculaTrabajos = document.querySelector('#portfolio-items .thumbs-grid');
@@ -1245,8 +1461,13 @@ function setupQuickView() {
         return;
     }
     
-    // Delegación de eventos - un solo listener para todos los thumbs
-    cuadriculaTrabajos.addEventListener('click', (e) => {
+    // Remover listener anterior si existe
+    if (quickViewListenerFn) {
+        cuadriculaTrabajos.removeEventListener('click', quickViewListenerFn);
+    }
+    
+    // Crear nuevo listener function
+    quickViewListenerFn = (e) => {
         const thumb = e.target.closest('[class*="thumb-"]');
         if (!thumb) return;
         
@@ -1265,7 +1486,10 @@ function setupQuickView() {
         } else {
             abrirThumb(thumb);
         }
-    });
+    };
+    
+    // Agregar nuevo listener
+    cuadriculaTrabajos.addEventListener('click', quickViewListenerFn);
 }
 
 function abrirThumb(thumb) {
@@ -1276,6 +1500,8 @@ function abrirThumb(thumb) {
     
     // Obtener datos del trabajo
     const workId = thumb.dataset.workId;
+    // Obtener datos de la fuente actual
+    const trabajosData = getCurrentData();
     const trabajo = trabajosData.find(t => t.id == workId);
     
     if (!trabajo) {
@@ -1313,6 +1539,9 @@ function abrirThumb(thumb) {
     thumbClone.style.zIndex = '1001';
     thumbClone.style.pointerEvents = 'auto';
     thumbClone.style.cursor = 'default';
+
+    // Forzar visibilidad del media en quick view
+    ensureThumbMediaVisible(thumbClone);
     
     // Copiar estilos computados del thumb original
     const thumbRect = thumb.getBoundingClientRect();
@@ -1387,7 +1616,7 @@ function abrirThumb(thumb) {
                     top: targetTop,
                     width: targetWidth,
                     height: targetHeight,
-                    borderRadius: '2rem',
+                    //borderRadius: '2rem',
                     duration: 0.6,
                     transform: 'rotateX(0deg)',
                     ease: 'power3.inOut',
@@ -1396,6 +1625,15 @@ function abrirThumb(thumb) {
                             mostrarControlesYInfo(thumbClone);
                             thumbClone.style.overflow = 'visible';
                         }, 400); 
+                    },
+                    onComplete: () => {
+                        // ✅ Reproducir video automáticamente cuando se abre el quick view
+                        const video = thumbClone.querySelector('video');
+                        if (video && video.src) {
+                            video.play().catch(err => {
+                                console.log('[QuickView] Autoplay bloqueado (normal en algunos navegadores)');
+                            });
+                        }
                     }
                 });
                 
@@ -1422,6 +1660,15 @@ function abrirThumb(thumb) {
                             mostrarControlesYInfo(thumbClone);
                             thumbClone.style.overflow = 'visible';
                         }, 400); 
+                    },
+                    onComplete: () => {
+                        // ✅ Reproducir video automáticamente cuando se abre el quick view
+                        const video = thumbClone.querySelector('video');
+                        if (video && video.src) {
+                            video.play().catch(err => {
+                                console.log('[QuickView] Autoplay bloqueado (normal en algunos navegadores)');
+                            });
+                        }
                     }
                 });
             }
@@ -1466,7 +1713,7 @@ function abrirThumb(thumb) {
                         top: targetTop,
                         width: targetWidth,
                         height: targetHeight,
-                        borderRadius: '2rem',
+                        // borderRadius: '2rem',
                         duration: 0.6,
                         ease: 'power2.inOut',
                         onStart: () => {
@@ -1579,7 +1826,13 @@ function prepararContenidoExpandido(thumbClone, trabajo) {
         }
     }
     
-    // Crear work info
+    // Crear work info - SOLO PARA RANDOM.JSON
+    // Si es case-studies, se abre directo el wrapper sin bocadillo
+    if (currentDataSource !== 'random') {
+        console.log('[QUICK-VIEW] Ignorando bocadillo para case-studies (se abre wrapper directo)');
+        return; // No mostrar bocadillo para case-studies
+    }
+    
     const workInfo = document.createElement('div');
     workInfo.className = 'work-info expanded-info';
     
@@ -1589,39 +1842,62 @@ function prepararContenidoExpandido(thumbClone, trabajo) {
     
     const workTitle = document.createElement('h3');
     workTitle.className = 'work-title text-display';
-    workTitle.textContent = trabajo.titulo;
+    workTitle.textContent = trabajo.titulo || getTitleFromThumbnail(trabajo.thumbnail);
     
-    // Crear botón de expand
-    const expandBtn = document.createElement('button');
-    expandBtn.className = 'expand-btn reactive-scale reactive-hover';
-    expandBtn.innerHTML = '<span class="material-symbols-outlined">expand_content</span>';
+    // Crear botón de expand - SOLO SI HAY CONNECTED-PROJECT
+    let expandBtn = null;
+    if (trabajo['connected-project'] && trabajo['connected-project'] !== '') {
+        expandBtn = document.createElement('button');
+        expandBtn.className = 'expand-btn reactive-scale reactive-hover';
+        expandBtn.innerHTML = '<span class="material-symbols-outlined">expand_content</span>';
+        
+        // Event listener para abrir el case study asociado
+        expandBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Buscar el case study asociado
+            const connectedId = trabajo['connected-project'];
+            const caseStudy = caseStudiesData.find(cs => cs.id == connectedId);
+            if (caseStudy) {
+                openProjectWrapper(caseStudy);
+                cerrarDetalle();
+            } else {
+                console.warn('[QUICK-VIEW] Case study no encontrado:', connectedId);
+            }
+        });
+    }
     
-    // Event listener para abrir el project wrapper al hacer clic en el botón
-    expandBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openProjectWrapper(trabajo);
-        cerrarDetalle(); // Opcional: cerrar el quick view al abrir el wrapper
-    });
-    
+    // Mostrar "tools" en lugar de "comentario"
     const workDetails = document.createElement('p');
     workDetails.className = 'work-details';
-    const placeholderMessages = [
-        'Bonito, ¿no?. Si te gusta abre el proyecto para ver más.',
-        '¿Te intriga? Abre el proyecto para ver los detalles.',
-        'Más info dentro del proyecto. Ábrelo si te apetece.',
-        'Pequeño teaser. Abre el proyecto para verlo completo.',
-        'Si quieres ver más, entra al proyecto.'
-    ];
-
-    workDetails.textContent = trabajo.comentario || placeholderMessages[Math.floor(Math.random() * placeholderMessages.length)];
-
-
-    workInfo.appendChild(expandBtn);
+    
+    if (trabajo.tools && trabajo.tools.length > 0) {
+        // Si hay tools, mostrarlas
+        workDetails.textContent = 'Tools: ' + (Array.isArray(trabajo.tools) ? trabajo.tools.join(', ') : trabajo.tools);
+    } else {
+        // Si no hay tools, mostrar comentario si existe, o un placeholder
+        const placeholderMessages = [
+            'Bonito, ¿no?',
+            'Made with love.',
+            '¿Te gusta? Contáctame para colaborar.',
+            '¿Quieres saber más? Hablemos.',
+            'Creado con amor y... café.',
+            '¿Interesado en este proyecto? Envíame un mensaje.',
+            'Cada proyecto tiene una historia, ¿quieres conocerla?',
+            '¡Espero que te inspire!',
+            '¿Quieres colaborar en algo similar? Contáctame.'
+        ];
+        workDetails.textContent = trabajo.comentario || placeholderMessages[Math.floor(Math.random() * placeholderMessages.length)];
+    }
+    
+    // Agregar elementos al workInfo (orden: btn, categoría, título, detalles)
+    if (expandBtn) {
+        workInfo.appendChild(expandBtn);
+    }
     workInfo.appendChild(workCategory);
     workInfo.appendChild(workTitle);
     workInfo.appendChild(workDetails);
     
-    // Añadir work-info directamente al body (no al thumbClone) para que position: fixed funcione correctamente
+    // Añadir work-info directamente al body
     document.body.appendChild(workInfo);
     
     // Botón de navegación (si existe galería)
@@ -1714,6 +1990,118 @@ function mostrarControlesYInfo(thumbClone) {
 const scrim = document.createElement('div');
 scrim.className = 'quick-view-scrim';
 document.body.appendChild(scrim);
+
+function openReelQuickView() {
+    if (reelQuickView) return;
+
+    if (activeThumb) {
+        cerrarDetalle();
+    }
+
+    const reelSource = document.querySelector('.video-reel video source');
+    const reelVideoElement = document.querySelector('.video-reel video');
+    const reelSrc = reelSource ? reelSource.getAttribute('src') : (reelVideoElement?.currentSrc || reelVideoElement?.getAttribute('src'));
+
+    if (!reelSrc) {
+        console.warn('[REEL] No se encontró el src del video');
+        return;
+    }
+
+    scrim.style.display = 'block';
+    gsap.to(scrim, {
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power2.out'
+    });
+
+    const container = document.createElement('div');
+    container.className = 'reel-quick-view';
+
+    const video = document.createElement('video');
+    video.src = reelSrc;
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = false;
+    video.playsInline = true;
+
+    container.appendChild(video);
+
+    const controls = createProjectVideoControls(video);
+    const muteBtn = controls.querySelector('.mute-btn');
+    if (muteBtn) {
+        muteBtn.setAttribute('data-state', 'unmuted');
+        muteBtn.innerHTML = '<span class="material-symbols-outlined">volume_up</span>';
+    }
+    controls.style.opacity = '1';
+    container.appendChild(controls);
+
+    const closeButton = document.createElement('button');
+    closeButton.className = 'close-expanded-btn reactive-scale reactive-hover';
+    closeButton.innerHTML = '<span class="material-symbols-outlined">close</span>';
+    closeButton.style.opacity = '1';
+    closeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeReelQuickView();
+    });
+
+    container.appendChild(closeButton);
+    document.body.appendChild(container);
+
+    reelQuickView = container;
+    reelQuickViewVideo = video;
+
+    gsap.fromTo(container, {
+        opacity: 0,
+        scale: 0.96
+    }, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: 'power3.out'
+    });
+
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {
+            console.log('[REEL] Autoplay bloqueado (normal en algunos navegadores)');
+        });
+    }
+}
+
+function closeReelQuickView() {
+    if (!reelQuickView) return;
+
+    const container = reelQuickView;
+    const video = reelQuickViewVideo;
+
+    gsap.to(container, {
+        opacity: 0,
+        scale: 0.96,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+            if (video) {
+                video.pause();
+            }
+            if (container && container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+            reelQuickView = null;
+            reelQuickViewVideo = null;
+        }
+    });
+
+    gsap.to(scrim, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+            if (!activeThumb) {
+                scrim.style.display = 'none';
+            }
+        }
+    });
+}
 
 // Función para cerrar el detalle
 function cerrarDetalle() {
@@ -1816,14 +2204,52 @@ function cerrarDetalle() {
 }
 
 // Event listener para cerrar al hacer clic en el scrim
-scrim.addEventListener('click', cerrarDetalle);
+scrim.addEventListener('click', () => {
+    cerrarDetalle();
+    closeReelQuickView();
+});
 
 // Event listener para cerrar con ESC
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && activeThumb) {
-        cerrarDetalle();
+    if (e.key === 'Escape') {
+        if (activeThumb) {
+            cerrarDetalle();
+        }
+        closeReelQuickView();
     }
 });
+
+const reelBtn = document.getElementById('reelBtn');
+if (reelBtn) {
+    reelBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openReelQuickView();
+    });
+}
+
+// Toggle minimizar video reel (solo deja el botón visible, pineado abajo izquierda)
+const hideBtn = document.getElementById('hideBtn');
+const videoReel = document.querySelector('.video-reel');
+
+function setReelMinimized(isMinimized) {
+    if (!videoReel) return;
+    videoReel.classList.toggle('is-minimized', isMinimized);
+
+    if (hideBtn) {
+        const icon = hideBtn.querySelector('.material-symbols-outlined');
+        if (icon) {
+            icon.textContent = isMinimized ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+        }
+    }
+}
+
+if (hideBtn && videoReel) {
+    hideBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const shouldMinimize = !videoReel.classList.contains('is-minimized');
+        setReelMinimized(shouldMinimize);
+    });
+}
 
 
 
@@ -1902,7 +2328,7 @@ function openProjectWrapper(trabajo) {
         if (isVideo) {
             // Crear video
             const video = document.createElement('video');
-            video.src = `assets/img/${trabajo.thumbnail}`;
+            video.src = buildAssetUrl(trabajo.thumbnail);
             video.autoplay = true;
             video.loop = true;
             video.muted = true;
@@ -1921,7 +2347,7 @@ function openProjectWrapper(trabajo) {
         } else {
             // Crear imagen
             const img = document.createElement('img');
-            img.src = `assets/img/${trabajo.thumbnail}`;
+            img.src = buildAssetUrl(trabajo.thumbnail);
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'contain';
@@ -1947,7 +2373,7 @@ function openProjectWrapper(trabajo) {
     if (projectSubtitle) {
         if (trabajo.descripcion && typeof marked !== 'undefined') {
             if (trabajo.descripcion.endsWith('.md')) {
-                fetch(trabajo.descripcion)
+                fetch(buildAssetUrl(trabajo.descripcion))
                     .then(res => res.text())
                     .then(md => {
                         projectSubtitle.innerHTML = marked.parse(md);
@@ -1970,13 +2396,8 @@ function openProjectWrapper(trabajo) {
         existingRows.forEach((row) => row.remove());
 
         const mediaItems = Array.isArray(trabajo.imagenes) ? trabajo.imagenes : [];
-        // Filtrar solo imágenes con random: false (imágenes del proyecto)
-        const projectImages = mediaItems.filter(item => {
-            // Si es string (formato antiguo), incluirlo
-            if (typeof item === 'string') return true;
-            // Si es objeto, solo incluir si random es false
-            return item.random === false;
-        });
+        // Usar todas las imágenes del array (sin filtrar por random)
+        const projectImages = mediaItems;
         
         if (projectImages.length > 0) {
             projectImages.forEach((mediaItem) => {
@@ -1989,7 +2410,7 @@ function openProjectWrapper(trabajo) {
                 const isVideo = /\.(mp4|webm|ogg|mov)$/i.test(mediaPath);
                 if (isVideo) {
                     const video = document.createElement('video');
-                    video.src = `assets/img/${mediaPath}`;
+                    video.src = buildAssetUrl(mediaPath);
                     video.autoplay = true;
                     video.loop = true;
                     video.muted = true;
@@ -2002,7 +2423,7 @@ function openProjectWrapper(trabajo) {
                     rowGrid.appendChild(createProjectVideoControls(video));
                 } else {
                     const img = document.createElement('img');
-                    img.src = `assets/img/${mediaPath}`;
+                    img.src = buildAssetUrl(mediaPath);
                     img.alt = '';
                     rowGrid.appendChild(img);
                 }

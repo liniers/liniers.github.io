@@ -1,1 +1,0 @@
-Ditto Kids is a startup creating audio content —stories, music, and podcasts— for children aged 0 to 9, with a strong focus on reducing screen time. They already had a solid brand identity (which we designed years ago) and were ready to take the next big step: launching a native app designed to scale.

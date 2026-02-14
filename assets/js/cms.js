@@ -3,6 +3,22 @@ const DRAFT_KEY = 'portfolioCmsDraft';
 const DATA_LOCAL_KEY = 'portfolioCmsData';
 const THEME_KEY = 'portfolioCmsTheme';
 
+// ===== CONFIGURACIÓN DE ASSETS REMOTOS =====
+const ASSET_BASE_URL = 'https://pub-b7331ec578274f5fa4797ea882ba092d.r2.dev/img/';
+
+function buildAssetUrl(path) {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    let cleaned = String(path).replace(/^\.?\/*/, '');
+    if (cleaned.startsWith('assets/img/')) {
+        cleaned = cleaned.replace(/^assets\/img\//, '');
+    }
+    if (cleaned.startsWith('img/')) {
+        cleaned = cleaned.replace(/^img\//, '');
+    }
+    return `${ASSET_BASE_URL}${encodeURI(cleaned)}`;
+}
+
 const state = {
     items: [],
     selectedId: null,
@@ -280,13 +296,13 @@ function renderList() {
                     // Video thumbnail: mostrar primer fotograma
                     thumbnailEl = document.createElement('video');
                     thumbnailEl.className = 'item-thumbnail';
-                    thumbnailEl.src = `assets/img/${thumbnailPath}`;
+                    thumbnailEl.src = buildAssetUrl(thumbnailPath);
                     thumbnailEl.preload = 'metadata';
                 } else {
                     // Image thumbnail
                     thumbnailEl = document.createElement('img');
                     thumbnailEl.className = 'item-thumbnail';
-                    thumbnailEl.src = `assets/img/${thumbnailPath}`;
+                    thumbnailEl.src = buildAssetUrl(thumbnailPath);
                     thumbnailEl.alt = item.titulo || 'Thumbnail';
                     thumbnailEl.onerror = () => {
                         thumbnailEl.style.background = '#ddd';
@@ -467,7 +483,7 @@ function createImageRow(imageObj = '') {
         thumbnail.innerHTML = '';
         if (!imagePath) return;
         
-        const fullPath = `assets/img/${imagePath}`;
+        const fullPath = buildAssetUrl(imagePath);
         const isVideo = /\.(mp4|webm|mov)$/i.test(imagePath);
         
         if (isVideo) {
@@ -583,7 +599,7 @@ function updateThumbnailPreview() {
 
     if (!thumbnailPath) return;
 
-    const fullPath = `assets/img/${thumbnailPath}`;
+    const fullPath = buildAssetUrl(thumbnailPath);
     const isVideo = /\.(mp4|webm|mov)$/i.test(thumbnailPath);
 
     if (isVideo) {

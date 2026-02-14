@@ -135,30 +135,29 @@
 
 
             <header class="main-header">
-            <div class="toggle-grid">
-                <button class="button-active reactive-scale reactive-hover" id="vistaListado">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <path d="M16 13.333C17.1045 13.333 17.9999 14.2285 18 15.333V16C18 17.1046 17.1046 18 16 18H2C0.895444 18 2.20018e-05 17.1046 0 16V15.333C6.6066e-05 14.2285 0.895471 13.333 2 13.333H16ZM16 6.66699C17.1046 6.66699 18 7.56242 18 8.66699V9.33398C17.9997 10.4383 17.1044 11.334 16 11.334H2C0.895607 11.334 0.000285835 10.4383 0 9.33398V8.66699C9.72168e-08 7.56242 0.895431 6.66699 2 6.66699H16ZM16 0C17.1046 0 18 0.895431 18 2V2.66699C17.9999 3.77149 17.1045 4.66699 16 4.66699H2C0.895485 4.66699 8.79688e-05 3.77149 0 2.66699V2C9.72168e-08 0.895431 0.895431 8.05368e-09 2 0H16Z" fill="#191922"/>
+            <div class="views-nav">
+                <button class="button-active reactive-scale reactive-hover" id="vistaRandomBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="-1 -1 16 16" fill="none">
+                    <path d="M3 9C4.10457 9 5 9.89543 5 11V12C5 13.1046 4.10457 14 3 14H2C0.895431 14 1.61066e-08 13.1046 0 12V11C0 9.89543 0.895431 9 2 9H3ZM12 9C13.1046 9 14 9.89543 14 11V12C14 13.1046 13.1046 14 12 14H11C9.89543 14 9 13.1046 9 12V11C9 9.89543 9.89543 9 11 9H12ZM3 0C4.10457 0 5 0.895431 5 2V3C5 4.10457 4.10457 5 3 5H2C0.895431 5 1.61066e-08 4.10457 0 3V2C0 0.895431 0.895431 1.61064e-08 2 0H3ZM12 0C13.1046 0 14 0.895431 14 2V3C14 4.10457 13.1046 5 12 5H11C9.89543 5 9 4.10457 9 3V2C9 0.895431 9.89543 1.61064e-08 11 0H12Z" fill="#FAF4E4"/>
                     </svg>
-                    <span class="label-xs">Projects</span>
+
+                    <!-- <span class="label-xs">All</span> -->
                 </button>
 
                 <button class="reactive-scale reactive-hover" id="vistaGlobal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
                     <path d="M7.00293 11C8.10727 11.0003 9.00293 11.8956 9.00293 13V14C9.00293 15.1046 8.10652 16 7.00195 16H5.00195C3.89761 15.9997 3.00293 15.1044 3.00293 14V13C3.00293 11.8954 3.89836 11 5.00293 11H7.00293ZM16.002 3C17.1063 3.00026 18.002 3.89559 18.002 5V11C18.002 12.1046 17.1055 13 16.001 13H14.001C12.8966 12.9997 12.002 12.1044 12.002 11V5C12.002 3.89543 12.8974 3 14.002 3H16.002ZM7.00293 3C8.10727 3.00026 9.00293 3.89559 9.00293 5V6C9.00293 7.10457 8.10652 8 7.00195 8H2.00195C0.897608 7.99974 0.00195314 7.10441 0.00195312 6V5C0.00195312 3.89543 0.89836 3 2.00293 3H7.00293Z" fill="#FAF4E4"/>
                     </svg>
-                    <span class="label-xs">Categories</span>
+                    <!-- <span class="label-xs">Categories</span> -->
                 </button>
 
-                <button class="reactive-scale reactive-hover" id="">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
-                    <path d="M4.00195 8.28613C5.1063 8.2864 6.00195 9.18173 6.00195 10.2861V12.2861C6.00169 13.3905 5.10538 14.2861 4.00098 14.2861H2.00098C0.896631 14.2859 0.00195312 13.3896 0.00195312 12.2852V10.2852C0.00221696 9.18081 0.897546 8.28613 2.00195 8.28613H4.00195ZM12.0029 8.28613C13.1073 8.2864 14.0029 9.18173 14.0029 10.2861V12.2861C14.0029 13.3907 13.1065 14.2861 12.002 14.2861H10.002C8.89761 14.2859 8.00293 13.3905 8.00293 12.2861V10.2861C8.00293 9.18156 8.89836 8.28613 10.0029 8.28613H12.0029ZM4.00098 0C5.10532 0.000263776 6.00098 0.895593 6.00098 2V4C6.00098 5.10457 5.10457 6 4 6H2C0.895655 5.99974 3.22009e-08 5.10441 0 4V2C0 0.895431 0.896407 0 2.00098 0H4.00098ZM12.002 0C13.1063 0.000263776 14.002 0.895593 14.002 2V4C14.002 5.10457 13.1055 6 12.001 6H10.001C8.89663 5.99974 8.00195 5.10441 8.00195 4V2C8.00195 0.895431 8.89738 0 10.002 0H12.002Z" fill="#191922"/>
-                    </svg>
-
-                    <span class="label-xs">Random</span>
+                <button class="reactive-scale reactive-hover" id="caseStudiesBtn">
+                    <span class="case-studies">Case Studies</span>
                 </button>
 
             </div>
+
+            
             <!-- Botones Tema y miniaturas: -->
             <div class="header-right">
                 <button class="button-active">
@@ -183,13 +182,28 @@
                 <span>alvaro.liniers@flat26.com</span><br>
                 <!-- Soy un diseñador multidisciplinar con experiencia en sistemas de diseño, prototipado UX e interacción creativa en interfaces. Actualmente estoy abierto para colaboraciones en proyectos sociales o culturales. -->
             </div>
-            <!-- <ul class="main-menu">
-                <li><a href="#">Trabajos Profesionales</a></li>
-                <li><a href="#">Trabajos personales</a></li>
-            </ul> -->
+            <ul class="main-filter">
+                <li><span class="color-bullet green"></span><a href="#">Currently</a></li>
+                <li><span class="color-bullet yellow"></span><a href="#">2025</a></li>
+                <li><span class="color-bullet pink"></span><a href="#">2024</a></li>
+                <li><span class="color-bullet blue"></span><a href="#">2020-2023</a></li>
+                <li><span class="color-bullet red"></span><a href="#">2017-2019</a></li>
+                <li><span class="color-bullet white"></span><a href="#">2012-2016</a></li>
+            </ul>
             <ul class="footer">
-                <!-- <li><a href="#">Bio</a></li>
-                <li><a href="#">Contacto /linkedin /medium</a></li> -->
+                <div class="video-reel">
+                <button class="hide-btn reactive-scale reactive-hover" id="hideBtn">
+                    <span class="material-symbols-outlined">
+                    keyboard_arrow_down
+                    </span>
+                </button>
+                <button class="reel-btn reactive-scale reactive-hover" id="reelBtn">
+                    <span class="case-studies">Ver reel</span>
+                </button>
+                    <video autoplay loop muted playsinline>
+                        <source src="assets/img/reel/reel-draft.mp4" type="video/mp4">
+                    </video>
+                </div>
             </ul>
         </nav>
         <!-- /MENU -->
@@ -230,13 +244,13 @@
 
         <section class="container-scroll">
             <div class="tube">
-                <h1 class="line">_</h1>
                 <h1 class="line">DESIGN SYSTEMS</h1>
                 <h1 class="line">MOTION DESIGN</h1>
                 <h1 class="line">INTERACTION</h1>
+                <h1 class="line">USER EXPERIENCE</h1>
                 <h1 class="line">ART DIRECTION</h1>
                 <h1 class="line">DATA VISUALIZATION</h1>
-                <h1 class="line">CREATIVE CODING</h1>
+                <h1 class="line">VIBE CODING</h1>
             </div>
         </section>
 
@@ -274,17 +288,26 @@
     <!-- <script src="assets/js/page-transitions.js"></script> -->
     <script src="assets/js/theme-toggle.js"></script>
     <!-- <script src="assets/js/gallery-navigation.js"></script> -->
+    
+    <!-- Performance & Lazy Loading -->
+    <script src="assets/js/performance-utils.js"></script>
+    
     <script src="assets/js/script.js"></script>
 
     <!-- JSON DATOS-->
 
     <script>
-        window.onload = function listado_trabajos() {
-        fetch('assets/json/data.json') //aquí va la ruta a nuestro archivo
-            .then(response => response.json()) //convertimos la respuesta 
-            .then(data => {
-                maquetar_thumbs(data);
-            });
+        window.onload = async function listado_trabajos() {
+            // Primero cargar todos los datos (random + case-studies)
+            const dataLoaded = await loadAllData();
+            
+            if (dataLoaded) {
+                console.log('[INIT] Datos cargados exitosamente');
+                // Luego maquetear con los datos de random (que es el default)
+                maquetar_inicio();
+            } else {
+                console.error('[INIT] Error cargando datos');
+            }
         }
     </script>
 

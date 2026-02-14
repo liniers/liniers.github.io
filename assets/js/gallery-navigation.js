@@ -6,12 +6,28 @@ let currentProjectIndex = 0;
 let relatedProjects = [];
 let currentProject = null;
 
+// Helper para construir URLs de assets (usa el helper global si existe)
+const resolveAssetUrl = typeof buildAssetUrl === 'function'
+    ? buildAssetUrl
+    : (path) => {
+        if (!path) return '';
+        if (/^https?:\/\//i.test(path)) return path;
+        let cleaned = String(path).replace(/^\.?\/*/, '');
+        if (cleaned.startsWith('assets/img/')) {
+            cleaned = cleaned.replace(/^assets\/img\//, '');
+        }
+        if (cleaned.startsWith('img/')) {
+            cleaned = cleaned.replace(/^img\//, '');
+        }
+        return `https://pub-b7331ec578274f5fa4797ea882ba092d.r2.dev/img/${encodeURI(cleaned)}`;
+    };
+
 // Función para obtener proyectos relacionados (mismo cliente y categoría)
 function getRelatedProjects(trabajo) {
     if (!trabajo) return [];
     
-    // Filtrar proyectos con el mismo cliente y categoría
-    const related = trabajosData.filter(t => 
+    // Filtrar proyectos con el mismo cliente y categoría de la fuente actual
+    const related = getCurrentData().filter(t => 
         //t.cliente === trabajo.cliente && 
         t.categoria === trabajo.categoria
     );
@@ -107,12 +123,12 @@ function updateQuickViewWithProject(trabajo) {
             if (isVideo) {
                 // Actualizar video existente o crear uno nuevo
                 if (existingMedia && existingMedia.tagName === 'VIDEO') {
-                    existingMedia.src = `assets/img/${trabajo.thumbnail}`;
+                    existingMedia.src = resolveAssetUrl(trabajo.thumbnail);
                     existingMedia.load();
                 } else {
                     if (existingMedia) existingMedia.remove();
                     const video = document.createElement('video');
-                    video.src = `assets/img/${trabajo.thumbnail}`;
+                    video.src = resolveAssetUrl(trabajo.thumbnail);
                     video.autoplay = true;
                     video.loop = true;
                     video.muted = true;
@@ -199,11 +215,11 @@ function updateQuickViewWithProject(trabajo) {
             } else {
                 // Es una imagen
                 if (existingMedia && existingMedia.tagName === 'IMG') {
-                    existingMedia.src = `assets/img/${trabajo.thumbnail}`;
+                    existingMedia.src = resolveAssetUrl(trabajo.thumbnail);
                 } else {
                     if (existingMedia) existingMedia.remove();
                     const img = document.createElement('img');
-                    img.src = `assets/img/${trabajo.thumbnail}`;
+                    img.src = resolveAssetUrl(trabajo.thumbnail);
                     img.style.width = '100%';
                     img.style.height = '100%';
                     img.style.objectFit = 'cover';
@@ -216,17 +232,40 @@ function updateQuickViewWithProject(trabajo) {
             
             // Actualizar información del trabajo
             if (workTitle) workTitle.textContent = trabajo.titulo;
+            
+            // Función para actualizar work-details con descripción (soporte para .md)
+            const updateWorkDetails = (targetEl, descripcion) => {
+                if (!targetEl) return;
+                
+                if (descripcion && typeof marked !== 'undefined') {
+                    if (descripcion.endsWith('.md')) {
+                        fetch(resolveAssetUrl(descripcion))
+                            .then(res => res.text())
+                            .then(md => {
+                                targetEl.innerHTML = marked.parse(md);
+                            })
+                            .catch(() => {
+                                targetEl.textContent = 'Descripción no disponible';
+                            });
+                    } else {
+                        targetEl.innerHTML = marked.parse(descripcion);
+                    }
+                } else {
+                    targetEl.textContent = descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+                }
+            };
+            
             if (workDetails) {
-                workDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+                updateWorkDetails(workDetails, trabajo.descripcion);
             } else if (workInfoEl) {
                 const existingDetails = workInfoEl.querySelector('.work-details');
                 if (existingDetails) {
-                    existingDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+                    updateWorkDetails(existingDetails, trabajo.descripcion);
                 } else {
                     const newDetails = document.createElement('p');
                     newDetails.className = 'work-details';
-                    newDetails.textContent = trabajo.descripcion || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
                     workInfoEl.appendChild(newDetails);
+                    updateWorkDetails(newDetails, trabajo.descripcion);
                 }
             }
             

@@ -1,1 +1,0 @@
-Una serie de 59 dibujos realizados a mano y calcados sobre un clip de video del DJ y productor estadounidense Theo Parrish. Este ejercicio me ayudó a entender e interiorizar conceptos de animación como el timeline y la velocidad de renderizado. 
