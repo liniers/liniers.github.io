@@ -104,6 +104,11 @@
         --global-title-spacing: 30;       /* Menos espaciado título-thumbs */
         --global-title-size: 13;          /* Tamaño del título en tablet */
     }
+
+    /* Ocultar tubo 3D en móvil/tablet */
+    .container-scroll {
+        display: none;
+    }
 }
 
 /* CONFIGURACIÓN GRID - Mobile */
@@ -126,6 +131,11 @@
         --global-category-spacing: 40;    /* Espaciado entre categorías en móvil */
         --global-title-spacing: 20;       /* Espaciado título-thumbs en móvil */
         --global-title-size: 12;          /* Tamaño del título en móvil */
+    }
+
+    .layout .views-nav {
+        left: 16px;
+        right: auto;
     }
 }
 

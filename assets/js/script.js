@@ -381,28 +381,40 @@ function updateSidebarLegend(data) {
 
 // 2.- GSAP + LENIS SETUP
 
+const isMobileScroll = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+let lenis;
 
-const lenis = new Lenis({
-    //infinite: true, 
-    syncTouch: true, 
-});
+if (!isMobileScroll) {
+    lenis = new Lenis({
+        //infinite: true, 
+        syncTouch: true, 
+    });
 
-function onRaf(time) {
-    lenis.raf(time);
+    function onRaf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(onRaf);
+    }
     requestAnimationFrame(onRaf);
+
+    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
+    lenis.on('scroll', ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+    });
+
+    // Disable lag smoothing in GSAP to prevent any delay in scroll animations
+    gsap.ticker.lagSmoothing(0);
+} else {
+    // No-op Lenis API for mobile to avoid errors in other calls
+    lenis = {
+        raf: () => {},
+        on: () => {},
+        start: () => {},
+        stop: () => {},
+        scrollTo: () => {}
+    };
 }
-requestAnimationFrame(onRaf);
-
-// Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
-lenis.on('scroll', ScrollTrigger.update);
-
-
-gsap.ticker.add((time) => {
-  lenis.raf(time * 1000); // Convert time from seconds to milliseconds
-});
-
-// Disable lag smoothing in GSAP to prevent any delay in scroll animations
-gsap.ticker.lagSmoothing(0);
 
 
 
