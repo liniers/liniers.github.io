@@ -959,7 +959,7 @@ button.nav-control-btn.next-btn {
         z-index: 1001;
     }
     .container-scroll {
-        display: none;
+        display: none !important;
     }
 }
 
