@@ -47,7 +47,7 @@ function setDataSource(source) {
     return false;
 }
 
-let posicionesOriginales = []; // Guardar posiciones originales de los thumbs
+let posicionesOriginales = []; // Guarda posiciones originales de los thumbs
 let vistaRandomActiva = false; // Estado para saber si estamos mostrando imágenes random
 
 // ===== FUNCIONES DE CARGA DE DATOS =====
