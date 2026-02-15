@@ -1071,6 +1071,10 @@ button.nav-control-btn.next-btn {
 
 .project-wrapper .intro .project-info .subtitle p {
     margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-family: georgia;
+    font-size: 18px;
+    line-height: 1.5;
 }
 
 .project-wrapper .row-grid {
@@ -1291,6 +1295,33 @@ body.view-case-studies .thumbs-grid {
     background: var(--opacity-low);
     backdrop-filter: blur(20px);
     cursor: pointer;
+}
+
+.reel-btn{
+    /* 1. Hacemos el texto transparente para que se vea el fondo que crearemos */
+    color: transparent;
+    
+    /* 2. Simulamos las 4 capas usando linear-gradient de un solo color.
+        IMPORTANTE: El orden es de ARRIBA (Capa 4) a ABAJO (Capa 1) */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)), /* Capa 4: Blanco 55% */
+        linear-gradient(#6F6F6F, #6F6F6F),                                     /* Capa 3: Gris Medio */
+        linear-gradient(#0F0F0F, #0F0F0F),                                     /* Capa 2: Negro */
+        linear-gradient(rgba(88, 88, 88, 0.6), rgba(88, 88, 88, 0.6));         /* Capa 1: Gris Oscuro 60% */
+
+    /* 3. Asignamos el modo de fusión correspondiente a cada capa en el mismo orden */
+    background-blend-mode: 
+        luminosity,   /* Para capa 4 */
+        color-dodge,  /* Para capa 3 */
+        plus-lighter, /* Para capa 2 (fallback: screen) */
+        luminosity;   /* Para capa 1 */
+
+    /* 4. Recortamos todo esto para que solo se vea dentro de las letras */
+    background-clip: text;
+    -webkit-background-clip: text; /* Necesario para Safari/Chrome */
+    
+    /* Opcional: Si quieres que ADEMÁS el texto entero se mezcle con la foto de fondo de la web */
+    mix-blend-mode: overlay; 
 }
 
 .video-reel video {
