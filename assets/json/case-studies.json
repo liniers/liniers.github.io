@@ -4,37 +4,13 @@
         "titulo": "Motion Systems Research",
         "proyecto": "Motion Systems Research",
         "categoria": "Personal",
-        "thumbnail": "case-studies/Personal/Motion Systems Research/Interacciones de usuario.gif",
+        "thumbnail": "case-studies/Personal/Motion Systems Research/Interacciones de usuario.mp4",
         "imagenes": [
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Interacciones de usuario.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Interacciones del sistema.gif"
-            },
             {
                 "path": "case-studies/Personal/Motion Systems Research/Interacciones del sistema.mp4"
             },
             {
-                "path": "case-studies/Personal/Motion Systems Research/Navigation.gif"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Principles-16x9-texts-1920.gif"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Principles-16x9-texts-noise-2.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Principles-16x9-texts-noise.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Principles-16x9-texts.gif"
-            },
-            {
                 "path": "case-studies/Personal/Motion Systems Research/Principles-16x9-texts.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/Transitions overview 20fps.gif"
             },
             {
                 "path": "case-studies/Personal/Motion Systems Research/Transitions overview 4_2.mp4"
@@ -46,19 +22,10 @@
                 "path": "case-studies/Personal/Motion Systems Research/_Navigation.mp4"
             },
             {
-                "path": "case-studies/Personal/Motion Systems Research/_Physical Environment.gif"
-            },
-            {
                 "path": "case-studies/Personal/Motion Systems Research/_Physical Environment.mp4"
             },
             {
-                "path": "case-studies/Personal/Motion Systems Research/_System Events.gif"
-            },
-            {
                 "path": "case-studies/Personal/Motion Systems Research/_System Events.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Motion Systems Research/_User Input.gif"
             },
             {
                 "path": "case-studies/Personal/Motion Systems Research/_User Input.mp4"
@@ -66,7 +33,7 @@
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": ""
+        "descripcion": "case-studies/Personal/Motion Systems Research/_description.md"
     },
     {
         "id": 2,
@@ -179,6 +146,9 @@
             },
             {
                 "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Round-style.png"
+            },
+            {
+                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/Stories.mp4"
             },
             {
                 "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Swipe up slow.mov"
@@ -318,7 +288,7 @@
         "descripcion": ""
     },
     {
-        "id": 5,
+        "id": 6,
         "titulo": "Ditto Design System",
         "proyecto": "Ditto Design System",
         "categoria": "Design Systems",
@@ -345,7 +315,7 @@
         "descripcion": "case-studies/Design Systems/Ditto Design System/_description.md"
     },
     {
-        "id": 6,
+        "id": 7,
         "titulo": "Soundcloud Design System",
         "proyecto": "Soundcloud Design System",
         "categoria": "Design Systems",
@@ -390,7 +360,7 @@
         "descripcion": ""
     },
     {
-        "id": 7,
+        "id": 8,
         "titulo": "Gobierno de Morelos Design System",
         "proyecto": "Gobierno de Morelos Design System",
         "categoria": "Design Systems",
@@ -420,7 +390,7 @@
         "descripcion": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos.md"
     },
     {
-        "id": 8,
+        "id": 10,
         "titulo": "Vistra Design System",
         "proyecto": "Vistra Design System",
         "categoria": "Design Systems",
@@ -450,7 +420,7 @@
         "descripcion": ""
     },
     {
-        "id": 9,
+        "id": 12,
         "titulo": "Ditto Animation Series",
         "proyecto": "Ditto Animation Series",
         "categoria": "Motion Graphics",
@@ -465,7 +435,7 @@
         "descripcion": "case-studies/Motion Graphics/Ditto Animation Series/_description.md"
     },
     {
-        "id": 10,
+        "id": 14,
         "titulo": "Grupo Prisa Podcasts",
         "proyecto": "Grupo Prisa Podcasts",
         "categoria": "Motion Graphics",
@@ -483,7 +453,7 @@
         "descripcion": "case-studies/Motion Graphics/Grupo Prisa Podcasts/_description.md"
     },
     {
-        "id": 11,
+        "id": 15,
         "titulo": "El Cuento de Navidad de la SER",
         "proyecto": "El Cuento de Navidad de la SER",
         "categoria": "Art Direction",
@@ -528,7 +498,7 @@
         "descripcion": "case-studies/Art Direction/El Cuento de Navidad de la SER/_description.md"
     },
     {
-        "id": 12,
+        "id": 16,
         "titulo": "Gira Centenario Cadena SER",
         "proyecto": "Gira Centenario Cadena SER",
         "categoria": "Art Direction",
@@ -573,7 +543,7 @@
         "descripcion": "case-studies/Art Direction/Gira Centenario Cadena SER/_description.md"
     },
     {
-        "id": 13,
+        "id": 17,
         "titulo": "Atroposbelladonna",
         "proyecto": "Atroposbelladonna",
         "categoria": "Art Direction",
@@ -606,7 +576,7 @@
         "descripcion": ""
     },
     {
-        "id": 14,
+        "id": 18,
         "titulo": "Infografías EGM",
         "proyecto": "Infografías EGM",
         "categoria": "Art Direction",
@@ -649,125 +619,5 @@
         "fecha": "",
         "tag": "",
         "descripcion": ""
-    },
-    {
-        "id": 18,
-        "titulo": "Vistra",
-        "proyecto": "Vistra",
-        "categoria": "Design Systems",
-        "thumbnail": "case-studies/Design Systems/Vistra/_cover_vistra-design-system-2025.png",
-        "imagenes": [
-            {
-                "path": "case-studies/Design Systems/Vistra/Geni Expression.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra/Motion documentation.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra/vistra-design-system-Components.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra/vistra-design-system-Documentation.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra/vistra-design-system-Overview-notexts.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra/vistra-design-system-Templates.png"
-            }
-        ],
-        "fecha": "",
-        "tag": "",
-        "descripcion": ""
-    },
-    {
-        "id": 19,
-        "titulo": "Soundcloud DS",
-        "proyecto": "Soundcloud DS",
-        "categoria": "Design Systems",
-        "thumbnail": "case-studies/Design Systems/Soundcloud DS/01_Layers.mov",
-        "imagenes": [
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/02_Implementation.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Desktop.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Hover.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Layers_1.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Modular.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Open Track.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Player open Desktop.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Scroll.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Sidebar container HD.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/Slide up Player Iteration.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud DS/SoundCloud_music.mp4"
-            }
-        ],
-        "fecha": "",
-        "tag": "",
-        "descripcion": ""
-    },
-    {
-        "id": 20,
-        "titulo": "Gobierno de Morelos",
-        "proyecto": "Gobierno de Morelos",
-        "categoria": "Design Systems",
-        "thumbnail": "case-studies/Design Systems/Gobierno de Morelos/_Morelos DS - Cover.png",
-        "imagenes": [
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Audit Zoom.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Audit.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Documentation.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Overview.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Screens Zoom.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos/Morelos DS - Screens.png"
-            }
-        ],
-        "fecha": "",
-        "tag": "",
-        "descripcion": "case-studies/Design Systems/Gobierno de Morelos/Morelos.md"
-    },
-    {
-        "id": 21,
-        "titulo": "Ditto Animation",
-        "proyecto": "Ditto Animation",
-        "categoria": "Motion Graphics",
-        "thumbnail": "case-studies/Motion Graphics/Ditto Animation/_Ditto Animation_cover.mp4",
-        "imagenes": [
-            {
-                "path": "case-studies/Motion Graphics/Ditto Animation/Ditto Animation_2.jpg"
-            }
-        ],
-        "fecha": "",
-        "tag": "",
-        "descripcion": "case-studies/Motion Graphics/Ditto Animation/_description.md"
     }
 ]
