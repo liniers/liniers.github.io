@@ -64,28 +64,28 @@
         "thumbnail": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/_cover.mp4",
         "imagenes": [
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/00_Esquema.jpg"
-            },
-            {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/00_emocion-dominante.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/01_Louie Vega - Love Paradox_01.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/01_Temperature/01_Temperatura.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/01_Web.mp4"
             },
             {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/01_rojo-naranja.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/02_Concept Sphere customization.png"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/02_amarillo-verde.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/02_Louie Vega - Love Paradox.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/03_verde-azul.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/04_azul-morado.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/05_negro.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/02_cualidades.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/01_Temperature/01_Temperatura.mp4"
             },
             {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/02_Luminosity/02_Luminosity - Moments.mp4"
@@ -94,37 +94,7 @@
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/02_Luminosity/02_Luminosity.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/02_amarillo-verde.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/02_cualidades.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/03_Christopher Rau - In The Water.mp4"
-            },
-            {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/03_Contexto/03_Contexto.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/03_verde-azul.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/04_Concept.jpg"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/04_Cosmonection - Paraiso Perdido.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/04_azul-morado.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/05_Cards Bubble active.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/05_negro.png"
-            },
-            {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/06_Home Tap and Hold.png"
             },
             {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/04_Abstracción vs Figuración/Abstracción.mp4"
@@ -133,10 +103,40 @@
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/04_Abstracción vs Figuración/Figuración.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Z_housemusic.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/00_Esquema.jpg"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/01_Web.mp4"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/02_Concept Sphere customization.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/04_Concept.jpg"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/05_Cards Bubble active.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/06_Home Tap and Hold.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/01_Louie Vega - Love Paradox_01.mp4"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/02_Louie Vega - Love Paradox.mp4"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/03_Christopher Rau - In The Water.mp4"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/04_Cosmonection - Paraiso Perdido.mp4"
             },
             {
                 "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/_objetivo.png"
+            },
+            {
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Z_housemusic.mp4"
             }
         ],
         "fecha": "",
@@ -337,7 +337,7 @@
         "titulo": "El Cuento de Navidad de la SER",
         "proyecto": "El Cuento de Navidad de la SER",
         "categoria": "Art Direction",
-        "thumbnail": "case-studies/Art Direction/El Cuento de Navidad de la SER/Cover_Card de Presentación_2024.mp4",
+        "thumbnail": "case-studies/Art Direction/El Cuento de Navidad de la SER/_Cover_Hansel y Gretel Audio Card_2023.mp4",
         "imagenes": [
             {
                 "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/1.mp4"
@@ -367,10 +367,10 @@
                 "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/Audio Card_2023_6.mp4"
             },
             {
-                "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/El amor en los tiempos del colera - FLAT26.mp4"
+                "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/Cover_Card de Presentación_2024.mp4"
             },
             {
-                "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/_Cover_Hansel y Gretel Audio Card_2023.mp4"
+                "path": "case-studies/Art Direction/El Cuento de Navidad de la SER/El amor en los tiempos del colera - FLAT26.mp4"
             }
         ],
         "fecha": "",
