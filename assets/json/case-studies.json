@@ -22,133 +22,34 @@
         "titulo": "Spotify Concept Redesign",
         "proyecto": "Spotify Concept Redesign",
         "categoria": "Personal",
-        "thumbnail": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/01_Rethinking Spotify by FLAT26.mp4",
+        "thumbnail": "case-studies/Personal/Spotify Concept Redesign/01_Rethinking Spotify by Alvaro Liniers.mp4",
         "imagenes": [
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/02_Sense of Space.mov"
+                "path": "case-studies/Personal/Spotify Concept Redesign/03_Navigation_1.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/03_Navigation_1.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/03_Navigation_2.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/03_Navigation_2.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/05_Navigation Layering.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/04_Dimensionality.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/07_Skip_2.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/05_Navigation Layering.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/09_Press_2.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/06_Hierarchy.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/11_Preview_1.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/07_Skip_1.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/13_Swipe up.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/07_Skip_2.mp4"
+                "path": "case-studies/Personal/Spotify Concept Redesign/15_1_Final.mp4"
             },
             {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/08_Gestures.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/09_Press_1.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/09_Press_2.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/10_Fluid Transitions.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/11_Preview_1.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/11_Preview_2.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/12_Visual Hints.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/13_Swipe up.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/14_Playfulness.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/15_1_Final.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/15_2_Final.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Dots.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Fast forward.gif"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Fast forward.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Fast forward_21.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Fast-Scrolling.gif"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Horizontal Scrolling_3.mov"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Mockup_Next Song.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Mockup_Seek.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Next song_Black.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Next song_Black_21.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Preview Cards.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Preview Cards_2.gif"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Preview Cards_optimized.gif"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Rethinking Spotify by Alvaro Liniers.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Round-style.jpg"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Round-style.png"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/Spotify Project/Stories.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/Swipe up slow.mov"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/dots.gif"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/layering.jpg"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/layering.png"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/prelistening-cards.jpg"
-            },
-            {
-                "path": "case-studies/Personal/Spotify Concept Redesign/01_Black/text.gif"
+                "path": "case-studies/Personal/Spotify Concept Redesign/15_2_Final.mp4"
             }
         ],
         "fecha": "",
@@ -160,114 +61,111 @@
         "titulo": "Moodycolors Musica electrónica, emociones y colores",
         "proyecto": "Moodycolors - Musica electrónica, emociones y colores",
         "categoria": "Personal",
-        "thumbnail": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Covers_53.jpg",
+        "thumbnail": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/_cover.mp4",
         "imagenes": [
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/03_Taras Van de Voorde_720_low.gif"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/00_Esquema.jpg"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/16x9-Felipe Gordon - Run Run Run.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/00_emocion-dominante.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Aleksandir - Jardin_2.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/01_Louie Vega - Love Paradox_01.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Artist of the Month.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/01_Temperature/01_Temperatura.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/ButchSelections.gif"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/01_Web.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Chris Stussy & Toman - Boiling Point.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/01_rojo-naranja.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Christopher Rau - In The Water Full.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/02_Concept Sphere customization.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/Comp 1.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/02_Louie Vega - Love Paradox.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/Comp 2.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/02_Luminosity/02_Luminosity - Moments.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/Concept Sphere customization.png"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/02_Luminosity/02_Luminosity.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/Concept.jpg"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/02_amarillo-verde.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Cosmonection - Paraiso Perdido.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/02_cualidades.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Covers_54.jpg"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/03_Christopher Rau - In The Water.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Covers_55.jpg"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/03_Contexto/03_Contexto.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Covers_56.jpg"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/03_verde-azul.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Covers_75.jpg"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/04_Concept.jpg"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/IG_Loleatta Holloway - Can't Let You Go (Louie Vega & Josh .mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/04_Cosmonection - Paraiso Perdido.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Ian Pooley Selections_lowest.gif"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/04_azul-morado.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Kevin-Yost-Selections_160kb.gif"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/05_Cards Bubble active.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Louie Vega - Love Paradox_01.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/01_Colores/05_negro.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/Louie Vega - Love Paradox_03.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/04_Product/06_Home Tap and Hold.png"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/Site.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/04_Abstracción vs Figuración/Abstracción.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Covers/Track of the Month.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/03_Guidelines/04_Abstracción vs Figuración/Figuración.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Product/V1.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Z_housemusic.mp4"
             },
             {
-                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/Social Media/YT_Christopher Rau - In The Water.mp4"
+                "path": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/05_Social Media/_objetivo.png"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": ""
+        "descripcion": "case-studies/Personal/Moodycolors - Musica electrónica, emociones y colores/_description.md"
     },
     {
         "id": 4,
         "titulo": "Personal Music Squares",
         "proyecto": "Personal - Music Squares",
         "categoria": "Personal",
-        "thumbnail": "case-studies/Personal/Personal - Music Squares/00.mp4",
+        "thumbnail": "case-studies/Personal/Personal - Music Squares/01_Flummifreuden.mp4",
         "imagenes": [
             {
-                "path": "case-studies/Personal/Personal - Music Squares/Acid Attack 2.mp4"
+                "path": "case-studies/Personal/Personal - Music Squares/02_Andres - Moments in life.mp4"
             },
             {
-                "path": "case-studies/Personal/Personal - Music Squares/Andres - Moments in life.mp4"
+                "path": "case-studies/Personal/Personal - Music Squares/03_Acid Attack.mp4"
             },
             {
-                "path": "case-studies/Personal/Personal - Music Squares/Andres - Moments in life_30\".mp4"
+                "path": "case-studies/Personal/Personal - Music Squares/04_Ben Klock - Subzero.mp4"
             },
             {
-                "path": "case-studies/Personal/Personal - Music Squares/Ben Klock - Subzero.mp4"
-            },
-            {
-                "path": "case-studies/Personal/Personal - Music Squares/V2.mp4"
+                "path": "case-studies/Personal/Personal - Music Squares/05_Spanish fly.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": ""
+        "descripcion": "case-studies/Personal/Personal - Music Squares/_description.md"
     },
     {
         "id": 5,
