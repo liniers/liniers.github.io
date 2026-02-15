@@ -58,6 +58,19 @@ class MediaManager {
             img.src = src;
             img.style.opacity = '1';
             this.loadedImages.add(src);
+            
+            // Disparar callback si existe
+            if (img.dataset.onLoadCallback) {
+                try {
+                    const callback = window[img.dataset.onLoadCallback];
+                    if (typeof callback === 'function') callback(img);
+                } catch (e) {
+                    console.warn('Error en callback onLoad:', e);
+                }
+            }
+            
+            // Disparar evento custom
+            img.dispatchEvent(new Event('mediaLoaded'));
         };
         
         tempImg.onerror = () => {
@@ -94,6 +107,15 @@ class MediaManager {
         
         video.src = src;
         video.load();
+        
+        // Agregar listener para canplay DESPUÉS de asignar src
+        const onCanPlay = () => {
+            // Disparar evento custom
+            video.dispatchEvent(new Event('mediaLoaded'));
+            video.removeEventListener('canplay', onCanPlay);
+        };
+        
+        video.addEventListener('canplay', onCanPlay);
         
         // Intentar reproducción (en некоторых navegadores falla sin interacción)
         const playPromise = video.play();
