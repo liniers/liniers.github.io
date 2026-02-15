@@ -199,45 +199,33 @@
         "titulo": "Soundcloud Design System",
         "proyecto": "Soundcloud Design System",
         "categoria": "Design Systems",
-        "thumbnail": "case-studies/Design Systems/Soundcloud Design System/01_Layers.mov",
+        "thumbnail": "case-studies/Design Systems/Soundcloud Design System/_cover.mov",
         "imagenes": [
+            {
+                "path": "case-studies/Design Systems/Soundcloud Design System/01_SoundCloud_music.mp4"
+            },
             {
                 "path": "case-studies/Design Systems/Soundcloud Design System/02_Implementation.mp4"
             },
             {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Desktop.mp4"
+                "path": "case-studies/Design Systems/Soundcloud Design System/03_Modular.mov"
             },
             {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Hover.mov"
+                "path": "case-studies/Design Systems/Soundcloud Design System/04_Hover.mov"
             },
             {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Layers_1.mov"
+                "path": "case-studies/Design Systems/Soundcloud Design System/05_Player open Desktop.mov"
             },
             {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Modular.mov"
+                "path": "case-studies/Design Systems/Soundcloud Design System/06_Desktop.mp4"
             },
             {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Open Track.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Player open Desktop.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Scroll.mov"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Sidebar container HD.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud Design System/Slide up Player Iteration.mp4"
-            },
-            {
-                "path": "case-studies/Design Systems/Soundcloud Design System/SoundCloud_music.mp4"
+                "path": "case-studies/Design Systems/Soundcloud Design System/07_Slide up Player Iteration.mp4"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": ""
+        "descripcion": "case-studies/Design Systems/Soundcloud Design System/_description.md"
     },
     {
         "id": 7,
@@ -247,22 +235,16 @@
         "thumbnail": "case-studies/Design Systems/Gobierno de Morelos Design System/_Morelos DS - Cover.png",
         "imagenes": [
             {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Audit Zoom.png"
+                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/01_Morelos DS - Overview.png"
             },
             {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Audit.png"
+                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/02_Morelos DS - Audit Zoom.png"
             },
             {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Documentation.png"
+                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/03_Morelos DS - Documentation.png"
             },
             {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Overview.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Screens Zoom.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/Morelos DS - Screens.png"
+                "path": "case-studies/Design Systems/Gobierno de Morelos Design System/04_Morelos DS - Screens Zoom.png"
             }
         ],
         "fecha": "",
@@ -277,27 +259,24 @@
         "thumbnail": "case-studies/Design Systems/Vistra Design System/_cover_vistra-design-system-2025.png",
         "imagenes": [
             {
-                "path": "case-studies/Design Systems/Vistra Design System/Geni Expression.mp4"
+                "path": "case-studies/Design Systems/Vistra Design System/01_vistra-design-system-Components.png"
             },
             {
-                "path": "case-studies/Design Systems/Vistra Design System/Motion documentation.mp4"
+                "path": "case-studies/Design Systems/Vistra Design System/02_vistra-design-system-Documentation.png"
             },
             {
-                "path": "case-studies/Design Systems/Vistra Design System/vistra-design-system-Components.png"
+                "path": "case-studies/Design Systems/Vistra Design System/03_Motion documentation.mp4"
             },
             {
-                "path": "case-studies/Design Systems/Vistra Design System/vistra-design-system-Documentation.png"
+                "path": "case-studies/Design Systems/Vistra Design System/04_Geni Expression.mp4"
             },
             {
-                "path": "case-studies/Design Systems/Vistra Design System/vistra-design-system-Overview-notexts.png"
-            },
-            {
-                "path": "case-studies/Design Systems/Vistra Design System/vistra-design-system-Templates.png"
+                "path": "case-studies/Design Systems/Vistra Design System/05_vistra-design-system-Templates.png"
             }
         ],
         "fecha": "",
         "tag": "",
-        "descripcion": ""
+        "descripcion": "case-studies/Design Systems/Vistra Design System/_description.md"
     },
     {
         "id": 9,
