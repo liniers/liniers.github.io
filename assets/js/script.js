@@ -278,6 +278,8 @@ function maquetar_inicio(){
         const miniaturaCuadrada = document.createElement("article");
         miniaturaCuadrada.classList.add(`thumb-${index + 1}`, 'hide-image', 'reactive-scale');
         miniaturaCuadrada.dataset.workId = trabajo.id;
+        // Agregar ID único para URLs compartibles
+        miniaturaCuadrada.id = `case-study-${trabajo.id}`;
 
         const workInfo = document.createElement("div");
         workInfo.classList.add('work-info');
@@ -2102,6 +2104,9 @@ function cerrarDetalle() {
                 workInfoToRemove.parentNode.removeChild(workInfoToRemove);
             }
             
+            // Limpiar hash de URL
+            window.history.replaceState(null, '', window.location.pathname);
+            
             // Mostrar el thumb original de nuevo con borderRadius aplicado
             if (currentThumb) {
                 gsap.to(currentThumb, {
@@ -2150,6 +2155,50 @@ document.addEventListener('keydown', (e) => {
         closeReelQuickView();
     }
 });
+
+// ===== HANDLER PARA URLs COMPARTIBLES CON HASH =====
+function handleCaseStudyHash() {
+    const hash = window.location.hash.replace('#', '');
+    
+    if (!hash.startsWith('case-study-')) {
+        return;
+    }
+    
+    // Extraer el ID del case study
+    const caseStudyId = hash.replace('case-study-', '');
+    const caseStudyElement = document.getElementById(hash);
+    
+    if (caseStudyElement) {
+        // Pequeño delay para asegurar que el DOM está listo
+        setTimeout(() => {
+            // Primera, asegurar que estamos en la vista de case-studies
+            if (currentDataSource !== 'case-studies') {
+                switchDataSource('case-studies').then(() => {
+                    // Después de cambiar la fuente, buscar y abrir
+                    setTimeout(() => {
+                        const element = document.getElementById(hash);
+                        if (element) {
+                            abrirThumb(element);
+                        }
+                    }, 500);
+                });
+            } else {
+                // Ya estamos en case-studies, solo abrir
+                abrirThumb(caseStudyElement);
+            }
+        }, 100);
+    }
+}
+
+// Listener para cuando cambia el hash
+window.addEventListener('hashchange', handleCaseStudyHash);
+
+// Y también ejecutar al cargar la página si hay un hash
+function initHashHandler() {
+    if (window.location.hash) {
+        handleCaseStudyHash();
+    }
+}
 
 const reelBtn = document.getElementById('reelBtn');
 if (reelBtn) {
@@ -2245,6 +2294,9 @@ function openProjectWrapper(trabajo) {
     if (!projectWrapper || !pageContent || !mainContent) return;
     
     console.log('Abriendo proyecto:', trabajo);
+
+    // Actualizar URL con hash para caso compartible
+    window.location.hash = `case-study-${trabajo.id}`;
 
     // 1. Rellenar el cover-image (video o imagen) con aspect ratio
     const coverImage = projectWrapper.querySelector('.cover-image');
@@ -2420,7 +2472,10 @@ function closeProjectWrapper() {
         // 4. Restaurar el scroll real del navegador
         window.scrollTo(0, savedScroll);
 
-        // 5. Reactivar Lenis
+        // 5. Limpiar hash de URL
+        window.history.replaceState(null, '', window.location.pathname);
+
+        // 6. Reactivar Lenis
         if (typeof lenis !== 'undefined') {
             lenis.start();
             // A veces es bueno forzar a Lenis a sincronizarse

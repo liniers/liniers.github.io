@@ -299,6 +299,10 @@
                 console.log('[INIT] Datos cargados exitosamente');
                 // Luego maquetear con los datos de random (que es el default)
                 maquetar_inicio();
+                // Inicializar el handler para URLs compartibles
+                setTimeout(() => {
+                    initHashHandler();
+                }, 500);
             } else {
                 console.error('[INIT] Error cargando datos');
             }
