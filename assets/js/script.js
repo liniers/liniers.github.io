@@ -389,21 +389,22 @@ let lenis;
 if (!isMobileScroll) {
     lenis = new Lenis({
         //infinite: true, 
-        syncTouch: true, 
+        syncTouch: true,
+        lerp: 0.08, // Suavidad del scroll (valores más bajos = más suave, evita saltos)
+        duration: 1.2, // Duración del smooth scroll (en segundos)
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing personalizado
+        wheelMultiplier: 1, // Multiplicador para eventos de rueda
+        touchMultiplier: 1, // Multiplicador para eventos táctiles
+        infinite: false
     });
 
-    function onRaf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(onRaf);
-    }
-    requestAnimationFrame(onRaf);
-
-    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
-    lenis.on('scroll', ScrollTrigger.update);
-
+    // Single RAF loop using GSAP ticker to avoid conflicts
     gsap.ticker.add((time) => {
       lenis.raf(time * 1000); // Convert time from seconds to milliseconds
     });
+
+    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
+    lenis.on('scroll', ScrollTrigger.update);
 
     // Disable lag smoothing in GSAP to prevent any delay in scroll animations
     gsap.ticker.lagSmoothing(0);
@@ -694,14 +695,25 @@ function init3DTube_ScrollTrigger() {
     gsap.set(linesScroll, { perspective: 700, transformStyle: "preserve-3d" });
 
     // 5. ScrollTrigger - usar la altura total de la página para que el tubo ruede de inicio a fin
+    // IMPORTANTE: Usar scrub con un número para suavizar mejor con Lenis
     const tlScroll = gsap.timeline({
         scrollTrigger: {
             trigger: "#portfolio-items",
             start: "top top",
             end: "bottom bottom",
-            scrub: 0,
+            scrub: 0.5, // Pequeño scrub para mejor sincronización con Lenis
             markers: false,
-            refreshPriority: -1
+            refreshPriority: -1,
+            onUpdate: () => {
+                // Forzar actualización de Lenis cuando ScrollTrigger se actualiza
+                if (lenis && lenis.raf) {
+                    ScrollTrigger.getAll().forEach(trigger => {
+                        if (trigger.animation) {
+                            trigger.animation.progress(trigger.getProgress());
+                        }
+                    });
+                }
+            }
         }
     });
     
@@ -1614,7 +1626,7 @@ function abrirThumb(thumb) {
             scale: .8,
             duration: 0.2,
             transform: 'rotateX(25deg)',
-            rotationY: '-15deg',
+            rotationY: '-7deg',
             ease: 'power4.out'
         })
         .to(thumbClone, {

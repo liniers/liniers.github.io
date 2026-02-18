@@ -1,5 +1,6 @@
 // ===== SISTEMA DE LAZY LOADING Y PERFORMANCE =====
 
+
 class MediaManager {
     constructor() {
         this.loadedImages = new Set();
@@ -84,16 +85,37 @@ class MediaManager {
     }
     
     loadBackgroundImage(element, src) {
+        // Mostrar spinner mientras carga
+        const spinner = document.createElement('div');
+        spinner.className = 'loading-spinner';
+        element.appendChild(spinner);
+        
         const tempImg = new Image();
         
         tempImg.onload = () => {
             element.style.backgroundImage = `url('${src}')`;
             element.style.opacity = '1';
+            element.dataset.loaded = 'true';
             this.loadedImages.add(src);
+            
+            // Remover spinner cuando carga
+            if (spinner && spinner.parentNode) {
+                gsap.to(spinner, {
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        spinner.remove();
+                    }
+                });
+            }
         };
         
         tempImg.onerror = () => {
             console.warn(`Error loading background: ${src}`);
+            if (spinner && spinner.parentNode) {
+                spinner.remove();
+            }
         };
         
         element.style.opacity = '0.7';
@@ -105,11 +127,28 @@ class MediaManager {
         
         this.loadingVideos.add(src);
         
+        // Mostrar spinner mientras carga el video
+        const container = video.parentElement;
+        const spinner = document.createElement('div');
+        spinner.className = 'loading-spinner';
+        container.appendChild(spinner);
+        
         video.src = src;
         video.load();
         
         // Agregar listener para canplay DESPUÉS de asignar src
         const onCanPlay = () => {
+            // Remover spinner cuando está listo
+            if (spinner && spinner.parentNode) {
+                gsap.to(spinner, {
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        spinner.remove();
+                    }
+                });
+            }
             // Disparar evento custom
             video.dispatchEvent(new Event('mediaLoaded'));
             video.removeEventListener('canplay', onCanPlay);
