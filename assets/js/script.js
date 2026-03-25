@@ -539,13 +539,15 @@ function cleanAllViews() {
     ScrollTrigger.getAll().forEach(st => st.kill()); 
     
     
-    // Restaurar estilos body
-    document.body.style.overflow = '';
-    document.body.style.height = '';
+    // Restaurar estilos body - IMPORTANTE: Usar 'auto' para permitir scroll
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
     document.body.style.minHeight = '';
     
     // Asegurar que lenis está activo después de limpiar
-    lenis.start();
+    if (typeof lenis !== 'undefined' && lenis.start) {
+        lenis.start();
+    }
 }
 
 // ===== HELPERS PARA REALIZAR TRANSICIONES =====
@@ -942,12 +944,16 @@ if (vistaCategoriesBtn) {
             // DESKTOP: Bloquear scroll y centrar
             document.body.style.overflow = 'hidden'; 
             document.body.style.height = '100vh';    
-            lenis.stop();   
+            if (typeof lenis !== 'undefined' && lenis.stop) {
+                lenis.stop();
+            }
         } else {
             // MOVIL: Permitir scroll normal
-            document.body.style.overflow = ''; 
-            document.body.style.height = '';    
-            lenis.start();   
+            document.body.style.overflow = 'auto'; 
+            document.body.style.height = 'auto';    
+            if (typeof lenis !== 'undefined' && lenis.start) {
+                lenis.start();
+            }
         }
         
         // Cambiar botón activo
@@ -2433,9 +2439,12 @@ function openProjectWrapper(trabajo) {
     savedScroll = window.scrollY || document.documentElement.scrollTop;
 
     // 4. Parar Lenis
-    if (typeof lenis !== 'undefined') lenis.stop();
+    if (typeof lenis !== 'undefined' && lenis.stop) {
+        lenis.stop();
+    }
 
-    // 5. EL TRUCO: 
+    // Bloquear scroll en el body también
+    document.body.style.overflow = 'hidden'; 
     // Mover el contenido interno hacia arriba tantos píxeles como hayamos hecho scroll.
     // Así parece que seguimos en el mismo sitio, pero el contenedor padre empieza en 0.
     mainContent.style.transform = `translateY(-${savedScroll}px)`;
@@ -2487,8 +2496,11 @@ function closeProjectWrapper() {
         // 5. Limpiar hash de URL
         window.history.replaceState(null, '', window.location.pathname);
 
-        // 6. Reactivar Lenis
-        if (typeof lenis !== 'undefined') {
+        // 6. Restaurar overflow
+        document.body.style.overflow = 'auto';
+
+        // 7. Reactivar Lenis
+        if (typeof lenis !== 'undefined' && lenis.start) {
             lenis.start();
             // A veces es bueno forzar a Lenis a sincronizarse
             // lenis.scrollTo(savedScroll, { immediate: true });
