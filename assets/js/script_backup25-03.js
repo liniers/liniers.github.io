@@ -1,3 +1,4 @@
+
 // ===== VARIABLES GLOBALES DE DATOS =====
 
 // Fuentes de datos
@@ -345,14 +346,9 @@ function maquetar_inicio(){
     setTimeout(() => {
         setupThumbsHover(); // Inicializar hover de todas las thumbs con GSAP
         setupQuickView(); // Inicializar quick view
-
+        
         // Hacer visible el body
         gsap.to('body', { opacity: 1, duration: 1, ease: 'power2.inOut'});
-
-        // Sincronizar ScrollTrigger con las dimensiones reales del grid ya renderizado
-        if (typeof ScrollTrigger !== 'undefined') {
-            ScrollTrigger.refresh();
-        }
     }, 100);
 }
 // --- Fin maquetar_inicio --- \\
@@ -385,21 +381,43 @@ function updateSidebarLegend(data) {
 }
 
 
-// 2.- GSAP + SCROLL SETUP
+// 2.- GSAP + LENIS SETUP
 
-let projectWrapperOpen = false;
+const isMobileScroll = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+let lenis;
 
-// API de lenis como no-op para no romper las llamadas existentes
-const lenis = {
-    raf: () => {},
-    on: () => {},
-    start: () => {},
-    stop: () => {},
-    scrollTo: (pos, opts) => {
-        window.scrollTo({ top: pos, behavior: opts?.immediate ? 'instant' : 'smooth' });
-    }
-};
-const lenisEnabled = true;
+if (!isMobileScroll) {
+    lenis = new Lenis({
+        //infinite: true, 
+        syncTouch: true,
+        lerp: 0.08, // Suavidad del scroll (valores más bajos = más suave, evita saltos)
+        duration: 1.2, // Duración del smooth scroll (en segundos)
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Easing personalizado
+        wheelMultiplier: 1, // Multiplicador para eventos de rueda
+        touchMultiplier: 1, // Multiplicador para eventos táctiles
+        infinite: false
+    });
+
+    // Single RAF loop using GSAP ticker to avoid conflicts
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+    });
+
+    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Disable lag smoothing in GSAP to prevent any delay in scroll animations
+    gsap.ticker.lagSmoothing(0);
+} else {
+    // No-op Lenis API for mobile to avoid errors in other calls
+    lenis = {
+        raf: () => {},
+        on: () => {},
+        start: () => {},
+        stop: () => {},
+        scrollTo: () => {}
+    };
+}
 
 
 
@@ -521,9 +539,9 @@ function cleanAllViews() {
     ScrollTrigger.getAll().forEach(st => st.kill()); 
     
     
-    // Restaurar estilos body: limpiar inline styles y dejar que el CSS controle
-    document.body.style.overflow = '';
-    document.body.style.height = '';
+    // Restaurar estilos body - IMPORTANTE: Usar 'auto' para permitir scroll
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
     document.body.style.minHeight = '';
     
     // Asegurar que lenis está activo después de limpiar
@@ -688,6 +706,16 @@ function init3DTube_ScrollTrigger() {
             scrub: 0.5, // Pequeño scrub para mejor sincronización con Lenis
             markers: false,
             refreshPriority: -1,
+            onUpdate: () => {
+                // Forzar actualización de Lenis cuando ScrollTrigger se actualiza
+                if (lenis && lenis.raf) {
+                    ScrollTrigger.getAll().forEach(trigger => {
+                        if (trigger.animation) {
+                            trigger.animation.progress(trigger.getProgress());
+                        }
+                    });
+                }
+            }
         }
     });
     
@@ -921,8 +949,8 @@ if (vistaCategoriesBtn) {
             }
         } else {
             // MOVIL: Permitir scroll normal
-            document.body.style.overflow = '';
-            document.body.style.height = '';
+            document.body.style.overflow = 'auto'; 
+            document.body.style.height = 'auto';    
             if (typeof lenis !== 'undefined' && lenis.start) {
                 lenis.start();
             }
@@ -2410,10 +2438,9 @@ function openProjectWrapper(trabajo) {
     // 4. Guardar dónde estamos
     savedScroll = window.scrollY || document.documentElement.scrollTop;
 
-    // 5. Parar Lenis
+    // 4. Parar Lenis
     if (typeof lenis !== 'undefined' && lenis.stop) {
         lenis.stop();
-        lenisEnabled = false;
     }
 
     // Bloquear scroll en el body también
@@ -2427,9 +2454,6 @@ function openProjectWrapper(trabajo) {
     
     // Opcional: Scrolear el body real a 0 para evitar saltos internos del navegador
     window.scrollTo(0, 0);
-
-    // Marcar proyecto como abierto
-    projectWrapperOpen = true;
 
     // 7. Animar elementos del project-wrapper con stagger
     const projectElements = projectWrapper.querySelectorAll('.project-info, .cover-image, .row-grid');
@@ -2451,7 +2475,7 @@ function openProjectWrapper(trabajo) {
 }
 
 function closeProjectWrapper() {
-    if (!projectWrapper || !projectWrapperOpen) return;
+    if (!projectWrapper) return;
 
     // Volver a primera cara
     if (typeof morphToFirstFace === 'function') {
@@ -2461,35 +2485,33 @@ function closeProjectWrapper() {
     // 1. Quitar la clase (Inicia animación de vuelta)
     document.body.classList.remove('project-open');
 
-    // 2. Usar GSAP timeline para sincronización perfecta
-    gsap.timeline()
-        .to(projectWrapper, {
-            opacity: 0,
-            duration: 0.8,
-            ease: 'power2.inOut'
-        }, 0)
-        .add(() => {
-            // 3. Quitar el desplazamiento manual del contenido
-            mainContent.style.transform = '';
+    // 2. Esperar a que termine la animación (800ms)
+    setTimeout(() => {
+        // 3. Quitar el desplazamiento manual del contenido
+        mainContent.style.transform = '';
 
-            // 4. Restaurar el scroll real del navegador
-            window.scrollTo(0, savedScroll);
+        // 4. Restaurar el scroll real del navegador
+        window.scrollTo(0, savedScroll);
 
-            // 5. Limpiar hash de URL
-            window.history.replaceState(null, '', window.location.pathname);
+        // 5. Limpiar hash de URL
+        window.history.replaceState(null, '', window.location.pathname);
 
-            // 6. Restaurar overflow: quitar inline style para que CSS tome el control
-            document.body.style.overflow = '';
+        // 6. Restaurar overflow
+        document.body.style.overflow = 'auto';
 
-
-            projectWrapperOpen = false;
-        });
+        // 7. Reactivar Lenis
+        if (typeof lenis !== 'undefined' && lenis.start) {
+            lenis.start();
+            // A veces es bueno forzar a Lenis a sincronizarse
+            // lenis.scrollTo(savedScroll, { immediate: true });
+        }
+    }, 800);
 }
 
 // Event Listeners
 if (closeProjectBtn) closeProjectBtn.addEventListener('click', closeProjectWrapper);
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && projectWrapperOpen) {
+    if (e.key === 'Escape' && document.body.classList.contains('project-open')) {
         closeProjectWrapper();
     }
 });
