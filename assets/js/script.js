@@ -2410,11 +2410,7 @@ function openProjectWrapper(trabajo) {
     // 4. Guardar dónde estamos
     savedScroll = window.scrollY || document.documentElement.scrollTop;
 
-    // 5. Parar Lenis
-    if (typeof lenis !== 'undefined' && lenis.stop) {
-        lenis.stop();
-        lenisEnabled = false;
-    }
+    // 5. Bloquear scroll (lenis eliminado, solo overflow)
 
     // Bloquear scroll en el body también
     document.body.style.overflow = 'hidden'; 
@@ -2478,9 +2474,11 @@ function closeProjectWrapper() {
             // 5. Limpiar hash de URL
             window.history.replaceState(null, '', window.location.pathname);
 
-            // 6. Restaurar overflow: quitar inline style para que CSS tome el control
+            // 6. Restaurar overflow
             document.body.style.overflow = '';
 
+            // 7. Limpiar el opacity inline que GSAP puso, para que el próximo open arranque visible
+            gsap.set(projectWrapper, { clearProps: 'opacity' });
 
             projectWrapperOpen = false;
         });
