@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "newsletter",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8090", "--directory", "/Users/lingui/Library/CloudStorage/GoogleDrive-hello@flat26.com/Shared drives/WORK/2026/Cadena SER/Seremos/1_Design/02_Invitación/HTML_V1"],
+      "port": 8090
+    }
+  ]
+}

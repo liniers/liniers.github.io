@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(curl -sI \"https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js\")",
+      "Bash(curl -sI \"https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js\")",
+      "Bash(curl -s \"https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js\")",
+      "Bash(python3 -)",
+      "Read(//Users/lingui/Desktop/Lingui's/Formación/Design/Maser Diseño Interactivo/_TFM/02_Design/**)",
+      "Bash(mkdir -p 06_Dashboard/css 06_Dashboard/js 06_Dashboard/assets/shein)",
+      "Bash(cp __TRACKED_VAR__/1711385086f8f3097e3705faaa5b3c561e0eb1b9e9_thumbnail_405x552.webp 06_Dashboard/assets/shein/shoe-main.webp)",
+      "Bash(cp __TRACKED_VAR__/1711385090d9c6e91226a082a01e48161efae334a8_thumbnail_405x552.webp 06_Dashboard/assets/shein/shoe-alt.webp)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__plugin_figma_figma__get_design_context",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s -o yt_closed.png \"https://www.figma.com/api/mcp/asset/030a7533-c10f-4eef-87f2-d32af567c509\")",
+      "Bash(curl -s -o yt_open.png \"https://www.figma.com/api/mcp/asset/887918d2-bf27-4977-af80-6b776d6615cc\")",
+      "Bash(curl -s \"http://localhost:5577/youtube/assets/js/youtube.js\")",
+      "Bash(curl -s \"http://localhost:5577/youtube/assets/js/controls.js\")",
+      "Bash(curl -s -o yt_closed_hi.png \"https://www.figma.com/api/mcp/asset/3c5484f6-e197-49ba-b50d-3bfaae90edc0\")",
+      "Bash(grep -nE \"^\\\\.app|\\\\.app[ ,{]|\\\\.header-wrapper|\\\\.main-nav|\\\\.main-content|position:|sticky|overflow\" main.css)",
+      "Bash(cd \"/Users/lingui/Desktop/Lingui's/Formación/Design/Maser Diseño Interactivo/_TFM/02_Design/06_Dashboard/youtube\" && echo \"=== bgs folder ===\" && find . -iname \"*bg*\" -o -ipath \"*bgs*\" 2>/dev/null | head; echo \"---\"; ls -la assets/img/bgs 2>/dev/null || find assets -type d -iname \"bgs\"; echo \"=== search bgs anywhere ===\"; find \"/Users/lingui/Desktop/Lingui's/Formación/Design/Maser Diseño Interactivo/_TFM\" -type d -iname \"bgs\" 2>/dev/null)",
+      "Bash(curl -s -o yt_menu_new.png \"https://www.figma.com/api/mcp/asset/5cec3b55-f8ca-4b11-b99d-5e28e3fdda85\")",
+      "Bash(curl -s -o yt_liquid.png \"https://www.figma.com/api/mcp/asset/44346672-eefb-4a1a-8256-e1b87648de56\")",
+      "mcp__plugin_figma_figma__get_metadata",
+      "Bash(cat >> *)",
+      "Bash(curl -s -o yt_liquid_hi.png \"https://www.figma.com/api/mcp/asset/e0630b47-99a5-4fc2-9bb2-4a2d7de11fd9\")"
+    ]
+  }
+}

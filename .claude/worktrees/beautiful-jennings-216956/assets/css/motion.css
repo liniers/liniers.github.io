@@ -1,0 +1,85 @@
+:root {
+  /* Duraciones */
+  --duration-xs: 0.15s;
+  --duration-sm: 0.3s;
+  --duration-md: 0.6s;
+  --duration-lg: 1s;
+
+  /* Easings (Curvas de velocidad) */
+  --easing-emphasis: cubic-bezier(0.65, 0, 0.35, 1);
+  --easing-decelerate: cubic-bezier(0, 0, 0, 1);
+  --easing-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --easing-elastic: cubic-bezier(0, 1, 0.4, 1.5);
+
+  /* Escalas */
+  --scale-lg: 0.25;
+  --scale-md: 0.5;
+  --scale-sm: 0.75;
+  
+  /* Orígenes */
+  --origin-left: left center;
+  --origin-center: center center;
+  --origin-right: right center;
+}
+
+
+/* MOTION PRESETS */
+
+/* Keyframes genéricos */
+@keyframes fade-in-scale-up {
+  from {
+    opacity: 0;
+    transform: scale(var(--scale-start, 0.5)); /* --scale-start es una variable para automatizar */
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* clases pre-diseñadas (Las combinaciones) */
+
+/* Scale up */
+
+.motion-scale-up-sm {
+  --scale-start: var(--scale-sm); 
+
+  animation-name: fade-in-scale-up;
+  animation-duration: var(--duration-lg);
+  animation-timing-function: var(--easing-decelerate);
+  animation-fill-mode: both;
+}
+
+
+/* --- EFECTO HOVER --- */
+
+.reactive-hover {
+    background-color: transparent;
+    transition: all var(--duration-sm) var(--easing-decelerate);
+    backdrop-filter: blur(30px);
+}
+.reactive-hover:hover {
+    background-color: color-mix(in srgb, var(--opacity-low), var(--opacity-md));
+}
+
+.reactive-hover:active {
+    background-color: color-mix(in srgb, var(--opacity-low), var(--opacity-high))!important;
+}
+
+/* --- EFECTO SCALE --- */
+.reactive-scale {
+  transition: all var(--duration-sm) var(--easing-elastic);
+  transform: scale(1);
+  scale: 1; 
+  transform-origin: var(--origin-center);
+}
+
+.reactive-scale:hover {
+  transform: scale(0.99);
+  scale: 0.99;
+}
+
+.reactive-scale:active {
+  transform: scaleY(0.85) scaleX(0.95);
+  scale: 0.97;
+}

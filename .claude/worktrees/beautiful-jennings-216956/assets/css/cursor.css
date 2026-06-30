@@ -1,0 +1,23 @@
+/* CURSOR PERSONALIZADO */
+
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    will-change: transform;
+    /* mix-blend-mode: difference; */
+}
+
+#custom-cursor svg {
+    display: block;
+}
+
+body {
+    cursor: none;
+}
+
+a, button, [onclick] {
+    cursor: none;
+}

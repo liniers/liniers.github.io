@@ -1,0 +1,118 @@
+//https://codepen.io/danzen/pen/daJjpr
+
+const frame = new Frame("fit", 1024, 768, "#333", "#555");
+frame.on("ready", ()=>{ // ES6 Arrow Function - similar to function(){}
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+    // often need below - so consider it part of the template
+    let stage = frame.stage;
+    let stageW = frame.width;
+    let stageH = frame.height;
+
+    // REFERENCES for ZIM at http://zimjs.com
+    // see http://zimjs.com/learn.html for video and code tutorials
+    // see http://zimjs.com/docs.html for documentation
+    // see https://www.youtube.com/watch?v=pUjHFptXspM for INTRO to ZIM
+    // see https://www.youtube.com/watch?v=v7OT0YrDWiY for INTRO to CODE
+
+    // CODE HERE
+	
+		const physics = new Physics(0, false); // 0 gravity and no borders
+	
+   	// get some data - here we have ages of family members for four neighbors
+		// and the four colors that will represent the families (or use "red", "green", "blue", etc.)
+		const data = [[18, 16, 50, 52], [78, 68, 48], [60, 58, 26, 22], [50, 44]];
+		const colors = [pink, blue, green, yellow];
+	
+		// prepare zim Proportion object to change the ages to mappable values
+		// Generally, we would like to use the person value as the radius of a circle
+		// but the range is really big and the younger people would be too small
+		// so start with a minimum size and proportion out the rest to a maximum size
+
+		// we need the minimum age and the maximum age
+		// we can eyeball it with this data (16, 58), 
+		// but one way to code it is to add all ages to a single array
+		// then sort the single array by number and take the first and last entry
+		const allAges = [];
+		loop(data, d=>{allAges.push(...d);}); // d is each inner array and we push the ES6 spread - or use concat()
+		allAges.sort(function(a, b) {return a-b;}); // unfortunately, this is how we sort by number
+
+		const minAge = allAges[0];
+		const maxAge = allAges[allAges.length-1];
+		const minRadius = 40;
+		const maxRadius = 90;
+		const proportion = new Proportion(minAge, maxAge, minRadius, maxRadius); // we will use this below
+
+		const circles = new Container().addTo();
+	
+		// loop through each family in the data (or use a for loop)
+		loop(data, (family, i)=>{ // family is the current inner array and i is the current index
+
+			// loop through each person in the family
+			loop(family, person=>{
+
+				// apply the proportion to each person data to get the adjusted radius
+				let r = proportion.convert(person);
+				let circle = new Circle(r, colors[i])
+					.loc(rand(stageW), rand(stageH), circles) // random location in the circles container 
+					.addPhysics(); // add physics - new integrated format in ZIM 10
+				
+				// each circle will have a label that will rotate to keep it level 
+				// but the rotation will be damped for smoother motion 
+				// so store a damp object for each circle
+				circle.damp = new Damp();
+				circle.label = new Label({text:person, size:r*.5, color:"white"}).centerReg(circle);
+			});
+		});
+	
+		// in the Ticker which runs a RequestAnimationFrame, apply constant force to the circles
+		physics.Ticker.add(()=>{
+			
+			// loop through the circles container getting each circle
+			circles.loop(circle=>{
+
+				// apply a force to the circle in the direction of the center of the stage
+				// this location could be interactive
+				// so for instance, drag around a core body and have the rest cluster to it
+				// you could have many clusters - and be able to change clusters, etc.
+				// multiply the force by some factor that seems right...
+				circle.force((stageW/2-circle.x)*.1, (stageH/2-circle.y)*.1);
+
+				// turn the labels the opposite way from the body rotation
+				// the circles are rotating so we set the label rotation to minus the body rotation
+				// optionally we have damped the rotation - and we round to stop label from jittering
+				circle.label.rotation = Math.round(circle.damp.convert(-circle.rotation));
+			});
+		});
+	
+		physics.drag(); // turn dragging on in the physics world
+	
+		new zim.Label({text:"Neighborhood Families by Age of Members", color:"#777"})			
+			.pos(20, 20).bot();
+	
+  
+    // DOCS FOR ITEMS USED
+		// https://zimjs.com/docs.html?item=Frame
+		// https://zimjs.com/docs.html?item=Physics
+		// https://zimjs.com/docs.html?item=addPhysics
+		// https://zimjs.com/docs.html?item=Container
+		// https://zimjs.com/docs.html?item=Circle
+		// https://zimjs.com/docs.html?item=Label
+		// https://zimjs.com/docs.html?item=drag
+		// https://zimjs.com/docs.html?item=loop
+		// https://zimjs.com/docs.html?item=pos
+		// https://zimjs.com/docs.html?item=bot
+		// https://zimjs.com/docs.html?item=addTo
+		// https://zimjs.com/docs.html?item=centerReg
+		// https://zimjs.com/docs.html?item=rand
+		// https://zimjs.com/docs.html?item=loop
+		// https://zimjs.com/docs.html?item=Damp
+		// https://zimjs.com/docs.html?item=Proportion
+		// https://zimjs.com/docs.html?item=zog
+		// https://zimjs.com/docs.html?item=Ticker
+  
+    // FOOTER
+    // call remote script to make ZIM Foundation for Creative Coding icon
+    createIcon(frame); 
+
+}); // end of ready

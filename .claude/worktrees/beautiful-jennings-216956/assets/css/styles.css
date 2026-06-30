@@ -1,0 +1,1417 @@
+@import './motion.css';
+
+/* RESET BÁSICO */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica', 'Futura', 'JetBrains Mono', monospace; /* Asegúrate del nombre correcto de la fuente */
+    color: var(--color-text);
+}
+
+/* VARIABLES DE TEMA Y GRID */
+
+:root {
+
+    /* PALETA DE COLORES PARA THUMBS */
+    --color-rojo: #C02822;
+    --color-verde-oliva: #728D3B;
+    --color-azul-oscuro: #1A4575;
+    --color-coral: #D2605F;
+    --color-amarillo-dorado: #F4B33F;
+    --color-azul-petroleo: #2C5F6F;
+    --color-rojo-vino: #A3333D;
+    --color-verde-bosque: #4A7C59;
+    --color-salmon: #E8927C;
+    --color-verde-azulado: #5B8C85;
+
+    /* SEMANTICOS */
+
+    --color-text: #FAF4E4;
+    --color-bg: #191922;
+    --color-surface: #252532;
+    --scrim: #191922d4;
+    --opacity-low: #faf4e427;
+    --opacity-md: #faf4e448;
+    --opacity-high: rgba(250, 244, 228, 0.621);
+    --border-low: #faf4e41a;
+    --border-md: #faf4e433;
+    --on-accent-content: #191922;
+
+    --font-family-brand: 'Futura-CondensedExtraBold', sans-serif;
+    
+    /* CONFIGURACIÓN GRID - DESKTOP */
+    --grid-template-cols: 72;         /* Número de columnas del grid */
+    --grid-items-per-row-1: 6;        /* Elementos en fila 1 (par) */
+    --grid-items-per-row-2: 5;        /* Elementos en fila 2 (impar) */
+    --grid-spacing-horizontal: 12;    /* Espaciado horizontal entre thumbs */
+    --grid-spacing-vertical: 4;       /* Espaciado vertical entre filas */
+    --grid-thumb-span: 2;             /* Tamaño del thumb (span en grid) */
+    --grid-thumb-span-large: 5;       /* Tamaño del thumb cuando imágenes visibles */
+    --grid-start-row: 0;              /* Fila inicial en el grid */
+    --grid-start-col: 6;              /* Columna inicial en el grid */
+    
+    /* CONFIGURACIÓN VISTA GLOBAL - DESKTOP */
+    --global-view-cols: 3;            /* Columnas para grupos en vista global */
+    --global-view-rows: 2;            /* Filas para grupos en vista global */
+    --global-thumbs-per-row: 8;       /* Thumbs por fila dentro de cada grupo */
+    --global-category-spacing: 72;    /* Espaciado vertical entre categorías (px) */
+    --global-title-spacing: 24;       /* Espaciado entre título y thumbs (px) */
+    --global-title-size: 20;          /* Tamaño del texto del título (px) */
+
+    --radius-full: 99px;
+    --radius-md: 32px;
+    --radius-s: 16px;
+    --radius-xs: 8px;
+
+}
+
+
+
+[data-theme="light"] {
+    --color-text: #191922;
+    --color-bg: #FAF4E4;
+    --color-surface: #fefbf4;
+    --scrim: #FAF4E4d4;
+    --border-low: #19192214;
+    --border-md: #19192233;
+    --opacity-low: #19192221;
+    --opacity-md: #1919224a;
+    --opacity-high: #1919228e;
+    --on-accent-content: #faf4e4;
+}
+
+/* CONFIGURACIÓN GRID - Tablet */
+@media (max-width: 768px) {
+    :root {
+        --grid-template-rows: 48;         /* Menos filas en tablet */
+        --grid-template-cols: 48;         /* Menos columnas en tablet */
+        --grid-items-per-row-1: 3;        /* Elementos en fila 1 (par) */
+        --grid-items-per-row-2: 2;        /* Elementos en fila 2 (impar) */
+        --grid-spacing-horizontal: 8;     /* Espaciado horizontal entre thumbs */
+        --grid-spacing-vertical: 6;       /* Espaciado vertical entre filas */
+        --grid-thumb-span-large: 6;       /* Tamaño del thumb cuando imágenes visibles */
+        --grid-thumb-span: 3;             /* Tamaño del thumb (span más grande) */
+        --grid-start-row: 0;              /* Fila inicial en el grid */
+        --grid-start-col: 2;              /* Columna inicial más pequeña */
+        
+        /* 📐 CONFIGURACIÓN VISTA GLOBAL - TABLET */
+        --global-view-cols: 2;            /* 2 columnas en tablet */
+        --global-view-rows: auto;         /* Filas automáticas */
+        --global-thumbs-per-row: 4;       /* Menos thumbs por fila en tablet */
+        --global-category-spacing: 50;    /* Menos espaciado entre categorías */
+        --global-title-spacing: 30;       /* Menos espaciado título-thumbs */
+        --global-title-size: 13;          /* Tamaño del título en tablet */
+    }
+}
+
+/* CONFIGURACIÓN GRID - Mobile */
+@media (max-width: 480px) {
+    :root {
+        --grid-template-cols: 3;         
+        --grid-items-per-row-1: 2;      
+        --grid-items-per-row-2: 1;       
+        --grid-spacing-horizontal: 2;  
+        --grid-spacing-vertical: 1;
+        --grid-thumb-span-large: 1;  /* En móvil la miniatura en vista imagen */
+        --grid-thumb-span: 1;            
+        --grid-start-row: 1;             
+        --grid-start-col: 1;             
+        
+        /* CONFIGURACIÓN VISTA GLOBAL - MÓVIL */
+        --global-view-cols: 1;            /* 1 columna en móvil (vertical) */
+        --global-view-rows: auto;         /* Filas automáticas */
+        --global-thumbs-per-row: 3;       /* 3 thumbs por fila en móvil */
+        --global-category-spacing: 40;    /* Espaciado entre categorías en móvil */
+        --global-title-spacing: 20;       /* Espaciado título-thumbs en móvil */
+        --global-title-size: 12;          /* Tamaño del título en móvil */
+    }
+}
+
+
+.text-display {
+  font-family: var(--font-family-brand);
+  text-transform: uppercase;
+}
+
+
+body {
+    overflow-x: hidden; 
+    width: 100%;
+    background-color: var(--color-bg);
+    transition: background-color var(--duration-sm) ease, color var(--duration-sm) ease;
+}
+
+body.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
+
+#page-content {
+    background-color: var(--color-bg); 
+    width: 100%;
+    min-height: 100vh;
+    transform-origin: center 20vh;
+    border-radius: 0px; 
+}
+
+
+/* ESTRUCTURA PRINCIPAL */
+.layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 80px 1fr;
+    min-height: 100vh; /* Cambiado de height a min-height */
+    padding: 1rem;
+    position: relative;
+}
+
+/* HEADER */
+.layout .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    grid-area: 1 / 1 / 2 / 2;
+    position: fixed;
+    top: 1rem;
+    z-index: 99;
+}
+
+.layout .views-nav{
+    position: fixed;
+    bottom: 36px;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+    height: fit-content;
+    max-width: 90%;
+}
+
+.layout .logo{
+    position: fixed;
+    right: 36px;
+    bottom: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    backdrop-filter: blur(15px);
+    width: 92px;
+    border: 1px solid var(--border-low);
+    height: 92px;
+    border-radius: 99px;
+    cursor: pointer;
+    z-index: 1010;
+}
+
+.logo svg {
+    right: 8px;
+    position: relative;
+}
+
+.logo svg path {
+    stroke: #191922;
+}
+
+
+.layout .header-right{
+    position: fixed;
+    right: 1rem; 
+    transform: translateX(0%);
+}
+.layout .views-nav, .header-right{
+    display: flex;
+    padding: .5rem;
+    align-items: center;
+    gap: .5rem;
+    border-radius: 99px;
+    background: rgba(250, 244, 228, 0.04);
+    backdrop-filter: blur(16px);
+}
+
+[data-theme="light"] .layout .views-nav,
+[data-theme="light"] .header-right {
+    background: rgba(25, 25, 34, 0.04);
+}
+
+.layout .views-nav button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 99px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    gap: .5rem;
+    color: var(--color-text);
+    border: none;
+    /* transition: all var(--duration-sm) ease; */
+}
+
+.layout .main-header .views-nav button svg path {
+    fill: var(--color-text);
+    stroke: var(--color-text);
+    transition: all var(--duration-sm) ease;
+}
+
+.layout .main-header .views-nav .button-active {
+    background: var(--color-accent);
+    font-size: 0.8rem;
+    color: var(--on-accent-content);
+}
+
+.layout .views-nav .case-studies {
+    display: none !important;
+    opacity: 0;
+}
+
+.layout .main-header .views-nav .button-active .case-studies {
+    display: inline !important;
+    opacity: 1;
+    color: var(--on-accent-content);
+}
+
+.layout .views-nav .label-xs {
+    display: none !important;
+    opacity: 0;
+}
+
+.layout .main-header .views-nav .button-active .label-xs {
+    display: inline !important;
+    opacity: 1;
+    color: var(--on-accent-content);
+}
+
+.layout .main-header .views-nav .button-active svg path {
+    fill: var(--on-accent-content);
+    stroke: var(--on-accent-content);
+}
+
+.layout .main-header .header-right button {
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text);
+    border: none;
+    transition: all var(--duration-sm) ease;
+}
+
+.layout .main-header .header-right button svg path {
+    fill: var(--color-text);
+    stroke: var(--color-text);
+    transition: all var(--duration-sm) ease;
+}
+
+/* SIDEBAR */
+.layout .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10rem;
+    padding: 1rem 0 2rem 0;
+    height: 100vh;
+    width: 258px;
+    position: fixed;
+    top: 0;
+    left: 1rem; 
+    z-index: 90;
+    font-size: .825rem;
+    pointer-events: none; /* Deshabilita interacción por detrás */
+}
+
+
+/* .layout .sidebar .main-menu, .layout .sidebar .main-menu li a, .footer, .footer li a {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-decoration: none;
+    pointer-events: auto;
+} */
+
+.sidebar .main-filter{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sidebar .main-filter li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5rem;
+}
+
+.sidebar .main-filter li a{
+    text-decoration: none;
+}
+
+.color-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.color-bullet.green {
+    background-color: var(--color-verde-oliva);
+}
+.color-bullet.yellow {
+    background-color: var(--color-amarillo-dorado);
+}
+.color-bullet.pink {
+    background-color: var(--color-rojo-vino);
+}
+.color-bullet.blue {
+    background-color: var(--color-azul-oscuro);
+}
+.color-bullet.red {
+    background-color: var(--color-rojo);
+}
+.color-bullet.white {
+    background-color: var(--color-text);
+}
+
+
+/* Contianer 3D TEXTO */
+
+.container-scroll .tube {
+}
+
+/* CONTENIDO PRINCIPAL */
+
+.layout .main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.thumbs-grid {
+    display: grid;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: 90vw;
+    height: auto;
+    min-height: 200vh;
+    padding: 0px;
+    row-gap: 0px;
+    column-gap: 0px;
+    grid-template-columns: repeat(var(--grid-template-cols), minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    z-index: 89;
+    
+}
+
+.thumbs-grid-preview {
+    display: grid;
+    margin-bottom: 50%;
+    width: 95vw;
+    height: auto;
+    min-height: 95vh;
+    padding: 0px;
+    row-gap: 0px;
+    column-gap: 0px;
+    grid-template-columns: repeat(var(--grid-template-cols), minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    z-index: 89;
+    
+}
+
+
+/* Span miniaturas (GENERADAS EN EL JS) */
+
+.thumbs-grid-preview .thumb-1 {
+    grid-row: 2 / span 1;
+    grid-column: 36 / span 2;
+    background-color: #C02822;
+    aspect-ratio: 1 / 1;
+}
+
+.thumbs-grid-preview .work-info, .thumbs-grid .work-info {
+    display: none;
+    flex-direction: column;
+    gap: .5rem;
+    opacity: 0;
+    position: relative;
+    height: 100%; /* Asegura que no sobrepase el alto del thumb */
+    scale: var(--scale-sm);
+    background-color: var(--color-bg);
+    z-index: 1;
+    transform-origin: var(--origin-left);
+    translate: 30%;
+    background-color: var(--color-bg);
+}
+
+/* .thumbs-grid-preview .work-info:hover, .thumbs-grid .work-info:hover {
+    opacity: 1;
+    scale: 1;
+    transform-origin: var(--origin-left);
+    transition: all var(--duration-sm) var(--easing-decelerate);
+} */
+
+.thumbs-grid-preview .work-info .work-category, .thumbs-grid .work-info .work-category {
+    /* background-color: var(--color-bg); */
+    font-size: 1.5rem;
+}
+
+.thumbs-grid-preview .work-info .work-details, .thumbs-grid .work-info .work-details {
+    /* background-color: var(--color-bg); */
+    font-size: .825rem;
+}
+
+
+
+
+/* Toggle para ocultar imágenes */
+[class*="thumb-"].hide-image {
+    background-image: none !important;
+}
+
+/* Ocultar videos cuando hide-image está activo */
+[class*="thumb-"].hide-image video {
+    display: none !important;
+    
+}
+
+
+/* SECCIONES DEL ROLLER (FIXED/PINNED) */
+
+.pinned-section {
+    height: 100vh; 
+    width: 100%; /* Ocupa todo el ancho disponible */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    z-index: 2; /* Por encima del título fijo */
+}
+
+.tube { 
+    width: 100%;
+    /* La altura depende de qué tan grande quieres el cilindro visualmente */
+    height: 30vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.line {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -0.3vw; /* Ajustado kerning */
+    white-space: nowrap;
+    text-align: center;
+    
+    /* LA SOLUCIÓN AL ANCHO: USAR VW */
+    font-size: 7vw; 
+    /* clamp(minimo, ideal, maximo) evita que sea ilegible en móvil o gigante en 4k */
+    font-size: clamp(3rem, 7vw, 92px); 
+    pointer-events: none; /* Para que no moleste al scroll */
+}
+
+.line div {
+    backface-visibility: hidden; /* Evita parpadeos en 3D */
+}
+
+
+/* SECCIONES DE TRABAJO (SCROLL)*/
+
+.work-section {
+    width: 100%;
+    padding: 20vh 0; /* Espacio generoso */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Separación entre fotos */
+    align-items: center;
+    position: relative;
+    z-index: 2; /* Al mismo nivel que el pinned para tapar lo de atrás */
+}
+
+/* .work-section .thumb {  
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background-color: #f0f0f0;
+} */
+
+/* Thumbs */
+[class*="thumb-"] {
+    cursor: pointer;
+    /* border-radius: var(--radius-full); */
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    transition: border-radius var(--duration-md, 0.6s) var(--easing-standard, ease);
+    background-size: cover;
+    background-position: center;
+}
+
+[class*="thumb-"] video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.view-listado [class*="thumb-"] {
+    /* border-radius: var(--radius-full); */
+    border-radius: 0px;
+}
+
+.view-global [class*="thumb-"] {
+    /* border-radius: var(--radius-full); */
+    border-radius: 0px;
+}
+
+/* Hover effect en vista listado - tooltip flotante a la derecha del cursor */
+.hover-work-info {
+    display: flex;
+    opacity: 0;
+    position: fixed;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: opacity var(--duration-sm) var(--easing-decelerate);
+    z-index: 1000;
+    pointer-events: none;
+    width: fit-content;
+    max-width: 500px;
+    background: var(--color-bg);
+}
+
+.hover-work-info .work-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+    font-size: 1.5rem;
+}
+
+.hover-work-info.is-visible {
+    opacity: 1;
+}
+
+.hover-work-info.is-centered {
+    width: fit-content;
+    max-width: 320px;
+    background: var(--color-bg);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.hover-work-info .work-category {
+    font-size: .875rem;
+}
+
+/* Asegurar que las imágenes sean visibles en vista listado al hacer hover */
+.view-listado [class*="thumb-"].hide-image:hover {
+    opacity: 0.95;
+}
+
+.view-global [class*="thumb-"] .work-info:not(.expanded-info) {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+.work-section .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.quick-view {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    padding: 3rem 2rem;
+    border-radius: 32px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+    width: 960px;
+    max-width: 90vw;
+    height: auto;
+    overflow-y: auto;
+    /* backdrop-filter: blur(50px); */
+    opacity: 0;
+    /* background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.2'/%3E%3C/svg%3E");    background-size: cover; */
+    /* background: #00000015; */
+    background-position: center;
+    /* box-shadow: 0 0 134px 200px var(--color-bg); */
+}
+
+/* Estilos para el thumb expandido */
+.thumb-expanded {
+}
+
+.thumb-expanded video,
+.thumb-expanded img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* border-radius: var(--radius-md); */
+}
+
+.work-info.expanded-info {
+    display: flex;
+    flex-direction: column;
+    position: fixed !important;
+    right: 36px !important; /* Alineado con el logo */
+    bottom: 144px !important; /* 36px (logo bottom) + 92px (logo height) + 16px (margen) */
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    background: var(--color-surface);
+    padding: 1rem 1.25rem 2rem 1.25rem; /* Más padding arriba para el botón */
+    border: solid 1px var(--border-low);
+    border-radius: 1rem;
+    corner-shape: bevel;
+    max-width: 300px;
+    color: white;
+    pointer-events: auto;
+    opacity: 0; /* Inicialmente oculto para animación */
+    z-index: 1002; /* Por encima del thumb-expanded */
+}
+
+/* Triángulo del bocadillo apuntando hacia abajo */
+.work-info.expanded-info::after {
+    content: '';
+    position: absolute;
+    bottom: -10px; /* Ajusta esta posición */
+    right: 1rem; /* Ajusta esta posición */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--color-surface);
+}
+
+/* Botón de expand en la esquina superior derecha */
+.work-info.expanded-info .expand-btn {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    z-index: 10;
+}
+
+.work-info.expanded-info .expand-btn:hover {
+    background: var(--opacity-md);
+}
+
+.work-info.expanded-info .expand-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.work-info.expanded-info .work-category {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.work-info.expanded-info .work-title {
+    font-size: 2rem;
+    line-height: 2rem;
+    margin-right: 1rem;
+}
+
+.work-info.expanded-info .work-details {
+    font-size: 0.875rem;
+    margin-top: .35rem;
+}
+
+.quick-view-scrim {
+    transition: opacity 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--scrim);
+    z-index: 999;
+    opacity: 0;
+    display: none;
+    /* backdrop-filter: blur(5px); */
+}
+
+.quick-view .media {
+    width: 50%;
+    height: inherit;
+    border-radius: .5rem;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 134px 200px var(--color-bg);
+}
+.quick-view .media video, .quick-view .media img {
+    width: 50%;
+    height: inherit;
+    border-radius: 5rem;
+    background-size: cover;
+    background-position: center;
+    corner-shape: squircle;
+
+
+}
+
+
+
+.drag-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 24px;
+    height: 24px;
+    background: #00000055;
+    backdrop-filter: blur(50px);
+    z-index: 10;
+    border-radius: 99px;
+    cursor: pointer;
+    border: none;
+    
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .layout {
+        padding: 0.5rem;
+    }
+    .layout .sidebar {
+        display: none; /* Ocultar sidebar en móvil o convertir en hamburguesa */
+    }
+    .work-section .thumb {
+        max-width: 90vw;
+    }
+    .line {
+        font-size: 15vw; /* Texto más grande en móvil */
+    }
+}
+
+
+/* Personalización de controles de video nativos */
+.thumbnail video::-webkit-media-controls-panel {
+    background-color: rgba(25, 25, 34, 0.8);
+}
+
+.thumbnail video::-webkit-media-controls-play-button,
+.thumbnail video::-webkit-media-controls-timeline,
+.thumbnail video::-webkit-media-controls-volume-slider {
+    filter: brightness(1.2);
+}
+
+.category-title {
+    font-size: var(--global-title-size);
+    margin-bottom: var(--global-title-spacing);
+    text-transform: uppercase;
+    font-family: var(--font-family-brand);
+    color: var(--color-text);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.button-background-slider {
+    position: absolute;
+    background-color: var(--color-text);
+    border-radius: 99px;
+    pointer-events: none;
+    z-index: 0;
+    transition: none;
+}
+
+
+/* VIDEO CONTROLS */
+
+.video-controls {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+
+.video-control-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    font-size: 20px;
+    background: var(--opacity-low)
+}
+
+.close-expanded-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1002;
+    opacity: 0;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 99px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    font-size: 20px;
+    background: var(--opacity-low);
+    backdrop-filter: blur(20px);
+}
+
+.nav-controls {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    z-index: 10;
+}
+
+.project-counter {
+    backdrop-filter: blur(20px);
+    background: var(--scrim);
+    border-radius: 99px;
+    color: white;
+    font-size: 14px;
+    padding: 0 24px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.nav-control-btn.prev-btn,
+button.nav-control-btn.next-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    backdrop-filter: blur(20px);
+    background: #00000055;
+    border-radius: 99px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    color: white;
+    font-size: 25px;
+}
+
+/* Estilos específicos por estado */
+.play-pause-btn[data-state="playing"] {
+    /* Añade aquí estilos para cuando está reproduciendo */
+}
+
+.play-pause-btn[data-state="paused"] {
+    /* Añade aquí estilos para cuando está pausado */
+}
+
+.mute-btn[data-state="muted"] {
+    /* Añade aquí estilos para cuando está muteado */
+}
+
+.mute-btn[data-state="unmuted"] {
+    /* Añade aquí estilos para cuando está con sonido */
+}
+
+@media (max-width: 480px) {
+    .quick-view {
+        flex-direction: column;
+    }
+    
+    .quick-view .media {
+        width: 100%;
+    }
+
+    .layout .views-nav {
+        left: 16px;
+        right: auto;
+        margin-inline: 0;
+        z-index: 1001;
+    }
+    .container-scroll {
+        display: none !important;
+    }
+
+    .project-content {
+        padding: 3rem 0rem 2rem 2rem!important;
+    }
+
+    .layout .logo {
+        right: 24px;
+    }
+}
+
+
+/* Project wrapper */
+
+.project-wrapper {
+    position: fixed;
+    top: 0;           /* Lo fijamos arriba */
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    display: block;
+    overflow-y: auto;
+    background-color: #1A4575;
+    border-radius: 24px 24px 0 0;
+    
+    /* ESTADO INICIAL: Oculto abajo usando transform, NO top */
+    transform: translateY(100%); 
+    will-change: transform;
+}
+
+.project-wrapper.open {
+    top: 48px;
+    height: calc(100vh - 48px);
+}
+
+.project-content {
+    /* Propiedades de diseño */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 5rem;
+    min-height: 100%; /* Asegura que cubra el alto */
+}
+
+/* Para centrar el contenido sin usar Flexbox en el padre,
+   envuelve tu contenido o aplica margen automático a los hijos directos
+   que requieran ancho máximo */
+.project-wrapper .intro,
+.project-wrapper .row-grid {
+    width: 100%;
+    /* margin-left: auto;
+    margin-right: auto; */
+}
+
+.project-wrapper .close-wrapper {
+    position: sticky;
+    float: right;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 32px;
+    height: 32px;
+    z-index: 10;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    font-size: 20px;
+}
+
+.project-wrapper .intro {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-wrapper .intro .cover-image {
+    width: 100%;
+    max-width: 760px;
+    height: 100%;
+    border-radius: var(--radius-s);
+    background-color: #4f4f4f;
+    overflow: hidden;
+}
+
+.project-wrapper .intro .project-info {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.project-wrapper .intro .project-info .title {  
+    font-size: 3rem;
+    line-height: 1em;
+    color: var(--color-text); 
+}
+
+.project-wrapper .intro .project-info .subtitle {
+    font-size: 1rem;
+    line-height: 1.5em;
+}
+
+.project-wrapper .intro .project-info .subtitle p {
+    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-family: georgia;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.project-wrapper .row-grid {
+    display: grid;
+    max-width: 760px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.project-wrapper .row-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-s);
+    overflow: hidden;
+}
+
+/* =========================================
+   EFECTO VENTANA (FIXED WINDOW)
+   ========================================= */
+
+/* 1. CONFIGURACIÓN BASE */
+
+body {
+    background-color: var(--color-bg);
+    transition: background-color 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+#page-content {
+    background-color: var(--color-bg);
+    width: 100%;
+    min-height: 100vh;
+    /* Punto de origen para el escalado: SIEMPRE el centro de la pantalla */
+    transform-origin: center center; 
+    transition: transform 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+                border-radius 0.8s cubic-bezier(0.32, 0.72, 0, 1),
+                filter 0.8s ease;
+    /* Necesario para que el recorte funcione */
+    /* overflow: hidden;  */
+}
+
+/* El contenido interno (donde están tus secciones) */
+.main-content {
+    width: 100%;
+    /* Esta transición debe ser 0s para que el cambio de posición sea instantáneo al abrir */
+    transition: transform 0s; 
+}
+
+/* Elementos UI que desaparecen */
+.main-header, .sidebar {
+    transition: opacity 0.4s ease;    
+}
+
+/* EL MODAL */
+.project-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: 9999;
+    background-color: var(--color-bg);
+    border-radius: 36px 36px 0 0;
+    
+    display: block !important;
+    overflow-y: auto !important;
+    
+    transform: translateY(100%);
+    transition: transform 0.8s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 0px -20px 60px rgba(0,0,0,0.2);
+}
+
+
+/* 2. ESTADO ACTIVO (.project-open) */
+
+body.project-open {
+    background-color: #000; /* Fondo negro */
+}
+
+/* Ocultar UI */
+body.project-open .main-header,
+body.project-open .sidebar {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Transformar la "VENTANA" (#page-content) */
+body.project-open #page-content {
+    /* El truco: Hacemos clip y escalamos */
+    transform: scale(0.96) translateY(0px);
+    border-radius: 36px;
+    opacity: .8;
+    filter: brightness(2);
+    
+    /* Importante: aseguramos que actúe como máscara */
+    overflow: hidden; 
+    height: 100vh; /* Se fuerza a altura de pantalla */
+    position: fixed; /* Se fija a la pantalla */
+    top: 0; 
+    left: 0;
+}
+
+/* Subir el modal */
+body.project-open .project-wrapper {
+    transform: translateY(32px);
+}
+
+/* Ocultar solo main-filter en vista de categorías */
+body.view-categories .sidebar .main-filter {
+    display: none;
+}
+
+/* CASE STUDY CARDS - SOLO EN VISTA CASE STUDIES */
+
+body.view-case-studies .thumbs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 0rem 120px;
+}
+
+@media (max-width: 480px) {
+    body.view-case-studies .thumbs-grid {
+        grid-template-columns: repeat(1, 1fr);
+        padding: 1rem;
+        gap: 1rem;
+    }
+}
+
+.case-study-card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: var(--radius-s);
+}
+
+.case-study-card:hover {
+    opacity: 0.5;
+}
+
+.case-study-card__thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius-xs);
+    background-color: var(--color-surface);
+}
+
+.case-study-card__thumbnail video,
+.case-study-card__thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.case-study-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.case-study-card__category {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-text);
+}
+
+.case-study-card__title {
+    margin: 0;
+}
+
+.video-reel {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    width: 250px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* border-radius: var(--radius-xs); */
+}
+
+.video-reel .hide-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: .25rem .25rem;
+    z-index: 10;
+    pointer-events: auto;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    background: var(--opacity-low);
+    backdrop-filter: blur(20px);
+    cursor: pointer;
+}
+
+.video-reel .reel-btn {
+    position: absolute;
+    /* bottom: 8px;
+    right: 8px; */
+    padding: .75rem 1rem;
+    z-index: 10;
+    pointer-events: auto;
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    background: var(--opacity-low);
+    backdrop-filter: blur(20px);
+    cursor: pointer;
+}
+
+.reel-btn{
+    /* 1. Hacemos el texto transparente para que se vea el fondo que crearemos */
+    color: transparent;
+    
+    /* 2. Simulamos las 4 capas usando linear-gradient de un solo color.
+        IMPORTANTE: El orden es de ARRIBA (Capa 4) a ABAJO (Capa 1) */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)), /* Capa 4: Blanco 55% */
+        linear-gradient(#6F6F6F, #6F6F6F),                                     /* Capa 3: Gris Medio */
+        linear-gradient(#0F0F0F, #0F0F0F),                                     /* Capa 2: Negro */
+        linear-gradient(rgba(88, 88, 88, 0.6), rgba(88, 88, 88, 0.6));         /* Capa 1: Gris Oscuro 60% */
+
+    /* 3. Asignamos el modo de fusión correspondiente a cada capa en el mismo orden */
+    background-blend-mode: 
+        luminosity,   /* Para capa 4 */
+        color-dodge,  /* Para capa 3 */
+        plus-lighter, /* Para capa 2 (fallback: screen) */
+        luminosity;   /* Para capa 1 */
+
+    /* 4. Recortamos todo esto para que solo se vea dentro de las letras */
+    background-clip: text;
+    -webkit-background-clip: text; /* Necesario para Safari/Chrome */
+    
+    /* Opcional: Si quieres que ADEMÁS el texto entero se mezcle con la foto de fondo de la web */
+    mix-blend-mode: overlay; 
+}
+
+.video-reel video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Estado minimizado del reel (solo botón visible) */
+.video-reel.is-minimized {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    padding: 0;
+    z-index: 1002;
+    background: transparent;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.video-reel.is-minimized video {
+    display: none;
+}
+
+.video-reel.is-minimized .hide-btn {
+    display: none;
+}
+
+.video-reel.is-minimized .reel-btn {
+    position: relative;
+}
+
+/* Reel quick view */
+.reel-quick-view {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(960px, 90vw);
+    aspect-ratio: 16 / 9;
+    background: var(--color-bg);
+    border-radius: 2rem;
+    overflow: hidden;
+    z-index: 1001;
+    opacity: 0;
+}
+
+.reel-quick-view video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--color-bg);
+}
+
+/* ===== SPINNER LOADING ===== */
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(250, 244, 228, 0.2);
+    border-top-color: var(--color-text);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+[data-theme="light"] .loading-spinner {
+    border-color: rgba(25, 25, 34, 0.2);
+    border-top-color: var(--color-text);
+}

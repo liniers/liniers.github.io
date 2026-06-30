@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dashboard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5577", "--directory", "/Users/lingui/Desktop/Lingui's/Formación/Design/Maser Diseño Interactivo/_TFM/02_Design/06_Dashboard"],
+      "port": 5577
+    }
+  ]
+}
